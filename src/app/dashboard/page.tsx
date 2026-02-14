@@ -1,10 +1,20 @@
-import { Card } from '@/components/ui/card'
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 
-export default function DashboardPage() {
+import DashboardClient from '@/src/modules/dashboard/components/DashboardClient'
+import { getTransactions } from '@/src/modules/dashboard/services/transactions'
+import { getQueryClient } from '@/src/shared/utils/getQueryClient'
+
+export default async function DashboardPage() {
+  const queryClient = getQueryClient()
+
+  await queryClient.prefetchQuery({
+    queryKey: ['transactions'],
+    queryFn: getTransactions,
+  })
+
   return (
-    <main>
-      <h1>BankOps Analytics Dashboard</h1>
-      <Card>Bem-vindo à página do dashboard!</Card>
-    </main>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <DashboardClient />
+    </HydrationBoundary>
   )
 }

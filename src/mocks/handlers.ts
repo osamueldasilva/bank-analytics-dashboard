@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw'
 
 export const handlers = [
-  http.get('/api/transactions', () => {
+  http.get('http://localhost:3000/api/transactions', () => {
     const transactions = Array.from({ length: 50 }, (_, i) => ({
       id: i + 1,
       title: `Transação ${i + 1}`,

@@ -20,6 +20,11 @@ export const metadata: Metadata = {
   description: 'Dashboard de análise de dados para operações bancárias',
 }
 
+if (process.env.NODE_ENV === 'development') {
+  const { initMocks } = await import('../mocks')
+  await initMocks()
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
