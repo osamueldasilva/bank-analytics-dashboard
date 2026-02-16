@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/card'
 
+import { LiquidityDistribution } from './LiquidityDistribution'
 import { PortfolioRiskTrend } from './PortfolioRiskTrend'
 
 export function DashboardPanel() {
@@ -7,10 +8,7 @@ export function DashboardPanel() {
     <>
       <div className="grid grid-cols-12 gap-4">
         <PortfolioRiskTrend />
-        <Card
-          className="col-span-4 flex h-48 items-center justify-center"
-          style={{ minWidth: 0 }}
-        ></Card>
+        <LiquidityDistribution />
       </div>
 
       <div className="grid grid-cols-12 gap-4">
