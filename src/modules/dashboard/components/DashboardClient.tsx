@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 
-import { getTransactions } from '../services/transactions'
+import { getTransactions } from '../services/transactions.service'
 import { DashboardPanel } from './DashboardPanel'
 import { KpiCards } from './KpiCards'
 
