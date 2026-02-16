@@ -1,5 +1,5 @@
 export async function getTransactions() {
-  const res = await fetch('http://localhost:3000/api/transactions', {
+  const res = await fetch('/transactions', {
     cache: 'no-store',
   })
 
