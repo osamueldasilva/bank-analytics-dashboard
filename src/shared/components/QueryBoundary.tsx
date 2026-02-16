@@ -52,13 +52,11 @@ export function QueryBoundary<T>({
       <Card
         className={cn(
           classError,
-          `flex flex-col items-center justify-center rounded-lg border border-rose-500/20 bg-rose-500/5 p-8 text-center`,
+          `flex flex-col items-center justify-center rounded-lg border border-rose-500/20 bg-rose-500/5 text-center`,
         )}
       >
-        <AlertCircle className="mb-2 h-8 w-8 text-rose-500" />
-        <p className="mb-4 text-sm font-medium text-rose-500">
-          System Unavailable
-        </p>
+        <AlertCircle className="h-8 w-8 text-rose-500" />
+        <p className="text-sm font-medium text-rose-500">System Unavailable</p>
         <Button
           variant="outline"
           size="sm"
