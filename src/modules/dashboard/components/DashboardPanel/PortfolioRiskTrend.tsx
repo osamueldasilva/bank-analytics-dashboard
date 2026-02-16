@@ -1,5 +1,6 @@
 'use client'
 
+import { format } from 'date-fns'
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 
 import {
@@ -15,89 +16,108 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
+import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 
-const chartData = [
-  { month: 'January', risk: 100 },
-  { month: 'February', risk: 52 },
-  { month: 'March', risk: 48 },
-  { month: 'April', risk: 61 },
-  { month: 'May', risk: 55 },
-  { month: 'June', risk: 67 },
-]
+import { usePortfolioTrend } from '../../hooks/useDashboardQueries'
 
 const chartConfig = {
-  risk: {
+  riskIndex: {
     label: 'Risk Level',
-    color: 'var(--chart-1)',
+    color: 'var(--chart-2)',
   },
 } satisfies ChartConfig
 
 export function PortfolioRiskTrend() {
+  const {
+    data: portfolioTrend,
+    isError,
+    isLoading,
+    refetch,
+  } = usePortfolioTrend()
+
   return (
-    <Card className="col-span-8">
-      <CardHeader>
-        <CardTitle>Portfolio Risk Trend</CardTitle>
-        <CardDescription>Last 90 Days</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="h-45 w-full">
-          <AreaChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: -20,
-              right: 12,
-              top: 10,
-            }}
-          >
-            <defs>
-              <linearGradient id="fillRisk" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-risk)"
-                  stopOpacity={0.3}
+    <QueryBoundary
+      classError="col-span-8"
+      data={portfolioTrend}
+      isLoading={isLoading}
+      isError={isError}
+      onRetry={() => refetch()}
+      skeletonCount={1}
+      skeletonWrapperClass="col-span-8"
+      skeletonClass="h-full"
+      classEmpty="col-span-8"
+    >
+      {(data) => (
+        <Card className="col-span-8">
+          <CardHeader>
+            <CardTitle>Portfolio Risk Trend</CardTitle>
+            <CardDescription>Last 90 Days</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={chartConfig} className="h-45 w-full">
+              <AreaChart
+                accessibilityLayer
+                data={data}
+                margin={{ left: -20, right: 12, top: 10 }}
+              >
+                <defs>
+                  <linearGradient id="fillRisk" x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="5%"
+                      stopColor="var(--chart-2)"
+                      stopOpacity={0.3}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="var(--chart-2)"
+                      stopOpacity={0.01}
+                    />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  minTickGap={32}
+                  tickFormatter={(value) => {
+                    const date = new Date(value)
+                    return date.toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                    })
+                  }}
                 />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-risk)"
-                  stopOpacity={0.1}
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickCount={3}
                 />
-              </linearGradient>
-            </defs>
-            <CartesianGrid
-              vertical={false}
-              strokeDasharray="3 3"
-              opacity={0.4}
-            />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickCount={3}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Area
-              dataKey="risk"
-              type="natural"
-              fill="url(#fillRisk)"
-              fillOpacity={0.4}
-              stroke="var(--color-risk)"
-              strokeWidth={2}
-              stackId="a"
-            />
-          </AreaChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+                <ChartTooltip
+                  cursor={false}
+                  content={
+                    <ChartTooltipContent
+                      labelFormatter={(value) => {
+                        return format(new Date(value), 'dd/MM/yyyy')
+                      }}
+                    />
+                  }
+                />
+                <Area
+                  dataKey="riskIndex"
+                  type="natural"
+                  fill="url(#fillRisk)"
+                  stroke="var(--chart-2)"
+                  strokeWidth={2}
+                  fillOpacity={0.4}
+                />
+              </AreaChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+      )}
+    </QueryBoundary>
   )
 }

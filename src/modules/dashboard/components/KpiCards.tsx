@@ -19,7 +19,7 @@ export function KpiCards() {
       isError={isError}
       onRetry={() => refetch()}
       skeletonCount={5}
-      skeletonClass="col-span-2 h-32 rounded-xl"
+      skeletonWrapperClass="grid grid-cols-5 gap-4"
     >
       {(kpis) => (
         <div className="grid grid-cols-10 gap-4">
