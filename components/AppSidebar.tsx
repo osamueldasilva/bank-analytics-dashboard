@@ -39,8 +39,10 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r">
-      <SidebarHeader className="flex h-12 items-center justify-center border-b">
-        <LucideShieldHalf className="text-primary fill-primary/20 size-12" />
+      <SidebarHeader className="mt-2 flex items-center justify-center">
+        <div className="bg-primary flex items-center justify-center rounded-sm p-2">
+          <LucideShieldHalf className="fill-primary/20 size-8" />
+        </div>
       </SidebarHeader>
 
       <SidebarContent className="mt-4">
@@ -59,7 +61,7 @@ export function AppSidebar() {
                       className="hover:text-primary data-[active=true]:text-primary mx-auto"
                       isActive={isActive}
                     >
-                      <item.icon className="size-4" />
+                      <item.icon />
                       <span>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

@@ -16,7 +16,7 @@ export default function DashboardClient() {
 
   return (
     <>
-      <h1>BankOps Analytics Dashboard</h1>
+      <h1>Dashboard</h1>
       <Card>Bem-vindo à página do dashboard!</Card>
     </>
   )
