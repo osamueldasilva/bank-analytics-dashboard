@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Card } from '@/components/ui/card'
 
 import { getTransactions } from '../services/transactions'
+import { KpiCard } from './KpiCard'
 
 export default function DashboardClient() {
   const { data, isLoading } = useQuery({
@@ -16,16 +17,8 @@ export default function DashboardClient() {
 
   return (
     <>
-      <div className="mx-auto flex w-full flex-col gap-8">
-        <div className="grid grid-cols-10 gap-4">
-          {[...Array(5)].map((_, i) => (
-            <Card
-              key={i}
-              className="col-span-2 flex h-32 items-center justify-center"
-              style={{ minWidth: 0 }}
-            ></Card>
-          ))}
-        </div>
+      <div className="mx-auto flex w-full flex-col gap-6">
+        <KpiCard />
 
         <div className="grid grid-cols-12 gap-4">
           <Card
