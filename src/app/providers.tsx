@@ -9,6 +9,8 @@ import { SidebarProvider } from '@/components/ui/sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const [mswReady, setMswReady] = useState(false)
+
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -23,22 +25,28 @@ export function Providers({ children }: { children: React.ReactNode }) {
   )
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      import('../mocks/browser').then(({ worker }) => {
-        worker.start()
-      })
+    async function initMSW() {
+      if (process.env.NODE_ENV === 'development') {
+        const { worker } = await import('../mocks/browser')
+        await worker.start({
+          onUnhandledRequest: 'bypass',
+        })
+      }
+      setMswReady(true)
     }
+
+    initMSW()
   }, [])
 
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
 
-      <SidebarProvider open={false}>
+      <SidebarProvider defaultOpen={false}>
         <TooltipProvider>
           <NextThemesProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
