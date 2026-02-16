@@ -37,8 +37,8 @@ const chartConfig = {
 export function LiquidityDistribution() {
   return (
     <Card className="col-span-4 flex h-full flex-col">
-      <CardHeader className="pb-0">
-        <CardTitle className="text-base">Liquidity Distribution</CardTitle>
+      <CardHeader>
+        <CardTitle>Liquidity Distribution</CardTitle>
       </CardHeader>
 
       <CardContent className="flex flex-1 items-center p-0 pr-4">

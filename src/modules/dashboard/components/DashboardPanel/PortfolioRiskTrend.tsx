@@ -40,7 +40,7 @@ export function PortfolioRiskTrend() {
         <CardDescription>Last 90 Days</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[180px] w-full">
+        <ChartContainer config={chartConfig} className="h-45 w-full">
           <AreaChart
             accessibilityLayer
             data={chartData}

@@ -1,5 +1,7 @@
 import { Card } from '@/components/ui/card'
 
+import { CreditExposure } from './CreditExposure'
+import { FraudOverview } from './FraudOverview'
 import { LiquidityDistribution } from './LiquidityDistribution'
 import { PortfolioRiskTrend } from './PortfolioRiskTrend'
 
@@ -12,14 +14,8 @@ export function DashboardPanel() {
       </div>
 
       <div className="grid grid-cols-12 gap-4">
-        <Card
-          className="col-span-6 flex h-40 items-center justify-center"
-          style={{ minWidth: 0 }}
-        ></Card>
-        <Card
-          className="col-span-6 flex h-40 items-center justify-center"
-          style={{ minWidth: 0 }}
-        ></Card>
+        <CreditExposure />
+        <FraudOverview />
       </div>
 
       <div className="grid grid-cols-12 gap-4">
