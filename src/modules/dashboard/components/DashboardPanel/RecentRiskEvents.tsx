@@ -1,3 +1,5 @@
+'use client'
+
 import { format } from 'date-fns'
 
 import { Badge } from '@/components/ui/badge'
@@ -10,57 +12,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 
-const riskEvents = [
-  {
-    id: 'RISK-4821',
-    type: 'Credit',
-    segment: 'Corporate',
-    exposure: '$2.1M',
-    status: 'Open',
-    date: '2026-02-10',
-  },
-  {
-    id: 'RISK-4820',
-    type: 'Fraud',
-    segment: 'Retail',
-    exposure: '$480K',
-    status: 'Closed',
-    date: '2026-02-09',
-  },
-  {
-    id: 'RISK-4819',
-    type: 'Liquidity',
-    segment: 'SME',
-    exposure: '$1.2M',
-    status: 'Monitoring',
-    date: '2026-02-08',
-  },
-  {
-    id: 'RISK-4818',
-    type: 'Credit',
-    segment: 'Corporate',
-    exposure: '$850K',
-    status: 'Open',
-    date: '2026-02-07',
-  },
-  {
-    id: 'RISK-4817',
-    type: 'Fraud',
-    segment: 'SME',
-    exposure: '$120K',
-    status: 'Closed',
-    date: '2026-02-06',
-  },
-  {
-    id: 'RISK-4816',
-    type: 'Market',
-    segment: 'Retail',
-    exposure: '$3.4M',
-    status: 'Monitoring',
-    date: '2026-02-05',
-  },
-]
+import { useRiskEvents } from '../../hooks/useDashboardQueries'
 
 const statusStyles: Record<string, string> = {
   Open: 'bg-red-900/30 text-red-400',
@@ -69,50 +23,65 @@ const statusStyles: Record<string, string> = {
 }
 
 export function RecentRiskEvents() {
+  const { data: riskEvents, isError, isLoading, refetch } = useRiskEvents()
+
   return (
-    <Card className="col-span-12 min-h-100">
-      <CardHeader>
-        <CardTitle>Recent Risk Events</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="w-30">Event ID</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Segment</TableHead>
-              <TableHead>Exposure</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Date</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {riskEvents.map((event) => (
-              <TableRow key={event.id}>
-                <TableCell className="font-mono text-xs font-medium">
-                  {event.id}
-                </TableCell>
-                <TableCell>{event.type}</TableCell>
-                <TableCell>{event.segment}</TableCell>
-                <TableCell className="font-semibold">
-                  {event.exposure}
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    variant="outline"
-                    className={`${statusStyles[event.status]} font-medium`}
-                  >
-                    {event.status}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-muted-foreground text-right">
-                  {format(new Date(event.date), 'dd/MM/yyyy')}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+    <QueryBoundary
+      data={riskEvents}
+      isLoading={isLoading}
+      isError={isError}
+      skeletonWrapperClass="col-span-12"
+      skeletonClass="h-100"
+      classEmpty="col-span-12"
+      classError="col-span-12"
+      onRetry={() => refetch()}
+    >
+      {(data) => (
+        <Card className="col-span-12 min-h-100">
+          <CardHeader>
+            <CardTitle>Recent Risk Events</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="w-30">Event ID</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Segment</TableHead>
+                  <TableHead>Exposure</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Date</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell className="font-mono text-xs font-medium">
+                      {item.id}
+                    </TableCell>
+                    <TableCell>{item.type}</TableCell>
+                    <TableCell>{item.segment}</TableCell>
+                    <TableCell className="font-semibold">
+                      {item.exposure}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className={`${statusStyles[item.status]} font-medium`}
+                      >
+                        {item.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground text-right">
+                      {format(new Date(item.date), 'dd/MM/yyyy')}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      )}
+    </QueryBoundary>
   )
 }
