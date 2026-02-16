@@ -21,33 +21,33 @@ export function KpiCards() {
       skeletonCount={5}
       skeletonWrapperClass="grid grid-cols-5 gap-4"
     >
-      {(kpis) => (
+      {(data) => (
         <div className="grid grid-cols-10 gap-4">
-          {kpis.map((kpi) => (
+          {data.map((item) => (
             <Card
-              key={kpi.id}
+              key={item.id}
               className="col-span-2 flex h-32 flex-col justify-center"
             >
               <CardHeader>
-                <CardTitle>{mapKpiLabelToDisplay(kpi.label)}</CardTitle>
+                <CardTitle>{mapKpiLabelToDisplay(item.label)}</CardTitle>
               </CardHeader>
               <CardContent className="flex items-end gap-2">
                 <span className="text-2xl leading-tight font-bold">
-                  {kpi.label === 'netExposure'
-                    ? formatCurrency(kpi.value)
-                    : kpi.value}
+                  {item.label === 'netExposure'
+                    ? formatCurrency(item.value)
+                    : item.value}
                   {['liquidityRatio', 'portfolioPerformance'].includes(
-                    kpi.label,
+                    item.label,
                   )
                     ? '%'
                     : ''}
                 </span>
                 <span
                   className={`text-md font-semibold ${
-                    kpi.trend === 'up' ? 'text-emerald-500' : 'text-rose-500'
+                    item.trend === 'up' ? 'text-emerald-500' : 'text-rose-500'
                   }`}
                 >
-                  {kpi.trend === 'up' ? '↑' : '↓'} {Math.abs(kpi.variation)}%
+                  {item.trend === 'up' ? '↑' : '↓'} {Math.abs(item.variation)}%
                 </span>
               </CardContent>
             </Card>
