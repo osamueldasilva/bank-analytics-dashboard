@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const kpis = [
   {
@@ -33,33 +33,32 @@ const kpis = [
   },
 ]
 
-export function KpiCard() {
+export function KpiCards() {
   return (
     <div className="grid grid-cols-10 gap-4">
       {kpis.map((kpi, index) => (
         <Card
           key={index}
-          className="col-span-2 flex h-32 flex-col justify-center px-4 py-2"
+          className="col-span-2 flex h-32 flex-col justify-center py-2"
           style={{ minWidth: 0 }}
         >
-          <span className="text-muted-foreground text-md mb-1 font-medium">
-            {kpi.label}
-          </span>
-          <div className="flex items-end gap-2">
+          <CardHeader className="text-muted-foreground text-md mb-1 font-medium">
+            <CardTitle>{kpi.label}</CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-end gap-2">
             <span className="text-2xl leading-tight font-bold">
               {kpi.value}
             </span>
             <span
-              className={
-                'text-md font-semibold ' +
-                (kpi.variationPositive
+              className={`text-md font-semibold ${
+                kpi.variationPositive
                   ? 'text-green-600 dark:text-green-400'
-                  : 'text-red-600 dark:text-red-400')
-              }
+                  : 'text-red-600 dark:text-red-400'
+              }`}
             >
               {kpi.variation}
             </span>
-          </div>
+          </CardContent>
         </Card>
       ))}
     </div>
