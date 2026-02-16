@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
+import { MswGate } from './MswGate'
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const [mswReady, setMswReady] = useState(false)
 
@@ -50,7 +52,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            {!mswReady && process.env.NODE_ENV === 'development' ? (
+              <MswGate />
+            ) : (
+              children
+            )}
           </NextThemesProvider>
         </TooltipProvider>
       </SidebarProvider>

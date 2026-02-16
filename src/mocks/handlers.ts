@@ -1,13 +1,13 @@
 import { http, HttpResponse } from 'msw'
 
 export const handlers = [
-  http.get('/api/kpis', () => {
+  http.get(`/api/kpis`, () => {
     return HttpResponse.json([
       {
         id: '1',
         label: 'netExposure',
         value: 842300000,
-        variation: 2.4,
+        variation: 2.6,
         trend: 'up',
       },
       {
@@ -41,7 +41,7 @@ export const handlers = [
     ])
   }),
 
-  http.get('/api/portfolio-trend', () => {
+  http.get(`/api/portfolio-trend`, () => {
     const points = Array.from({ length: 90 }).map((_, i) => {
       const date = new Date(2026, 0, 1)
       date.setDate(date.getDate() + i)
@@ -55,7 +55,7 @@ export const handlers = [
     return HttpResponse.json(points)
   }),
 
-  http.get('/api/liquidity', () => {
+  http.get(`/api/liquidity`, () => {
     return HttpResponse.json([
       { segment: 'Retail', value: 420000000, percentage: 42 },
       { segment: 'Corporate', value: 370000000, percentage: 37 },
@@ -63,7 +63,7 @@ export const handlers = [
     ])
   }),
 
-  http.get('/api/credit-exposure', () => {
+  http.get(`/api/credit-exposure`, () => {
     return HttpResponse.json([
       {
         sector: 'Real Estate',
@@ -92,7 +92,7 @@ export const handlers = [
     ])
   }),
 
-  http.get('/api/fraud-overview', () => {
+  http.get(`/api/fraud-overview`, () => {
     return HttpResponse.json({
       flaggedTransactions: 1284,
       underInvestigation: 312,
@@ -101,7 +101,7 @@ export const handlers = [
     })
   }),
 
-  http.get('/api/risk-events', () => {
+  http.get(`/api/risk-events`, () => {
     return HttpResponse.json([
       {
         id: 'RISK-4821',

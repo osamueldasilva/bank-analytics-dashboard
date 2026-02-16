@@ -9,6 +9,7 @@ export const useKpis = () =>
     staleTime: 60000,
     retry: 1,
     refetchOnWindowFocus: false,
+    refetchInterval: 30000,
   })
 
 export const usePortfolioTrend = () =>
@@ -18,6 +19,7 @@ export const usePortfolioTrend = () =>
     staleTime: 120000,
     retry: 1,
     refetchOnWindowFocus: false,
+    refetchInterval: 30000,
   })
 
 export const useLiquidity = () =>
@@ -27,6 +29,7 @@ export const useLiquidity = () =>
     staleTime: 90000,
     retry: 1,
     refetchOnWindowFocus: false,
+    refetchInterval: 30000,
   })
 
 export const useCreditExposure = () =>
@@ -36,6 +39,7 @@ export const useCreditExposure = () =>
     staleTime: 90000,
     retry: 1,
     refetchOnWindowFocus: false,
+    refetchInterval: 30000,
   })
 
 export const useFraudOverview = () =>
@@ -45,6 +49,7 @@ export const useFraudOverview = () =>
     staleTime: 90000,
     retry: 1,
     refetchOnWindowFocus: false,
+    refetchInterval: 30000,
   })
 
 export const useRiskEvents = () =>
@@ -54,4 +59,5 @@ export const useRiskEvents = () =>
     staleTime: 90000,
     retry: 1,
     refetchOnWindowFocus: false,
+    refetchInterval: 30000,
   })
