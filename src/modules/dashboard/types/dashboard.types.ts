@@ -51,3 +51,10 @@ export interface RiskEvent {
   status: RiskStatus
   date: string
 }
+
+export interface RiskEventsResponse {
+  items: RiskEvent[]
+  totalItems: number
+  totalPages: number
+  currentPage: number
+}

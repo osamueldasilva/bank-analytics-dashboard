@@ -4,7 +4,7 @@ import {
   KpiMetric,
   LiquiditySegment,
   PortfolioTrendPoint,
-  RiskEvent,
+  RiskEventsResponse,
 } from '../types/dashboard.types'
 
 export const dashboardService = {
@@ -28,8 +28,9 @@ export const dashboardService = {
     const res = await fetch(`/api/fraud-overview`)
     return res.json()
   },
-  getRiskEvents: async (): Promise<RiskEvent[]> => {
-    const res = await fetch(`/api/risk-events`)
+  getRiskEvents: async (page: number = 1): Promise<RiskEventsResponse> => {
+    const res = await fetch(`/api/risk-events?page=${page}&limit=10`)
+    if (!res.ok) throw new Error('Erro ao buscar dados')
     return res.json()
   },
 }

@@ -52,12 +52,13 @@ export const useFraudOverview = () =>
     refetchInterval: 30000,
   })
 
-export const useRiskEvents = () =>
+export const useRiskEvents = (page: number = 1) =>
   useQuery({
-    queryKey: ['dashboard', 'risk-events'],
-    queryFn: dashboardService.getRiskEvents,
+    queryKey: ['dashboard', 'risk-events', page],
+    queryFn: () => dashboardService.getRiskEvents(page),
     staleTime: 90000,
     retry: 1,
     refetchOnWindowFocus: false,
     refetchInterval: 30000,
+    placeholderData: (previousData) => previousData,
   })

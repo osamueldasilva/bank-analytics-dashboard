@@ -1,8 +1,11 @@
 'use client'
 
 import { format } from 'date-fns'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
@@ -23,7 +26,9 @@ const statusStyles: Record<string, string> = {
 }
 
 export function RecentRiskEvents() {
-  const { data: riskEvents, isError, isLoading, refetch } = useRiskEvents()
+  const [page, setPage] = useState(1)
+
+  const { data: riskEvents, isError, isLoading, refetch } = useRiskEvents(page)
 
   return (
     <QueryBoundary
@@ -55,7 +60,7 @@ export function RecentRiskEvents() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data.map((item) => (
+                  {data.items.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className="font-mono text-xs font-medium">
                         {item.id}
@@ -83,6 +88,34 @@ export function RecentRiskEvents() {
                   ))}
                 </TableBody>
               </Table>
+            </div>
+            <div className="mt-auto flex items-center justify-between border-t py-4">
+              <div className="text-muted-foreground text-sm">
+                Page <strong>{page}</strong> of{' '}
+                <strong>{data.totalPages}</strong>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={page === 1}
+                >
+                  <ChevronLeft className="mr-1 h-4 w-4" />
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setPage((prev) => Math.min(prev + 1, data.totalPages))
+                  }
+                  disabled={page >= data.totalPages}
+                >
+                  Next
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

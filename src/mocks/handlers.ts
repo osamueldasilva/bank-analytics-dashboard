@@ -101,18 +101,20 @@ export const handlers = [
     })
   }),
 
-  http.get(`/api/risk-events`, () => {
+  http.get(`/api/risk-events`, ({ request }) => {
+    const url = new URL(request.url)
+    const page = parseInt(url.searchParams.get('page') || '1')
+    const limit = parseInt(url.searchParams.get('limit') || '10')
+
     const types = ['Credit', 'Fraud', 'Liquidity']
     const segments = ['Corporate', 'Retail', 'SME']
     const statuses = ['Open', 'Closed', 'Monitoring']
 
-    const riskEvents = Array.from({ length: 100 }, (_, i) => {
+    const allRiskEvents = Array.from({ length: 100 }, (_, i) => {
       const idNumber = 4821 - i
       const randomExposure = Math.floor(Math.random() * 5000000) + 100000
-
       const date = new Date()
       date.setDate(date.getDate() - i)
-      const formattedDate = date.toISOString().split('T')[0]
 
       return {
         id: `RISK-${idNumber}`,
@@ -120,10 +122,19 @@ export const handlers = [
         segment: segments[Math.floor(Math.random() * segments.length)],
         exposure: randomExposure,
         status: statuses[Math.floor(Math.random() * statuses.length)],
-        date: formattedDate,
+        date: date.toISOString().split('T')[0],
       }
     })
 
-    return HttpResponse.json(riskEvents)
+    const startIndex = (page - 1) * limit
+    const endIndex = startIndex + limit
+    const paginatedItems = allRiskEvents.slice(startIndex, endIndex)
+
+    return HttpResponse.json({
+      items: paginatedItems,
+      totalItems: allRiskEvents.length,
+      totalPages: Math.ceil(allRiskEvents.length / limit),
+      currentPage: page,
+    })
   }),
 ]
