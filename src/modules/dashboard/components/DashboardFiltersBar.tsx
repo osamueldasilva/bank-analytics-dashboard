@@ -1,6 +1,6 @@
 'use client'
 
-import { Calendar, Globe, ShieldAlert } from 'lucide-react'
+import { Calendar, Download, Globe, Loader2, ShieldAlert } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
@@ -13,11 +13,14 @@ import {
 } from '@/components/ui/select'
 
 import { useDashboardFilters } from '../hooks/useDashboardFilters'
+import { useExportDashboardCsv } from '../hooks/useExportDashboardCsv'
 import { clearPreferences } from '../storage/dashboardPreferences'
 import { DashboardFilters } from '../types/dashboard.filters'
 
 export function DashboardFiltersBar() {
   const { filters, updateFilters } = useDashboardFilters()
+  const { exportCsv, isExporting } = useExportDashboardCsv()
+
   const router = useRouter()
   const pathname = usePathname()
 
@@ -132,6 +135,22 @@ export function DashboardFiltersBar() {
             </SelectItem>
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Button
+          variant="default"
+          size="sm"
+          disabled={isExporting}
+          onClick={() => exportCsv()}
+        >
+          {isExporting ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Download className="h-3.5 w-3.5" />
+          )}
+          {isExporting ? 'Exporting...' : 'Export CSV'}
+        </Button>
       </div>
     </div>
   )

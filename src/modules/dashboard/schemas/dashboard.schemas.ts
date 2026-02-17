@@ -70,3 +70,13 @@ export const PaginatedRiskEventsSchema = z.object({
   currentPage: z.number(),
 })
 export type RiskEventsResponse = z.infer<typeof PaginatedRiskEventsSchema>
+
+export const DashboardExportSchema = z.object({
+  kpis: KpiMetricSchema.array(),
+  portfolioTrend: PortfolioTrendSchema,
+  liquidity: LiquiditySchema,
+  creditExposure: CreditExposureSchema,
+  fraudOverview: FraudOverviewSchema,
+  riskEvents: z.array(RiskEventSchema),
+})
+export type DashboardExportData = z.infer<typeof DashboardExportSchema>

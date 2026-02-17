@@ -1,4 +1,5 @@
 import { creditExposureHandlers } from './handlers/creditExposureHandlers'
+import { dashboardExportHandlers } from './handlers/dashboardExportHandlers'
 import { fraudOverviewHandlers } from './handlers/fraudOverviewHandlers'
 import { kpiHandlers } from './handlers/kpiHandlers'
 import { liquidityHandlers } from './handlers/liquidityHandlers'
@@ -12,4 +13,5 @@ export const handlers = [
   ...creditExposureHandlers,
   ...fraudOverviewHandlers,
   ...riskEventsHandlers,
+  ...dashboardExportHandlers,
 ]
