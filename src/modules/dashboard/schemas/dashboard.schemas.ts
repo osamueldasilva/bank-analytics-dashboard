@@ -1,27 +1,35 @@
 import { z } from 'zod'
 
 export const KpiMetricSchema = z.object({
-  name: z.string(),
+  id: z.string(),
+  label: z.enum([
+    'netExposure',
+    'liquidityRatio',
+    'creditRiskIndex',
+    'fraudAlerts',
+    'portfolioPerformance',
+  ]),
   value: z.number(),
-  unit: z.string(),
-  riskScore: z.number().nullable(),
-  fraudRate: z.number(),
+  variation: z.number(),
+  trend: z.enum(['up', 'down']),
 })
 export type KpiMetric = z.infer<typeof KpiMetricSchema>
 
 export const PortfolioTrendSchema = z.array(
   z.object({
     date: z.string(),
-    value: z.number(),
-    riskScore: z.number().nullable(),
+    exposure: z.number(),
+    riskIndex: z.number(),
+    performance: z.number(),
   }),
 )
 export type PortfolioTrendPoint = z.infer<typeof PortfolioTrendSchema>[number]
 
 export const LiquiditySchema = z.array(
   z.object({
-    segment: z.string(),
+    segment: z.enum(['Retail', 'Corporate', 'SME']),
     value: z.number(),
+    percentage: z.number(),
   }),
 )
 export type LiquiditySegment = z.infer<typeof LiquiditySchema>[number]
@@ -29,30 +37,35 @@ export type LiquiditySegment = z.infer<typeof LiquiditySchema>[number]
 export const CreditExposureSchema = z.array(
   z.object({
     sector: z.string(),
-    value: z.number(),
+    exposure: z.number(),
+    riskScore: z.number(),
+    percentageOfPortfolio: z.number(),
   }),
 )
 export type CreditExposureSector = z.infer<typeof CreditExposureSchema>[number]
 
 export const FraudOverviewSchema = z.object({
+  flaggedTransactions: z.number(),
+  underInvestigation: z.number(),
+  resolvedLast30d: z.number(),
   fraudRate: z.number(),
-  detected: z.number(),
-  prevented: z.number(),
 })
 export type FraudOverview = z.infer<typeof FraudOverviewSchema>
 
 export const RiskEventSchema = z.object({
   id: z.string(),
+  type: z.enum(['Credit', 'Fraud', 'Liquidity']),
+  segment: z.enum(['Retail', 'Corporate', 'SME']),
+  exposure: z.number(),
+  status: z.enum(['Open', 'Monitoring', 'Closed']),
   date: z.string(),
-  type: z.string(),
-  score: z.number(),
-  description: z.string(),
 })
 export type RiskEvent = z.infer<typeof RiskEventSchema>
 
 export const PaginatedRiskEventsSchema = z.object({
   items: z.array(RiskEventSchema),
-  page: z.number(),
-  total: z.number(),
+  totalItems: z.number(),
+  totalPages: z.number(),
+  currentPage: z.number(),
 })
 export type RiskEventsResponse = z.infer<typeof PaginatedRiskEventsSchema>

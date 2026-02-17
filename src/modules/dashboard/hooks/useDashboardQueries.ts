@@ -1,12 +1,19 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
+import {
+  CreditExposureSector,
+  FraudOverview,
+  KpiMetric,
+  LiquiditySegment,
+  PortfolioTrendPoint,
+  RiskEventsResponse,
+} from '../schemas/dashboard.schemas'
 import { dashboardService } from '../services/dashboard.service'
 import { useDashboardFilters } from './useDashboardFilters'
 
 export const useKpis = () => {
   const { filters } = useDashboardFilters()
-
-  return useQuery({
+  return useQuery<KpiMetric[]>({
     queryKey: ['dashboard', 'kpis', filters],
     queryFn: () => dashboardService.getKpis(filters),
     staleTime: 60000,
@@ -19,8 +26,7 @@ export const useKpis = () => {
 
 export const usePortfolioTrend = () => {
   const { filters } = useDashboardFilters()
-
-  return useQuery({
+  return useQuery<PortfolioTrendPoint[]>({
     queryKey: ['dashboard', 'trend', filters],
     queryFn: () => dashboardService.getPortfolioTrend(filters),
     staleTime: 120000,
@@ -33,8 +39,7 @@ export const usePortfolioTrend = () => {
 
 export const useLiquidity = () => {
   const { filters } = useDashboardFilters()
-
-  return useQuery({
+  return useQuery<LiquiditySegment[]>({
     queryKey: ['dashboard', 'liquidity', filters],
     queryFn: () => dashboardService.getLiquidity(filters),
     staleTime: 90000,
@@ -47,8 +52,7 @@ export const useLiquidity = () => {
 
 export const useCreditExposure = () => {
   const { filters } = useDashboardFilters()
-
-  return useQuery({
+  return useQuery<CreditExposureSector[]>({
     queryKey: ['dashboard', 'credit-exposure', filters],
     queryFn: () => dashboardService.getCreditExposure(filters),
     staleTime: 90000,
@@ -61,8 +65,7 @@ export const useCreditExposure = () => {
 
 export const useFraudOverview = () => {
   const { filters } = useDashboardFilters()
-
-  return useQuery({
+  return useQuery<FraudOverview>({
     queryKey: ['dashboard', 'fraud', filters],
     queryFn: () => dashboardService.getFraudOverview(filters),
     staleTime: 90000,
@@ -75,8 +78,7 @@ export const useFraudOverview = () => {
 
 export const useRiskEvents = (page: number = 1) => {
   const { filters } = useDashboardFilters()
-
-  return useQuery({
+  return useQuery<RiskEventsResponse>({
     queryKey: ['dashboard', 'risk-events', filters, page],
     queryFn: () => dashboardService.getRiskEvents(page, filters),
     staleTime: 90000,

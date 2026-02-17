@@ -1,8 +1,13 @@
 'use client'
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { z } from 'zod'
 
 import { DashboardFilters } from '../types/dashboard.filters'
+
+const SegmentSchema = z.enum(['Retail', 'Corporate', 'SME', 'All'])
+const PeriodSchema = z.enum(['7d', '30d', '90d'])
+const RiskTypeSchema = z.enum(['All', 'Credit', 'Fraud', 'Liquidity'])
 
 const DEFAULT_DASHBOARD_FILTERS: DashboardFilters = {
   segment: 'All',
@@ -10,30 +15,13 @@ const DEFAULT_DASHBOARD_FILTERS: DashboardFilters = {
   riskType: 'All',
 }
 
-const SEGMENT_VALUES: DashboardFilters['segment'][] = [
-  'Retail',
-  'Corporate',
-  'SME',
-  'All',
-]
-const PERIOD_VALUES: DashboardFilters['period'][] = ['7d', '30d', '90d']
-const RISK_TYPE_VALUES: DashboardFilters['riskType'][] = [
-  'All',
-  'Credit',
-  'Fraud',
-  'Liquidity',
-]
-
-const getValidFilterValue = <T extends string>(
-  value: string | null,
-  allowedValues: T[],
-  fallback: T,
-): T => {
-  if (!value) {
-    return fallback
-  }
-
-  return (allowedValues as string[]).includes(value) ? (value as T) : fallback
+function getValidFilterValue<T extends z.ZodTypeAny>(
+  schema: T,
+  value: unknown,
+  fallback: z.infer<T>,
+): z.infer<T> {
+  const result = schema.safeParse(value)
+  return result.success ? result.data : fallback
 }
 
 export function useDashboardFilters() {
@@ -43,18 +31,18 @@ export function useDashboardFilters() {
 
   const filters: DashboardFilters = {
     segment: getValidFilterValue(
+      SegmentSchema,
       searchParams.get('segment'),
-      SEGMENT_VALUES,
       DEFAULT_DASHBOARD_FILTERS.segment,
     ),
     period: getValidFilterValue(
+      PeriodSchema,
       searchParams.get('period'),
-      PERIOD_VALUES,
       DEFAULT_DASHBOARD_FILTERS.period,
     ),
     riskType: getValidFilterValue(
+      RiskTypeSchema,
       searchParams.get('riskType'),
-      RISK_TYPE_VALUES,
       DEFAULT_DASHBOARD_FILTERS.riskType,
     ),
   }
@@ -70,7 +58,7 @@ export function useDashboardFilters() {
     params.set('period', nextFilters.period)
     params.set('riskType', nextFilters.riskType)
 
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+    router.replace(`${pathname}?${params.toString()}`)
   }
 
   return {

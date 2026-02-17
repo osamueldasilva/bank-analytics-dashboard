@@ -1,4 +1,4 @@
-import { KpiMetric } from '../types/dashboard.types'
+import { KpiMetric } from '../schemas/dashboard.schemas'
 
 export const mapKpiLabelToDisplay = (label: KpiMetric['label']): string => {
   const mapping: Record<string, string> = {
