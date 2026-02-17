@@ -1,7 +1,9 @@
 'use client'
 
 import { Calendar, Globe, ShieldAlert } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
 
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
@@ -11,21 +13,43 @@ import {
 } from '@/components/ui/select'
 
 import { useDashboardFilters } from '../hooks/useDashboardFilters'
+import { clearPreferences } from '../storage/dashboardPreferences'
 import { DashboardFilters } from '../types/dashboard.filters'
 
 export function DashboardFiltersBar() {
   const { filters, updateFilters } = useDashboardFilters()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const handleResetPreferences = () => {
+    clearPreferences()
+    if (router && pathname) {
+      router.replace(`${pathname}?segment=All&period=30d&riskType=All`)
+    }
+  }
+
+  const isDefault =
+    filters.segment === 'All' &&
+    filters.period === '30d' &&
+    filters.riskType === 'All'
 
   return (
     <div className="bg-background border-border/40 flex flex-wrap items-center gap-3 border-b">
       <div className="flex items-center gap-2">
+        <Button
+          disabled={isDefault}
+          variant={'destructive'}
+          onClick={handleResetPreferences}
+        >
+          Reset preferences
+        </Button>
         <Select
           value={filters.segment}
           onValueChange={(value) =>
             updateFilters({ segment: value as DashboardFilters['segment'] })
           }
         >
-          <SelectTrigger className="border-border/40 bg-muted/20 hover:bg-muted/40 h-8 w-40 text-xs font-medium transition-all focus:ring-0">
+          <SelectTrigger className="h-8 w-40 text-sm">
             <div className="flex items-center gap-2">
               <Globe className="text-muted-foreground h-3.5 w-3.5" />
               <span className="text-muted-foreground font-normal">
@@ -58,7 +82,7 @@ export function DashboardFiltersBar() {
             updateFilters({ period: value as DashboardFilters['period'] })
           }
         >
-          <SelectTrigger className="border-border/40 bg-muted/20 hover:bg-muted/40 h-8 w-52 text-xs font-medium transition-all focus:ring-0">
+          <SelectTrigger className="h-8 w-52 text-sm font-medium">
             <div className="flex items-center gap-2">
               <Calendar className="text-muted-foreground h-3.5 w-3.5" />
               <span className="text-muted-foreground font-normal">Period:</span>
@@ -86,7 +110,7 @@ export function DashboardFiltersBar() {
             updateFilters({ riskType: value as DashboardFilters['riskType'] })
           }
         >
-          <SelectTrigger className="border-border/40 bg-muted/20 hover:bg-muted/40 h-8 w-45 text-xs font-medium transition-all focus:ring-0">
+          <SelectTrigger className="h-8 w-45 text-sm font-medium">
             <div className="flex items-center gap-2">
               <ShieldAlert className="text-muted-foreground h-3.5 w-3.5" />
               <span className="text-muted-foreground font-normal">Risk:</span>
