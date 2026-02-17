@@ -1,3 +1,40 @@
+export const getSeed = (label: string, period: string, segment: string) =>
+  period.length * segment.length * label.length +
+  period.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) +
+  segment.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) +
+  label.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+
+export const getKpiValue = (
+  base: number,
+  range: number,
+  label: string,
+  period: string,
+  segment: string,
+) => {
+  const seed = getSeed(label, period, segment)
+  return Math.floor(base + seededRandom(seed) * range)
+}
+
+export const getKpiFloat = (
+  base: number,
+  range: number,
+  label: string,
+  period: string,
+  segment: string,
+  decimals = 2,
+) => {
+  const seed = getSeed(label, period, segment)
+  return parseFloat((base + seededRandom(seed) * range).toFixed(decimals))
+}
+
+export const segmentMultiplier = (segment: string) =>
+  segment === 'Corporate'
+    ? 1.45
+    : segment === 'SME'
+      ? 0.95
+      : segment === 'Retail'
+        ? 0.72
+        : 1
 export const MILLION = 1000000
 export const ONE_DAY_MS = 86400000
 export const RISK_EVENTS_TOTAL = 100
