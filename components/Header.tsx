@@ -1,13 +1,6 @@
-import { Globe } from 'lucide-react'
+import { Filters } from '@/src/modules/dashboard/components/Filters'
 
 import { Badge } from './ui/badge'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select'
 import { UserNav } from './UserNav'
 
 export function Header() {
@@ -29,28 +22,7 @@ export function Header() {
         </div>
 
         <div className="absolute left-1/2 -translate-x-1/2">
-          <Select defaultValue="global">
-            <SelectTrigger className="border-border/40 bg-muted/20 hover:bg-muted/40 h-8 w-[400px] text-xs font-medium transition-all focus:ring-0">
-              <div className="flex items-center gap-2">
-                <Globe className="text-muted-foreground h-3.5 w-3.5" />
-                <span className="text-muted-foreground font-normal">
-                  Escopo:
-                </span>
-                <SelectValue placeholder="Global" />
-              </div>
-            </SelectTrigger>
-            <SelectContent position="popper">
-              <SelectItem value="global" className="text-xs">
-                Global
-              </SelectItem>
-              <SelectItem value="agencia" className="text-xs">
-                Agência
-              </SelectItem>
-              <SelectItem value="operacao" className="text-xs">
-                Operação
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <Filters />
         </div>
 
         <div className="flex items-center gap-4">
