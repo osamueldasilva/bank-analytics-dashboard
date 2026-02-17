@@ -28,7 +28,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     async function initMSW() {
-      if (process.env.NODE_ENV === 'development') {
+      if (
+        typeof window !== 'undefined' &&
+        process.env.NEXT_PUBLIC_ENABLE_MSW === 'true'
+      ) {
         const { worker } = await import('../mocks/browser')
         await worker.start({
           onUnhandledRequest: 'bypass',
@@ -36,7 +39,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       }
       setMswReady(true)
     }
-
     initMSW()
   }, [])
 
@@ -52,7 +54,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
           >
-            {!mswReady && process.env.NODE_ENV === 'development' ? (
+            {!mswReady && process.env.NEXT_PUBLIC_ENABLE_MSW === 'true' ? (
               <MswGate />
             ) : (
               children
