@@ -40,8 +40,8 @@ export function LiquidityDistribution() {
       isLoading={isLoading}
       isError={isError}
       onRetry={() => refetch()}
+      skeletonClass="h-76"
       skeletonWrapperClass="col-span-4"
-      skeletonClass="h-full"
       classError="col-span-4"
       classEmpty="col-span-4"
     >
@@ -57,7 +57,7 @@ export function LiquidityDistribution() {
         })
 
         return (
-          <Card className="col-span-4 flex h-full flex-col">
+          <Card className="col-span-4 flex flex-col">
             <CardHeader>
               <CardTitle>Liquidity Distribution</CardTitle>
             </CardHeader>

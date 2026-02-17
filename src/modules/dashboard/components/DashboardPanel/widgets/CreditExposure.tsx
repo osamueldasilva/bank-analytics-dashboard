@@ -39,7 +39,7 @@ export function CreditExposure() {
       onRetry={() => refetch()}
       skeletonCount={1}
       skeletonWrapperClass="col-span-6"
-      skeletonClass="h-full"
+      skeletonClass="h-48"
       classEmpty="col-span-6"
     >
       {(data) => {

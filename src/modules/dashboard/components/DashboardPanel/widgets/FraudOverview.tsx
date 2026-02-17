@@ -21,7 +21,7 @@ export function FraudOverview() {
       isLoading={isLoading}
       isError={isError}
       skeletonWrapperClass="col-span-6"
-      skeletonClass="h-full"
+      skeletonClass="h-48"
       classEmpty="col-span-6"
       classError="col-span-6"
       onRetry={() => refetch()}

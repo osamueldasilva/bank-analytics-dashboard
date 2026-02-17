@@ -37,14 +37,14 @@ export function PortfolioRiskTrend() {
 
   return (
     <QueryBoundary
-      classError="col-span-8"
+      classError="col-span-8 h-76"
       data={portfolioTrend}
       isLoading={isLoading}
       isError={isError}
       onRetry={() => refetch()}
       skeletonCount={1}
       skeletonWrapperClass="col-span-8"
-      skeletonClass="h-full"
+      skeletonClass="h-76"
       classEmpty="col-span-8"
     >
       {(data) => (
