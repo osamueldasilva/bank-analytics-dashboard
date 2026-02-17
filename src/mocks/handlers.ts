@@ -8,12 +8,12 @@ import {
   getPeriodVolatility,
   getRandom,
   getSegmentProfile,
-  getTrendFromVariation,
   MILLION,
   ONE_DAY_MS,
   randomDelay,
   RISK_EVENTS_PAGE_SIZE,
   RISK_EVENTS_TOTAL,
+  seededRandom,
   toISODate,
 } from './factories/dashboard.factory'
 
@@ -32,51 +32,120 @@ export const handlers = [
           : segment === 'Retail'
             ? 0.72
             : 1
-    const volatility = period === '7d' ? 0.45 : period === '90d' ? 2.1 : 1
-    const netExposureVariation = parseFloat(
-      (getRandom(2.6, 1) * volatility).toFixed(1),
+
+    const getSeed = (label: string) =>
+      period.length * segment.length * label.length +
+      period.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) +
+      segment.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) +
+      label.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+
+    const getKpiValue = (base: number, range: number, label: string) => {
+      const seed = getSeed(label)
+      return Math.floor(base + seededRandom(seed) * range)
+    }
+    const getKpiFloat = (
+      base: number,
+      range: number,
+      label: string,
+      decimals = 2,
+    ) => {
+      const seed = getSeed(label)
+      return parseFloat((base + seededRandom(seed) * range).toFixed(decimals))
+    }
+
+    const netExposureValue =
+      getKpiValue(842300000, 50000000, 'netExposure') * segmentMultiplier
+    const netExposurePrevious =
+      getKpiValue(842300000, 50000000, 'netExposure-prev') * segmentMultiplier
+    const netExposureDelta =
+      ((netExposureValue - netExposurePrevious) / netExposurePrevious) * 100
+    const netExposureTrend = netExposureDelta >= 0 ? 'up' : 'down'
+
+    const liquidityRatioValue = getKpiValue(128, 10, 'liquidityRatio')
+    const liquidityRatioPrevious = getKpiValue(128, 10, 'liquidityRatio-prev')
+    const liquidityRatioDelta =
+      ((liquidityRatioValue - liquidityRatioPrevious) /
+        liquidityRatioPrevious) *
+      100
+    const liquidityRatioTrend = liquidityRatioDelta >= 0 ? 'up' : 'down'
+
+    const creditRiskIndexValue =
+      getKpiFloat(3.42, 0.5, 'creditRiskIndex') * segmentMultiplier
+    const creditRiskIndexPrevious =
+      getKpiFloat(3.42, 0.5, 'creditRiskIndex-prev') * segmentMultiplier
+    const creditRiskIndexDelta =
+      ((creditRiskIndexValue - creditRiskIndexPrevious) /
+        creditRiskIndexPrevious) *
+      100
+    const creditRiskIndexTrend = creditRiskIndexDelta >= 0 ? 'up' : 'down'
+
+    const fraudAlertsValue =
+      getKpiValue(184, 40, 'fraudAlerts') * segmentMultiplier
+    const fraudAlertsPrevious =
+      getKpiValue(184, 40, 'fraudAlerts-prev') * segmentMultiplier
+    const fraudAlertsDelta =
+      ((fraudAlertsValue - fraudAlertsPrevious) / fraudAlertsPrevious) * 100
+    const fraudAlertsTrend = fraudAlertsDelta >= 0 ? 'up' : 'down'
+
+    const portfolioPerformanceValue = getKpiFloat(
+      7.8,
+      1.5,
+      'portfolioPerformance',
+      1,
     )
-    const liquidityRatioVariation = parseFloat(
-      (getRandom(-0.8, 0.5) * volatility).toFixed(1),
+    const portfolioPerformancePrevious = getKpiFloat(
+      7.8,
+      1.5,
+      'portfolioPerformance-prev',
+      1,
     )
+    const portfolioPerformanceDelta =
+      ((portfolioPerformanceValue - portfolioPerformancePrevious) /
+        portfolioPerformancePrevious) *
+      100
+    const portfolioPerformanceTrend =
+      portfolioPerformanceDelta >= 0 ? 'up' : 'down'
 
     return HttpResponse.json([
       {
         id: '1',
         label: 'netExposure',
-        value: Math.floor(getRandom(842300000, 50000000) * segmentMultiplier),
-        variation: netExposureVariation,
-        trend: getTrendFromVariation(netExposureVariation),
+        value: netExposureValue,
+        previousValue: netExposurePrevious,
+        delta: netExposureDelta,
+        trend: netExposureTrend,
       },
       {
         id: '2',
         label: 'liquidityRatio',
-        value: Math.floor(getRandom(128, 10)),
-        variation: liquidityRatioVariation,
-        trend: getTrendFromVariation(liquidityRatioVariation),
+        value: liquidityRatioValue,
+        previousValue: liquidityRatioPrevious,
+        delta: liquidityRatioDelta,
+        trend: liquidityRatioTrend,
       },
       {
         id: '3',
         label: 'creditRiskIndex',
-        value: parseFloat(
-          (getRandom(3.42, 0.5) * segmentMultiplier).toFixed(2),
-        ),
-        variation: 0.12,
-        trend: 'up',
+        value: creditRiskIndexValue,
+        previousValue: creditRiskIndexPrevious,
+        delta: creditRiskIndexDelta,
+        trend: creditRiskIndexTrend,
       },
       {
         id: '4',
         label: 'fraudAlerts',
-        value: Math.floor(getRandom(184, 40) * segmentMultiplier),
-        variation: -6.1,
-        trend: 'down',
+        value: fraudAlertsValue,
+        previousValue: fraudAlertsPrevious,
+        delta: fraudAlertsDelta,
+        trend: fraudAlertsTrend,
       },
       {
         id: '5',
         label: 'portfolioPerformance',
-        value: parseFloat(getRandom(7.8, 1.5).toFixed(1)),
-        variation: 1.2,
-        trend: 'up',
+        value: portfolioPerformanceValue,
+        previousValue: portfolioPerformancePrevious,
+        delta: portfolioPerformanceDelta,
+        trend: portfolioPerformanceTrend,
       },
     ])
   }),

@@ -10,7 +10,8 @@ export const KpiMetricSchema = z.object({
     'portfolioPerformance',
   ]),
   value: z.number(),
-  variation: z.number(),
+  previousValue: z.number(),
+  delta: z.number(),
   trend: z.enum(['up', 'down']),
 })
 export type KpiMetric = z.infer<typeof KpiMetricSchema>

@@ -4,16 +4,17 @@ export type RiskType = 'Credit' | 'Fraud' | 'Liquidity'
 export type BusinessSegment = 'Retail' | 'Corporate' | 'SME'
 
 export interface KpiMetric {
-  id: string
+  id: string;
   label:
     | 'netExposure'
     | 'liquidityRatio'
     | 'creditRiskIndex'
     | 'fraudAlerts'
-    | 'portfolioPerformance'
-  value: number
-  variation: number
-  trend: TrendStatus
+    | 'portfolioPerformance';
+  value: number;
+  previousValue: number;
+  delta: number;
+  trend: TrendStatus;
 }
 
 export interface PortfolioTrendPoint {

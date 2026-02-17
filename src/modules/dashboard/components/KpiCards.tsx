@@ -46,7 +46,7 @@ export function KpiCards() {
                         {mapKpiLabelToDisplay(item.label)}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="flex items-end gap-2">
+                    <CardContent className="flex flex-col items-start gap-1">
                       <span className="text-2xl leading-tight font-bold">
                         {item.label === 'netExposure'
                           ? formatCurrency(item.value)
@@ -58,14 +58,13 @@ export function KpiCards() {
                           : ''}
                       </span>
                       <span
-                        className={`text-md font-semibold ${
-                          item.trend === 'up'
-                            ? 'text-emerald-500'
-                            : 'text-rose-500'
-                        }`}
+                        className={`text-md flex items-center gap-1 font-semibold ${item.trend === 'up' ? 'text-emerald-500' : 'text-rose-500'}`}
                       >
-                        {item.trend === 'up' ? '↑' : '↓'}{' '}
-                        {Math.abs(item.variation)}%
+                        {item.trend === 'up' ? '↑' : '↓'}
+                        {Math.abs(item.delta).toFixed(2)}%
+                        <span className="text-muted-foreground ml-1 text-xs">
+                          vs previous period
+                        </span>
                       </span>
                     </CardContent>
                   </Card>
