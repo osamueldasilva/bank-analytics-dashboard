@@ -18,6 +18,7 @@ import {
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 
 import { useRiskEvents } from '../../../hooks/useDashboardQueries'
+import { formatCurrency } from '../../../utils/dashboard.transform'
 
 const statusStyles: Record<string, string> = {
   Open: 'bg-red-900/30 text-red-400',
@@ -74,10 +75,7 @@ export function RecentRiskEvents() {
                       <TableCell>{item.type}</TableCell>
                       <TableCell>{item.segment}</TableCell>
                       <TableCell className="font-semibold">
-                        {new Intl.NumberFormat('en-US', {
-                          style: 'currency',
-                          currency: 'USD',
-                        }).format(item.exposure)}
+                        {formatCurrency(item.exposure)}
                       </TableCell>
                       <TableCell>
                         <Badge
