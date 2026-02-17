@@ -1,4 +1,4 @@
-import { Filters } from '@/src/modules/dashboard/components/Filters'
+import { DashboardFiltersBar } from '@/src/modules/dashboard/components/DashboardFiltersBar'
 
 import { Badge } from './ui/badge'
 import { UserNav } from './UserNav'
@@ -21,11 +21,8 @@ export function Header() {
           </Badge>
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2">
-          <Filters />
-        </div>
-
         <div className="flex items-center gap-4">
+          <DashboardFiltersBar />
           <UserNav />
         </div>
       </div>

@@ -54,7 +54,7 @@ export function RecentRiskEvents() {
             <CardTitle>Recent Risk Events</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="relative h-96 overflow-auto">
+            <div className="relative max-h-96 overflow-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
