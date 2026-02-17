@@ -1,8 +1,8 @@
-import { CreditExposure } from './CreditExposure'
-import { FraudOverview } from './FraudOverview'
-import { LiquidityDistribution } from './LiquidityDistribution'
-import { PortfolioRiskTrend } from './PortfolioRiskTrend'
-import { RecentRiskEvents } from './RecentRiskEvents'
+import { CreditExposure } from './widgets/CreditExposure'
+import { FraudOverview } from './widgets/FraudOverview'
+import { LiquidityDistribution } from './widgets/LiquidityDistribution'
+import { PortfolioRiskTrend } from './widgets/PortfolioRiskTrend'
+import { RecentRiskEvents } from './widgets/RecentRiskEvents'
 
 export function DashboardPanel() {
   return (

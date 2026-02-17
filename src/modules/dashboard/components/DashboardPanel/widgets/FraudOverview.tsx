@@ -5,7 +5,7 @@ import { AlertCircle, CheckCircle2, Search } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 
-import { useFraudOverview } from '../../hooks/useDashboardQueries'
+import { useFraudOverview } from '../../../hooks/useDashboardQueries'
 
 export function FraudOverview() {
   const {

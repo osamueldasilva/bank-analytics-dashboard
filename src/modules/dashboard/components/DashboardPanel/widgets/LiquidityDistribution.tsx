@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/chart'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 
-import { useLiquidity } from '../../hooks/useDashboardQueries'
+import { useLiquidity } from '../../../hooks/useDashboardQueries'
 
 const chartConfig = {
   value: {

@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/table'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 
-import { useRiskEvents } from '../../hooks/useDashboardQueries'
+import { useRiskEvents } from '../../../hooks/useDashboardQueries'
 
 const statusStyles: Record<string, string> = {
   Open: 'bg-red-900/30 text-red-400',

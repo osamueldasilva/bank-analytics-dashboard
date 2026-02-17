@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/chart'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 
-import { usePortfolioTrend } from '../../hooks/useDashboardQueries'
+import { usePortfolioTrend } from '../../../hooks/useDashboardQueries'
 
 const chartConfig = {
   riskIndex: {

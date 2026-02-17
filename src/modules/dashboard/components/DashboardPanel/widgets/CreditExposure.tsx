@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/chart'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 
-import { useCreditExposure } from '../../hooks/useDashboardQueries'
+import { useCreditExposure } from '../../../hooks/useDashboardQueries'
 
 const sectorConfig = {
   exposure: { label: 'Exposure ($)', color: 'hsl(var(--foreground))' },
