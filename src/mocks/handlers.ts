@@ -102,55 +102,28 @@ export const handlers = [
   }),
 
   http.get(`/api/risk-events`, () => {
-    return HttpResponse.json([
-      {
-        id: 'RISK-4821',
-        type: 'Credit',
-        segment: 'Corporate',
-        exposure: 2100000,
-        status: 'Open',
-        date: '2026-02-10',
-      },
-      {
-        id: 'RISK-4820',
-        type: 'Fraud',
-        segment: 'Retail',
-        exposure: 480000,
-        status: 'Closed',
-        date: '2026-02-09',
-      },
-      {
-        id: 'RISK-4819',
-        type: 'Liquidity',
-        segment: 'SME',
-        exposure: 1200000,
-        status: 'Monitoring',
-        date: '2026-02-08',
-      },
-      {
-        id: 'RISK-4818',
-        type: 'Credit',
-        segment: 'Retail',
-        exposure: 950000,
-        status: 'Closed',
-        date: '2026-02-07',
-      },
-      {
-        id: 'RISK-4817',
-        type: 'Fraud',
-        segment: 'SME',
-        exposure: 320000,
-        status: 'Open',
-        date: '2026-02-06',
-      },
-      {
-        id: 'RISK-4816',
-        type: 'Liquidity',
-        segment: 'Corporate',
-        exposure: 5400000,
-        status: 'Monitoring',
-        date: '2026-02-05',
-      },
-    ])
+    const types = ['Credit', 'Fraud', 'Liquidity']
+    const segments = ['Corporate', 'Retail', 'SME']
+    const statuses = ['Open', 'Closed', 'Monitoring']
+
+    const riskEvents = Array.from({ length: 100 }, (_, i) => {
+      const idNumber = 4821 - i
+      const randomExposure = Math.floor(Math.random() * 5000000) + 100000
+
+      const date = new Date()
+      date.setDate(date.getDate() - i)
+      const formattedDate = date.toISOString().split('T')[0]
+
+      return {
+        id: `RISK-${idNumber}`,
+        type: types[Math.floor(Math.random() * types.length)],
+        segment: segments[Math.floor(Math.random() * segments.length)],
+        exposure: randomExposure,
+        status: statuses[Math.floor(Math.random() * statuses.length)],
+        date: formattedDate,
+      }
+    })
+
+    return HttpResponse.json(riskEvents)
   }),
 ]

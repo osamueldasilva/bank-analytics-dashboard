@@ -42,43 +42,48 @@ export function RecentRiskEvents() {
             <CardTitle>Recent Risk Events</CardTitle>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="w-30">Event ID</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Segment</TableHead>
-                  <TableHead>Exposure</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-mono text-xs font-medium">
-                      {item.id}
-                    </TableCell>
-                    <TableCell>{item.type}</TableCell>
-                    <TableCell>{item.segment}</TableCell>
-                    <TableCell className="font-semibold">
-                      {item.exposure}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={`${statusStyles[item.status]} font-medium`}
-                      >
-                        {item.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-right">
-                      {format(new Date(item.date), 'dd/MM/yyyy')}
-                    </TableCell>
+            <div className="relative h-96 overflow-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="w-30">Event ID</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Segment</TableHead>
+                    <TableHead>Exposure</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Date</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {data.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-mono text-xs font-medium">
+                        {item.id}
+                      </TableCell>
+                      <TableCell>{item.type}</TableCell>
+                      <TableCell>{item.segment}</TableCell>
+                      <TableCell className="font-semibold">
+                        {new Intl.NumberFormat('en-US', {
+                          style: 'currency',
+                          currency: 'USD',
+                        }).format(item.exposure)}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={`${statusStyles[item.status]} font-medium`}
+                        >
+                          {item.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-right">
+                        {format(new Date(item.date), 'dd/MM/yyyy')}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       )}
