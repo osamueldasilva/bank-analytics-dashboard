@@ -27,19 +27,20 @@ export function CreditExposure() {
     data: creditExposure,
     isError,
     isLoading,
+    isFetching,
     refetch,
   } = useCreditExposure()
 
   return (
     <QueryBoundary
-      classError="col-span-6"
+      classError="col-span-6 h-52"
       data={creditExposure}
       isLoading={isLoading}
       isError={isError}
       onRetry={() => refetch()}
       skeletonCount={1}
       skeletonWrapperClass="col-span-6"
-      skeletonClass="h-48"
+      skeletonClass="h-52"
       classEmpty="col-span-6"
     >
       {(data) => {
@@ -55,7 +56,7 @@ export function CreditExposure() {
 
         return (
           <Card className="col-span-6">
-            <CardHeader>
+            <CardHeader isFetching={isFetching} onRetry={refetch}>
               <CardTitle>Credit Exposure by Sector</CardTitle>
             </CardHeader>
             <CardContent>

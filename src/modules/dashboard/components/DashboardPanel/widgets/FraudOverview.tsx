@@ -13,6 +13,7 @@ export function FraudOverview() {
     isError,
     isLoading,
     refetch,
+    isFetching,
   } = useFraudOverview()
 
   return (
@@ -21,9 +22,9 @@ export function FraudOverview() {
       isLoading={isLoading}
       isError={isError}
       skeletonWrapperClass="col-span-6"
-      skeletonClass="h-48"
+      skeletonClass="h-52"
       classEmpty="col-span-6"
-      classError="col-span-6"
+      classError="col-span-6 h-52"
       onRetry={() => refetch()}
     >
       {(data) => {
@@ -49,8 +50,8 @@ export function FraudOverview() {
         ]
 
         return (
-          <Card className="col-span-6 h-48">
-            <CardHeader>
+          <Card className="col-span-6 h-52">
+            <CardHeader isFetching={isFetching} onRetry={refetch}>
               <CardTitle>Fraud Detection Overview</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-3 gap-4 pt-2">

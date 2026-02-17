@@ -28,7 +28,13 @@ const statusStyles: Record<string, string> = {
 export function RecentRiskEvents() {
   const [page, setPage] = useState(1)
 
-  const { data: riskEvents, isError, isLoading, refetch } = useRiskEvents(page)
+  const {
+    data: riskEvents,
+    isError,
+    isLoading,
+    refetch,
+    isFetching,
+  } = useRiskEvents(page)
 
   return (
     <QueryBoundary
@@ -43,7 +49,7 @@ export function RecentRiskEvents() {
     >
       {(data) => (
         <Card className="col-span-12 min-h-100">
-          <CardHeader>
+          <CardHeader isFetching={isFetching} onRetry={refetch}>
             <CardTitle>Recent Risk Events</CardTitle>
           </CardHeader>
           <CardContent>

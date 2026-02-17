@@ -1,6 +1,9 @@
+import { RefreshCw } from 'lucide-react'
 import * as React from 'react'
 
 import { cn } from '@/lib/utils'
+
+import { Button } from './button'
 
 function Card({ className, ...props }: React.ComponentProps<'div'>) {
   return (
@@ -15,7 +18,15 @@ function Card({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
-function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
+function CardHeader({
+  className,
+  onRetry,
+  isFetching,
+  ...props
+}: React.ComponentProps<'div'> & {
+  onRetry?: () => void
+  isFetching?: boolean
+}) {
   return (
     <div
       data-slot="card-header"
@@ -24,7 +35,25 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
         className,
       )}
       {...props}
-    />
+    >
+      <div className="flex items-center justify-between">
+        {props.children}
+
+        {onRetry && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="ml-2 h-8 w-8"
+            onClick={onRetry}
+            disabled={isFetching}
+            type="button"
+          >
+            <RefreshCw size={14} className={cn(isFetching && 'animate-spin')} />
+            <span className="sr-only">Refresh data</span>
+          </Button>
+        )}
+      </div>
+    </div>
   )
 }
 

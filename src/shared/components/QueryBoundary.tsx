@@ -76,7 +76,7 @@ export function QueryBoundary<T>({
         <Card
           className={cn(
             classEmpty,
-            'flex flex-col items-center justify-center rounded-lg border border-dashed p-8 opacity-40',
+            'flex flex-col items-center justify-center opacity-50',
           )}
         >
           <Inbox className="mb-2 h-8 w-8" />

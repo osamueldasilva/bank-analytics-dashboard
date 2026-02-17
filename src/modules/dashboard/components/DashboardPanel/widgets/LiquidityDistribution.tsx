@@ -32,7 +32,13 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function LiquidityDistribution() {
-  const { data: liquidity, isError, isLoading, refetch } = useLiquidity()
+  const {
+    data: liquidity,
+    isError,
+    isLoading,
+    refetch,
+    isFetching,
+  } = useLiquidity()
 
   return (
     <QueryBoundary
@@ -40,9 +46,9 @@ export function LiquidityDistribution() {
       isLoading={isLoading}
       isError={isError}
       onRetry={() => refetch()}
-      skeletonClass="h-76"
+      skeletonClass="h-80"
       skeletonWrapperClass="col-span-4"
-      classError="col-span-4"
+      classError="col-span-4 h-80"
       classEmpty="col-span-4"
     >
       {(data) => {
@@ -58,7 +64,7 @@ export function LiquidityDistribution() {
 
         return (
           <Card className="col-span-4 flex flex-col">
-            <CardHeader>
+            <CardHeader isFetching={isFetching} onRetry={refetch}>
               <CardTitle>Liquidity Distribution</CardTitle>
             </CardHeader>
 
