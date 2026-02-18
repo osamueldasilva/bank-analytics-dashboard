@@ -40,17 +40,22 @@ export function RecentRiskEvents() {
   return (
     <QueryBoundary
       data={riskEvents}
+      isFetching={isFetching}
       isLoading={isLoading}
       isError={isError}
-      skeletonWrapperClass="col-span-12"
-      skeletonClass="h-100"
-      classEmpty="col-span-12"
-      classError="col-span-12"
       onRetry={() => refetch()}
+      skeleton={{
+        wrapperClassName: 'col-span-12',
+        className: 'h-100',
+      }}
+      className={{
+        empty: 'col-span-12',
+        error: 'col-span-12',
+      }}
     >
       {(data) => (
         <Card className="col-span-12 min-h-100">
-          <CardHeader isFetching={isFetching} onRetry={refetch}>
+          <CardHeader>
             <CardTitle>Recent Risk Events</CardTitle>
           </CardHeader>
           <CardContent>

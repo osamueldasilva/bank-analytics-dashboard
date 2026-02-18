@@ -38,19 +38,24 @@ export function PortfolioRiskTrend() {
 
   return (
     <QueryBoundary
-      classError="col-span-8 h-80"
       data={portfolioTrend}
       isLoading={isLoading}
       isError={isError}
+      isFetching={isFetching}
       onRetry={() => refetch()}
-      skeletonCount={1}
-      skeletonWrapperClass="col-span-8"
-      skeletonClass="h-80"
-      classEmpty="col-span-8"
+      skeleton={{
+        count: 1,
+        wrapperClassName: 'col-span-8',
+      }}
+      className={{
+        error: 'col-span-8 h-74',
+        empty: 'col-span-8 h-74',
+        loading: 'col-span-8 h-74',
+      }}
     >
       {(data) => (
         <Card className="col-span-8">
-          <CardHeader isFetching={isFetching} onRetry={refetch}>
+          <CardHeader>
             <div className="flex flex-col gap-1">
               <CardTitle>Portfolio Risk Trend</CardTitle>
               <CardDescription>Last 90 Days</CardDescription>

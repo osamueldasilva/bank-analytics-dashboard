@@ -1,5 +1,5 @@
-import { AlertCircle, Inbox } from 'lucide-react'
-import { ReactNode } from 'react'
+import { AlertCircle, Inbox, Loader2 } from 'lucide-react'
+import { HTMLAttributes, ReactNode } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -10,36 +10,53 @@ interface QueryBoundaryProps<T> {
   data: T | undefined | null
   isLoading: boolean
   isError: boolean
+  isFetching?: boolean
   onRetry: () => void
-  skeletonCount?: number
-  skeletonClass?: string
-  loadingFallback?: ReactNode
-  emptyFallback?: ReactNode
   children: (data: T) => ReactNode
-  skeletonWrapperClass?: string
-  classError?: string
-  classEmpty?: string
+  skeleton?: {
+    count?: number
+    className?: HTMLAttributes<HTMLDivElement>['className']
+    wrapperClassName?: HTMLAttributes<HTMLDivElement>['className']
+  }
+  fallback?: {
+    loading?: ReactNode
+    empty?: ReactNode
+  }
+
+  className?: {
+    error?: HTMLAttributes<HTMLDivElement>['className']
+    empty?: HTMLAttributes<HTMLDivElement>['className']
+    loading?: HTMLAttributes<HTMLDivElement>['className']
+    wrapper?: HTMLAttributes<HTMLDivElement>['className']
+  }
 }
 
 export function QueryBoundary<T>({
   data,
   isLoading,
   isError,
+  isFetching,
   onRetry,
-  skeletonCount = 1,
-  skeletonClass = 'h-32 w-full',
-  loadingFallback,
-  emptyFallback,
-  skeletonWrapperClass,
-  classError,
-  classEmpty,
   children,
+  skeleton,
+  fallback,
+  className,
 }: QueryBoundaryProps<T>) {
+  const skeletonCount = skeleton?.count ?? 1
+  const skeletonClass = skeleton?.className ?? 'h-full w-full'
+  const skeletonWrapperClass = skeleton?.wrapperClassName
+  const loadingFallback = fallback?.loading
+  const emptyFallback = fallback?.empty
+  const classError = className?.error
+  const classEmpty = className?.empty
+  const classLoading = className?.loading
+  const classWrapper = className?.wrapper
+
   if (isLoading) {
     if (loadingFallback) return <>{loadingFallback}</>
 
     return (
-      <div className={cn(skeletonWrapperClass)}>
+      <div className={cn(skeletonWrapperClass, classLoading, classWrapper)}>
         {[...Array(skeletonCount)].map((_, i) => (
           <Skeleton key={i} className={cn(skeletonClass)} />
         ))}
@@ -52,6 +69,7 @@ export function QueryBoundary<T>({
       <Card
         className={cn(
           classError,
+          classWrapper,
           `flex flex-col items-center justify-center rounded-lg border border-rose-500/20 bg-rose-500/5 text-center`,
         )}
       >
@@ -76,6 +94,7 @@ export function QueryBoundary<T>({
         <Card
           className={cn(
             classEmpty,
+            classWrapper,
             'flex flex-col items-center justify-center opacity-50',
           )}
         >
@@ -86,5 +105,26 @@ export function QueryBoundary<T>({
     )
   }
 
-  return <>{children(data)}</>
+  return (
+    <>
+      {isFetching && (
+        <div className="animate-in fade-in slide-in-from-bottom-2 fixed right-4 bottom-4 z-9999">
+          <div className="bg-background flex items-center gap-2 rounded-full border px-4 py-2 shadow-2xl">
+            <Loader2 className="text-primary h-4 w-4 animate-spin" />
+            <span className="text-xs font-semibold">Updating data...</span>
+          </div>
+        </div>
+      )}
+
+      <div
+        className={cn(
+          isFetching && 'pointer-events-none opacity-50 transition-opacity',
+          skeletonWrapperClass,
+          classWrapper,
+        )}
+      >
+        {children(data)}
+      </div>
+    </>
+  )
 }

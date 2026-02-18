@@ -33,15 +33,17 @@ export function CreditExposure() {
 
   return (
     <QueryBoundary
-      classError="col-span-6 h-52"
       data={creditExposure}
       isLoading={isLoading}
+      isFetching={isFetching}
       isError={isError}
       onRetry={() => refetch()}
-      skeletonCount={1}
-      skeletonWrapperClass="col-span-6"
-      skeletonClass="h-52"
-      classEmpty="col-span-6"
+      skeleton={{ count: 1, wrapperClassName: 'col-span-6' }}
+      className={{
+        error: 'col-span-6 h-48',
+        empty: 'col-span-6 h-48',
+        loading: 'col-span-6 h-48',
+      }}
     >
       {(data) => {
         const chartData = data.map((item) => {
@@ -55,8 +57,8 @@ export function CreditExposure() {
         })
 
         return (
-          <Card className="col-span-6">
-            <CardHeader isFetching={isFetching} onRetry={refetch}>
+          <Card className="col-span-6 h-48">
+            <CardHeader>
               <CardTitle>Credit Exposure by Sector</CardTitle>
             </CardHeader>
             <CardContent>

@@ -21,11 +21,16 @@ export function FraudOverview() {
       data={fraudOverview}
       isLoading={isLoading}
       isError={isError}
-      skeletonWrapperClass="col-span-6"
-      skeletonClass="h-52"
-      classEmpty="col-span-6"
-      classError="col-span-6 h-52"
+      isFetching={isFetching}
       onRetry={() => refetch()}
+      skeleton={{
+        wrapperClassName: 'col-span-6 h-48',
+        className: 'h-48',
+      }}
+      className={{
+        empty: 'col-span-6',
+        error: 'col-span-6 h-48',
+      }}
     >
       {(data) => {
         const metrics = [
@@ -50,8 +55,8 @@ export function FraudOverview() {
         ]
 
         return (
-          <Card className="col-span-6 h-52">
-            <CardHeader isFetching={isFetching} onRetry={refetch}>
+          <Card className="col-span-6 h-48">
+            <CardHeader>
               <CardTitle>Fraud Detection Overview</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-3 gap-4 pt-2">

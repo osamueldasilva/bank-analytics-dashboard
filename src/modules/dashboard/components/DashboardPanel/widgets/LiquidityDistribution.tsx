@@ -45,11 +45,15 @@ export function LiquidityDistribution() {
       data={liquidity}
       isLoading={isLoading}
       isError={isError}
+      isFetching={isFetching}
       onRetry={() => refetch()}
-      skeletonClass="h-80"
-      skeletonWrapperClass="col-span-4"
-      classError="col-span-4 h-80"
-      classEmpty="col-span-4"
+      skeleton={{
+        wrapperClassName: 'col-span-4',
+      }}
+      className={{
+        error: 'col-span-4',
+        empty: 'col-span-4',
+      }}
     >
       {(data) => {
         const chartData = data.map((item) => {
@@ -64,14 +68,14 @@ export function LiquidityDistribution() {
 
         return (
           <Card className="col-span-4 flex flex-col">
-            <CardHeader isFetching={isFetching} onRetry={refetch}>
+            <CardHeader>
               <CardTitle>Liquidity Distribution</CardTitle>
             </CardHeader>
 
-            <CardContent className="flex flex-1 items-center p-0 pr-4">
+            <CardContent className="flex items-center p-0 pr-4">
               <ChartContainer
                 config={chartConfig}
-                className="mx-auto aspect-square h-52"
+                className="mx-auto aspect-square h-51"
               >
                 <PieChart>
                   <ChartTooltip
