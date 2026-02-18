@@ -42,23 +42,22 @@ export function QueryBoundary<T>({
   fallback,
   className,
 }: QueryBoundaryProps<T>) {
-  const skeletonCount = skeleton?.count ?? 1
-  const skeletonClass = skeleton?.className ?? 'h-full w-full'
-  const skeletonWrapperClass = skeleton?.wrapperClassName
-  const loadingFallback = fallback?.loading
-  const emptyFallback = fallback?.empty
-  const classError = className?.error
-  const classEmpty = className?.empty
-  const classLoading = className?.loading
-  const classWrapper = className?.wrapper
-
   if (isLoading) {
-    if (loadingFallback) return <>{loadingFallback}</>
+    if (fallback?.loading) return <>{fallback.loading}</>
 
     return (
-      <div className={cn(skeletonWrapperClass, classLoading, classWrapper)}>
-        {[...Array(skeletonCount)].map((_, i) => (
-          <Skeleton key={i} className={cn(skeletonClass)} />
+      <div
+        className={cn(
+          skeleton?.wrapperClassName,
+          className?.loading,
+          className?.wrapper,
+        )}
+      >
+        {[...Array(skeleton?.count ?? 1)].map((_, i) => (
+          <Skeleton
+            key={i}
+            className={cn(skeleton?.className ?? 'h-full w-full', 'rounded-xl')}
+          />
         ))}
       </div>
     )
@@ -68,9 +67,9 @@ export function QueryBoundary<T>({
     return (
       <Card
         className={cn(
-          classError,
-          classWrapper,
-          `flex flex-col items-center justify-center rounded-lg border border-rose-500/20 bg-rose-500/5 text-center`,
+          className?.error,
+          className?.wrapper,
+          `flex flex-col items-center justify-center border border-rose-500/20 bg-rose-500/5 text-center`,
         )}
       >
         <AlertCircle className="h-8 w-8 text-rose-500" />
@@ -90,11 +89,11 @@ export function QueryBoundary<T>({
   const isActuallyEmpty = (Array.isArray(data) && data.length === 0) || !data
   if (isActuallyEmpty) {
     return (
-      emptyFallback || (
+      fallback?.empty || (
         <Card
           className={cn(
-            classEmpty,
-            classWrapper,
+            className?.empty,
+            className?.wrapper,
             'flex flex-col items-center justify-center opacity-50',
           )}
         >
@@ -119,8 +118,8 @@ export function QueryBoundary<T>({
       <div
         className={cn(
           isFetching && 'pointer-events-none opacity-50 transition-opacity',
-          skeletonWrapperClass,
-          classWrapper,
+          skeleton?.wrapperClassName,
+          className?.wrapper,
         )}
       >
         {children(data)}
