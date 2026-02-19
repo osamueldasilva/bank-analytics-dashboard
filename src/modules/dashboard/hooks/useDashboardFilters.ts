@@ -1,7 +1,7 @@
 'use client'
 
-import { usePathname, useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useMemo } from 'react'
 import { z } from 'zod'
 
 import {
@@ -29,97 +29,66 @@ function getValidFilterValue<T extends z.ZodTypeAny>(
   return result.success ? result.data : fallback
 }
 
-function resolveSavedPreferences(): Partial<DashboardFilters> {
-  if (typeof window === 'undefined') return {}
-
-  try {
-    const prefs = getPreferences()
-    if (!prefs) return {}
-
-    return {
-      segment: prefs.segment,
-      period: prefs.period,
-      riskType: prefs.riskType,
-    }
-  } catch {
-    return {}
-  }
-}
-
-function parseFiltersFromParams(params: URLSearchParams): DashboardFilters {
-  const hasUrlFilters = !!(
-    params.get('segment') ||
-    params.get('period') ||
-    params.get('riskType')
-  )
-
-  const savedPrefs = resolveSavedPreferences()
-
-  return {
-    segment: getValidFilterValue(
-      SegmentSchema,
-      hasUrlFilters ? params.get('segment') : savedPrefs.segment,
-      DEFAULT_DASHBOARD_FILTERS.segment,
-    ),
-    period: getValidFilterValue(
-      PeriodSchema,
-      hasUrlFilters ? params.get('period') : savedPrefs.period,
-      DEFAULT_DASHBOARD_FILTERS.period,
-    ),
-    riskType: getValidFilterValue(
-      RiskTypeSchema,
-      hasUrlFilters ? params.get('riskType') : savedPrefs.riskType,
-      DEFAULT_DASHBOARD_FILTERS.riskType,
-    ),
-  }
-}
-
-function resolveCurrentFilters(): DashboardFilters {
-  if (typeof window === 'undefined') {
-    return DEFAULT_DASHBOARD_FILTERS
-  }
-
-  return parseFiltersFromParams(new URLSearchParams(window.location.search))
-}
-
 export function useDashboardFilters() {
   const router = useRouter()
   const pathname = usePathname()
-  const [filters, setFilters] = useState<DashboardFilters>(() =>
-    resolveCurrentFilters(),
+  const searchParams = useSearchParams()
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  let savedPrefs: Partial<DashboardFilters> = {}
+
+  if (typeof window !== 'undefined') {
+    try {
+      const prefs = getPreferences()
+      if (prefs) {
+        savedPrefs = {
+          segment: prefs.segment,
+          period: prefs.period,
+          riskType: prefs.riskType,
+        }
+      }
+    } catch {}
+  }
+
+  const hasUrlFilters = !!(
+    searchParams.get('segment') ||
+    searchParams.get('period') ||
+    searchParams.get('riskType')
   )
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return
+  const filters: DashboardFilters = useMemo(
+    () => ({
+      segment: getValidFilterValue(
+        SegmentSchema,
+        hasUrlFilters ? searchParams.get('segment') : savedPrefs.segment,
+        DEFAULT_DASHBOARD_FILTERS.segment,
+      ),
+      period: getValidFilterValue(
+        PeriodSchema,
+        hasUrlFilters ? searchParams.get('period') : savedPrefs.period,
+        DEFAULT_DASHBOARD_FILTERS.period,
+      ),
+      riskType: getValidFilterValue(
+        RiskTypeSchema,
+        hasUrlFilters ? searchParams.get('riskType') : savedPrefs.riskType,
+        DEFAULT_DASHBOARD_FILTERS.riskType,
+      ),
+    }),
+    [searchParams, savedPrefs, hasUrlFilters],
+  )
 
-    setFilters(resolveCurrentFilters())
-
-    const syncFromUrl = () => {
-      setFilters(resolveCurrentFilters())
+  const updateFilters = (newFilters: Partial<DashboardFilters>) => {
+    const params = new URLSearchParams(searchParams.toString())
+    const nextFilters: DashboardFilters = {
+      ...filters,
+      ...newFilters,
     }
 
-    window.addEventListener('popstate', syncFromUrl)
+    params.set('segment', nextFilters.segment)
+    params.set('period', nextFilters.period)
+    params.set('riskType', nextFilters.riskType)
 
-    return () => {
-      window.removeEventListener('popstate', syncFromUrl)
-    }
-  }, [pathname])
-
-  const updateFilters = useCallback(
-    (newFilters: Partial<DashboardFilters>) => {
-      const current =
-        typeof window !== 'undefined' ? resolveCurrentFilters() : filters
-
-      const nextFilters: DashboardFilters = {
-        ...current,
-        ...newFilters,
-      }
-
-      const params = new URLSearchParams()
-      params.set('segment', nextFilters.segment)
-      params.set('period', nextFilters.period)
-      params.set('riskType', nextFilters.riskType)
-
+    if (typeof window !== 'undefined') {
       try {
         savePreferences({
           segment: nextFilters.segment,
@@ -127,13 +96,10 @@ export function useDashboardFilters() {
           riskType: nextFilters.riskType,
         })
       } catch {}
+    }
 
-      setFilters(nextFilters)
-      router.replace(`${pathname}?${params.toString()}`)
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pathname, router],
-  )
+    router.replace(`${pathname}?${params.toString()}`)
+  }
 
   return {
     filters,
