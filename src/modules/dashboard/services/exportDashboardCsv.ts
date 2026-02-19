@@ -1,7 +1,8 @@
+import { dashboardApi } from '@/src/core/api/dashboard.api'
+
 import {
   CreditExposureSector,
   DashboardExportData,
-  DashboardExportSchema,
   FraudOverview,
   KpiMetric,
   LiquiditySegment,
@@ -15,19 +16,7 @@ import { mapKpiLabelToDisplay } from '../utils/dashboard.transform'
 async function fetchExportData(
   filters: DashboardFilters,
 ): Promise<DashboardExportData> {
-  const params = new URLSearchParams({
-    segment: filters.segment,
-    period: filters.period,
-    riskType: filters.riskType,
-  })
-
-  const res = await fetch(`/api/dashboard/export?${params.toString()}`)
-  if (!res.ok) throw new Error('Falha ao buscar dados para exportação')
-
-  const json = await res.json()
-  const parsed = DashboardExportSchema.safeParse(json)
-  if (!parsed.success) throw new Error('Contrato inválido: DashboardExport')
-  return parsed.data
+  return dashboardApi.fetchDashboardExport(filters)
 }
 
 function buildKpisCsv(kpis: KpiMetric[]): string {

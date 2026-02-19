@@ -3,16 +3,12 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
-import { MswGate } from './MswGate'
-
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [mswReady, setMswReady] = useState(false)
-
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -26,22 +22,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       }),
   )
 
-  useEffect(() => {
-    async function initMSW() {
-      if (
-        typeof window !== 'undefined' &&
-        process.env.NEXT_PUBLIC_ENABLE_MSW === 'true'
-      ) {
-        const { worker } = await import('../mocks/browser')
-        await worker.start({
-          onUnhandledRequest: 'bypass',
-        })
-      }
-      setMswReady(true)
-    }
-    initMSW()
-  }, [])
-
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
@@ -54,11 +34,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             enableSystem
             disableTransitionOnChange
           >
-            {!mswReady && process.env.NEXT_PUBLIC_ENABLE_MSW === 'true' ? (
-              <MswGate />
-            ) : (
-              children
-            )}
+            {children}
           </NextThemesProvider>
         </TooltipProvider>
       </SidebarProvider>
