@@ -29,7 +29,7 @@ const chartConfig = {
     label: 'SME',
     color: 'var(--chart-3)',
   },
-} satisfies ChartConfig
+} as ChartConfig
 
 export function LiquidityDistribution() {
   const {

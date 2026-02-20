@@ -25,7 +25,7 @@ const chartConfig = {
     label: 'Risk Level',
     color: 'var(--chart-2)',
   },
-} satisfies ChartConfig
+} as ChartConfig
 
 export function PortfolioRiskTrend() {
   const {

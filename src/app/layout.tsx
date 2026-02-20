@@ -38,6 +38,7 @@ export default function RootLayout({
             <AppSidebar />
             <div className="flex flex-1 flex-col">
               <Header />
+
               <main className="flex-1 overflow-y-auto px-12 py-6">
                 {children}
               </main>

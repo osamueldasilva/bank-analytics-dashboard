@@ -19,7 +19,7 @@ const sectorConfig = {
   energy: { label: 'Energy', color: 'var(--chart-2)' },
   technology: { label: 'Technology', color: 'var(--chart-3)' },
   healthcare: { label: 'Healthcare', color: 'var(--chart-4)' },
-} satisfies ChartConfig
+} as ChartConfig
 
 export function CreditExposure() {
   const {
