@@ -30,7 +30,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <TooltipProvider>
           <NextThemesProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="system"
             enableSystem
           >
             {children}

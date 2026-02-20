@@ -115,7 +115,7 @@ function SelectItem({
       className={cn(
         'relative flex w-full cursor-pointer items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-none select-none',
 
-        'data-[highlighted]:bg-primary/50 data-[highlighted]:text-foreground',
+        'data-[highlighted]:bg-primary/20 data-[highlighted]:text-foreground',
 
         'focus:bg-primary focus:text-primary-foreground',
 

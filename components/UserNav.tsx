@@ -17,9 +17,41 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { cn } from '@/lib/utils'
 
 export function UserNav() {
-  const { setTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
+
+  const themeOptions = [
+    { key: 'light', label: 'Claro', icon: Sun },
+    { key: 'dark', label: 'Escuro', icon: Moon },
+    { key: 'system', label: 'Sistema', icon: Monitor },
+  ] as const
+
+  const renderThemeItems = () =>
+    themeOptions.map((themeOption) => {
+      const Icon = themeOption.icon
+      const isActive = theme === themeOption.key
+      return (
+        <DropdownMenuItem
+          key={themeOption.key}
+          onClick={() => setTheme(themeOption.key)}
+          className={
+            isActive
+              ? 'bg-primary focus:bg-primary/90 font-bold text-white focus:text-white'
+              : ''
+          }
+        >
+          <Icon
+            className={cn(
+              'mr-2 h-4 w-4',
+              isActive ? 'font-bold text-white' : '',
+            )}
+          />
+          {themeOption.label}
+        </DropdownMenuItem>
+      )
+    })
 
   return (
     <DropdownMenu>
@@ -56,18 +88,7 @@ export function UserNav() {
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>Tema</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              <DropdownMenuItem onClick={() => setTheme('light')}>
-                <Sun className="mr-2 h-4 w-4" />
-                Claro
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')}>
-                <Moon className="mr-2 h-4 w-4" />
-                Escuro
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('system')}>
-                <Monitor className="mr-2 h-4 w-4" />
-                Sistema
-              </DropdownMenuItem>
+              {renderThemeItems()}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
         </DropdownMenuGroup>
