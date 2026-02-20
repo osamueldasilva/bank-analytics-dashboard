@@ -72,16 +72,16 @@ export function DashboardFiltersBar() {
             </div>
           </SelectTrigger>
           <SelectContent position="popper">
-            <SelectItem value="All" className="text-xs">
+            <SelectItem value="All" className="text-sm">
               All
             </SelectItem>
-            <SelectItem value="Retail" className="text-xs">
+            <SelectItem value="Retail" className="text-sm">
               Retail
             </SelectItem>
-            <SelectItem value="Corporate" className="text-xs">
+            <SelectItem value="Corporate" className="text-sm">
               Corporate
             </SelectItem>
-            <SelectItem value="SME" className="text-xs">
+            <SelectItem value="SME" className="text-sm">
               SME
             </SelectItem>
           </SelectContent>
@@ -103,13 +103,13 @@ export function DashboardFiltersBar() {
             </div>
           </SelectTrigger>
           <SelectContent position="popper">
-            <SelectItem value="7d" className="text-xs">
+            <SelectItem value="7d" className="text-sm">
               Last 7 days
             </SelectItem>
-            <SelectItem value="30d" className="text-xs">
+            <SelectItem value="30d" className="text-sm">
               Last 30 days
             </SelectItem>
-            <SelectItem value="90d" className="text-xs">
+            <SelectItem value="90d" className="text-sm">
               Last 90 days
             </SelectItem>
           </SelectContent>
@@ -131,16 +131,16 @@ export function DashboardFiltersBar() {
             </div>
           </SelectTrigger>
           <SelectContent position="popper">
-            <SelectItem value="All" className="text-xs">
+            <SelectItem value="All" className="text-sm">
               All Risks
             </SelectItem>
-            <SelectItem value="Credit" className="text-xs">
+            <SelectItem value="Credit" className="text-sm">
               Credit
             </SelectItem>
-            <SelectItem value="Fraud" className="text-xs">
+            <SelectItem value="Fraud" className="text-sm">
               Fraud
             </SelectItem>
-            <SelectItem value="Liquidity" className="text-xs">
+            <SelectItem value="Liquidity" className="text-sm">
               Liquidity
             </SelectItem>
           </SelectContent>
