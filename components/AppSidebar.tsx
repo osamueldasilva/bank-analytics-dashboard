@@ -13,6 +13,7 @@ import { usePathname } from 'next/navigation'
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -20,6 +21,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+
+import { UserNav } from './UserNav'
 
 const items = [
   {
@@ -38,16 +41,16 @@ export function AppSidebar() {
   const pathname = usePathname()
 
   return (
-    <Sidebar collapsible="icon" className="border-r">
+    <Sidebar collapsible="icon" className="flex flex-col border-r">
       <SidebarHeader className="mt-2 flex items-center justify-center">
-        <div className="bg-primary flex items-center justify-center rounded-sm p-2">
-          <LucideShieldHalf className="fill-primary/20 size-8" />
+        <div className="bg-primary flex items-center justify-center rounded-sm p-2 text-white">
+          <LucideShieldHalf className="size-8" />
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="mt-4">
-        <SidebarGroup>
-          <SidebarGroupContent>
+      <SidebarContent className="mt-4 flex flex-1 flex-col">
+        <SidebarGroup className="flex flex-1 flex-col">
+          <SidebarGroupContent className="flex flex-1 flex-col">
             <SidebarMenu className="gap-1">
               {items.map((item) => {
                 const isActive =
@@ -68,6 +71,10 @@ export function AppSidebar() {
                 )
               })}
             </SidebarMenu>
+
+            <SidebarFooter className="mt-auto">
+              <UserNav />
+            </SidebarFooter>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

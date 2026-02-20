@@ -1,6 +1,13 @@
 'use client'
 
-import { Calendar, Download, Globe, Loader2, ShieldAlert } from 'lucide-react'
+import {
+  Calendar,
+  Download,
+  Globe,
+  Loader2,
+  RotateCcw,
+  ShieldAlert,
+} from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
@@ -37,14 +44,17 @@ export function DashboardFiltersBar() {
     filters.riskType === 'All'
 
   return (
-    <div className="bg-background border-border/40 flex flex-wrap items-center gap-3 border-b">
-      <div className="flex items-center gap-2">
+    <div className="bg-background flex flex-wrap items-center gap-3">
+      <div className="flex items-center gap-3">
         <Button
+          size="icon"
+          variant="outline"
+          title="Reset preferences"
           disabled={isDefault}
-          variant={'destructive'}
+          className="h-8 w-8"
           onClick={handleResetPreferences}
         >
-          Reset preferences
+          <RotateCcw />
         </Button>
         <Select
           value={filters.segment}
@@ -52,7 +62,7 @@ export function DashboardFiltersBar() {
             updateFilters({ segment: value as DashboardFilters['segment'] })
           }
         >
-          <SelectTrigger className="h-8 w-40 text-sm">
+          <SelectTrigger className="h-8 w-52 text-sm">
             <div className="flex items-center gap-2">
               <Globe className="text-muted-foreground h-3.5 w-3.5" />
               <span className="text-muted-foreground font-normal">
@@ -113,7 +123,7 @@ export function DashboardFiltersBar() {
             updateFilters({ riskType: value as DashboardFilters['riskType'] })
           }
         >
-          <SelectTrigger className="h-8 w-45 text-sm font-medium">
+          <SelectTrigger className="h-8 w-52 text-sm font-medium">
             <div className="flex items-center gap-2">
               <ShieldAlert className="text-muted-foreground h-3.5 w-3.5" />
               <span className="text-muted-foreground font-normal">Risk:</span>

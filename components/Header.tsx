@@ -3,7 +3,6 @@ import { Suspense } from 'react'
 import { DashboardFiltersBar } from '@/src/modules/dashboard/components/DashboardFiltersBar'
 
 import { Badge } from './ui/badge'
-import { UserNav } from './UserNav'
 
 export function Header() {
   return (
@@ -27,8 +26,6 @@ export function Header() {
           <Suspense fallback={null}>
             <DashboardFiltersBar />
           </Suspense>
-
-          <UserNav />
         </div>
       </div>
     </header>
