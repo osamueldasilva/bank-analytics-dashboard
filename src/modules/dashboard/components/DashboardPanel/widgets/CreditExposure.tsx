@@ -55,13 +55,15 @@ export function CreditExposure() {
           }
         })
 
+        console.log(chartData)
+
         return (
           <Card className="col-span-6 h-48">
             <CardHeader>
               <CardTitle>Credit Exposure by Sector</CardTitle>
             </CardHeader>
             <CardContent>
-              <ChartContainer config={sectorConfig} className="h-24 w-full">
+              <ChartContainer config={sectorConfig} className="h-28 w-full">
                 <BarChart
                   accessibilityLayer
                   data={chartData}
@@ -77,7 +79,7 @@ export function CreditExposure() {
                     className="text-sm font-medium"
                     width={65}
                   />
-                  <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
                   <Bar
                     dataKey="exposure"
                     layout="vertical"
