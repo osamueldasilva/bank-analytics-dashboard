@@ -23,14 +23,6 @@ export const metadata: Metadata = {
   description: 'Dashboard de análise de dados para operações bancárias',
 }
 
-if (
-  typeof window !== 'undefined' &&
-  process.env.NEXT_PUBLIC_ENABLE_MSW === 'true'
-) {
-  const { initMocks } = await import('../mocks')
-  await initMocks()
-}
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -46,6 +38,7 @@ export default function RootLayout({
             <AppSidebar />
             <div className="flex flex-1 flex-col">
               <Header />
+
               <main className="flex-1 overflow-y-auto px-12 py-6">
                 {children}
               </main>

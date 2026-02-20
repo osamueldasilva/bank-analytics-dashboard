@@ -20,10 +20,17 @@ import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 import { useRiskEvents } from '../../../hooks/useDashboardQueries'
 import { formatCurrency } from '../../../utils/dashboard.transform'
 
-const statusStyles: Record<string, string> = {
-  Open: 'bg-red-900/30 text-red-400',
-  Monitoring: 'bg-yellow-900/30 text-yellow-400',
-  Closed: 'bg-emerald-900/30 text-emerald-400',
+function getStatusBadgeStyle(status: string) {
+  switch (status) {
+    case 'Open':
+      return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+    case 'Monitoring':
+      return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+    case 'Closed':
+      return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+    default:
+      return 'bg-muted text-muted-foreground'
+  }
 }
 
 export function RecentRiskEvents() {
@@ -58,7 +65,8 @@ export function RecentRiskEvents() {
           <CardHeader>
             <CardTitle>Recent Risk Events</CardTitle>
           </CardHeader>
-          <CardContent>
+
+          <CardContent className="flex flex-col">
             <div className="relative max-h-96 overflow-auto">
               <Table>
                 <TableHeader>
@@ -71,25 +79,33 @@ export function RecentRiskEvents() {
                     <TableHead className="text-right">Date</TableHead>
                   </TableRow>
                 </TableHeader>
+
                 <TableBody>
                   {data.items.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell className="font-mono text-xs font-medium">
                         {item.id}
                       </TableCell>
+
                       <TableCell>{item.type}</TableCell>
+
                       <TableCell>{item.segment}</TableCell>
+
                       <TableCell className="font-semibold">
                         {formatCurrency(item.exposure)}
                       </TableCell>
+
                       <TableCell>
                         <Badge
                           variant="outline"
-                          className={`${statusStyles[item.status]} font-medium`}
+                          className={`${getStatusBadgeStyle(
+                            item.status,
+                          )} font-medium`}
                         >
                           {item.status}
                         </Badge>
                       </TableCell>
+
                       <TableCell className="text-muted-foreground text-right">
                         {format(new Date(item.date), 'dd/MM/yyyy')}
                       </TableCell>
@@ -98,11 +114,13 @@ export function RecentRiskEvents() {
                 </TableBody>
               </Table>
             </div>
-            <div className="mt-auto flex items-center justify-between border-t py-4">
+
+            <div className="mt-4 flex items-center justify-between border-t pt-4">
               <div className="text-muted-foreground text-sm">
                 Page <strong>{page}</strong> of{' '}
                 <strong>{data.totalPages}</strong>
               </div>
+
               <div className="flex items-center space-x-2">
                 <Button
                   variant="outline"
@@ -113,6 +131,7 @@ export function RecentRiskEvents() {
                   <ChevronLeft className="mr-1 h-4 w-4" />
                   Previous
                 </Button>
+
                 <Button
                   variant="outline"
                   size="sm"

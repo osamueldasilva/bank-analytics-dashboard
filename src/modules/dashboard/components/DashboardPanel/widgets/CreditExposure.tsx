@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { Bar, BarChart, XAxis, YAxis } from 'recharts'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -20,7 +19,7 @@ const sectorConfig = {
   energy: { label: 'Energy', color: 'var(--chart-2)' },
   technology: { label: 'Technology', color: 'var(--chart-3)' },
   healthcare: { label: 'Healthcare', color: 'var(--chart-4)' },
-} satisfies ChartConfig
+} as ChartConfig
 
 export function CreditExposure() {
   const {

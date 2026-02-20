@@ -1,7 +1,8 @@
+import { Suspense } from 'react'
+
 import { DashboardFiltersBar } from '@/src/modules/dashboard/components/DashboardFiltersBar'
 
 import { Badge } from './ui/badge'
-import { UserNav } from './UserNav'
 
 export function Header() {
   return (
@@ -22,8 +23,9 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <DashboardFiltersBar />
-          <UserNav />
+          <Suspense fallback={null}>
+            <DashboardFiltersBar />
+          </Suspense>
         </div>
       </div>
     </header>
