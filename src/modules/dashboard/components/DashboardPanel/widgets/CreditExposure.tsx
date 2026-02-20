@@ -55,8 +55,6 @@ export function CreditExposure() {
           }
         })
 
-        console.log(chartData)
-
         return (
           <Card className="col-span-6 h-48">
             <CardHeader>
