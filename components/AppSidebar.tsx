@@ -80,23 +80,15 @@ export function AppSidebar() {
           <SidebarGroupContent className="flex flex-1 flex-col">
             <SidebarMenu className="gap-1">
               {items.map((item) => {
+                if (!can(item.permission)) return null
+
                 const isActive =
                   pathname === item.url || pathname.startsWith(item.url + '/')
 
-                const canDisplayMenu = can(item.permission)
-
                 return (
-                  <SidebarMenuItem
-                    title={
-                      canDisplayMenu
-                        ? ''
-                        : `Access Denied: You don't have permission for ${item.title}`
-                    }
-                    key={item.title}
-                  >
+                  <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       tooltip={item.title}
-                      disabled={Boolean(item.disabled || !canDisplayMenu)}
                       className="hover:text-primary data-[active=true]:text-primary mx-auto cursor-pointer"
                       isActive={isActive}
                       onClick={() => router.push(item.url)}
