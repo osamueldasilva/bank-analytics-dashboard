@@ -98,6 +98,7 @@ const columns: DataTableColumn<RiskEvent>[] = [
   {
     key: 'status',
     label: 'Status',
+    sortable: true,
     render: (row) => (
       <Badge
         variant="outline"
