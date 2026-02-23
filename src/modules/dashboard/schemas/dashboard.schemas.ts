@@ -80,3 +80,32 @@ export const DashboardExportSchema = z.object({
   riskEvents: z.array(RiskEventSchema),
 })
 export type DashboardExportData = z.infer<typeof DashboardExportSchema>
+
+export const KpiHistoryPointSchema = z.object({
+  date: z.string(),
+  value: z.number(),
+  previousValue: z.number(),
+  delta: z.number(),
+  trend: z.enum(['up', 'down']),
+})
+export type KpiHistoryPoint = z.infer<typeof KpiHistoryPointSchema>
+
+export const KpiHistorySchema = z.array(KpiHistoryPointSchema)
+
+export const KpiDetailRowSchema = z.object({
+  id: z.string(),
+  date: z.string(),
+  segment: z.enum(['Retail', 'Corporate', 'SME']),
+  value: z.number(),
+  delta: z.number(),
+  trend: z.enum(['up', 'down']),
+})
+export type KpiDetailRow = z.infer<typeof KpiDetailRowSchema>
+
+export const PaginatedKpiDetailsSchema = z.object({
+  items: z.array(KpiDetailRowSchema),
+  totalItems: z.number(),
+  totalPages: z.number(),
+  currentPage: z.number(),
+})
+export type KpiDetailsResponse = z.infer<typeof PaginatedKpiDetailsSchema>

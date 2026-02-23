@@ -2,8 +2,10 @@ import {
   CreditExposureSchema,
   DashboardExportSchema,
   FraudOverviewSchema,
+  KpiHistorySchema,
   KpiMetricSchema,
   LiquiditySchema,
+  PaginatedKpiDetailsSchema,
   PaginatedRiskEventsSchema,
   PortfolioTrendSchema,
 } from '@/src/modules/dashboard/schemas/dashboard.schemas'
@@ -13,6 +15,8 @@ import {
   generateAllRiskEvents,
   generateCreditExposure,
   generateFraudOverview,
+  generateKpiDetailsTable,
+  generateKpiHistory,
   generateKpis,
   generateLiquidity,
   generatePortfolioTrend,
@@ -81,6 +85,32 @@ export const dashboardApi = {
     }
     const parsed = DashboardExportSchema.safeParse(data)
     if (!parsed.success) throw new Error('Contrato inválido: DashboardExport')
+    return parsed.data
+  },
+
+  fetchKpiHistory: async (
+    kpiId: string,
+    filters: DashboardFilters,
+    granularity: string,
+    periodOffset: number = 0,
+  ) => {
+    await simulateLatency()
+    const data = generateKpiHistory(kpiId, filters, granularity, periodOffset)
+    const parsed = KpiHistorySchema.safeParse(data)
+    if (!parsed.success) throw new Error('Contrato inválido: KpiHistory')
+    return parsed.data
+  },
+
+  fetchKpiDetailsTable: async (
+    kpiId: string,
+    filters: DashboardFilters,
+    page: number,
+    pageSize: number,
+  ) => {
+    await simulateLatency()
+    const data = generateKpiDetailsTable(kpiId, filters, page, pageSize)
+    const parsed = PaginatedKpiDetailsSchema.safeParse(data)
+    if (!parsed.success) throw new Error('Contrato inválido: KpiDetailsTable')
     return parsed.data
   },
 }

@@ -8,7 +8,7 @@ import {
   ShieldAlert,
   TrendingUp,
 } from 'lucide-react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 import {
   Sidebar,
@@ -39,6 +39,7 @@ const items = [
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
 
   return (
     <Sidebar collapsible="icon" className="flex flex-col border-r">
@@ -63,6 +64,7 @@ export function AppSidebar() {
                       disabled={item.disabled}
                       className="hover:text-primary data-[active=true]:text-primary mx-auto"
                       isActive={isActive}
+                      onClick={() => router.push(item.url)}
                     >
                       <item.icon />
                       <span>{item.title}</span>

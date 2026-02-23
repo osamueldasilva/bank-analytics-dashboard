@@ -1,6 +1,9 @@
 'use client'
 
+import { useRouter, useSearchParams } from 'next/navigation'
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { buildKpiUrl } from '@/lib/buildKpiUrl'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 
 import { useKpis } from '../hooks/useDashboardQueries'
@@ -11,6 +14,8 @@ import {
 
 export function KpiCards() {
   const { data: kpis, isLoading, isError, refetch, isFetching } = useKpis()
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
   return (
     <Card className="gap-0 border-none bg-transparent p-0 shadow-none">
@@ -29,7 +34,10 @@ export function KpiCards() {
               {data.map((item) => (
                 <Card
                   key={item.id}
-                  className="col-span-2 flex h-32 flex-col justify-center"
+                  className="col-span-2 flex h-32 cursor-pointer flex-col justify-center"
+                  onClick={() => {
+                    router.push(buildKpiUrl(item.label, searchParams))
+                  }}
                 >
                   <CardHeader>
                     <CardTitle className="text-muted-foreground text-sm font-medium uppercase">

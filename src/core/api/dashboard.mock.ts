@@ -313,3 +313,107 @@ export function generateAllRiskEvents(filters: DashboardFilters) {
 
   return events
 }
+
+const GRANULARITY_DAYS: Record<string, number> = {
+  daily: 1,
+  weekly: 7,
+  monthly: 30,
+}
+
+export function generateKpiHistory(
+  kpiId: string,
+  filters: DashboardFilters,
+  granularity: string,
+  periodOffset: number = 0,
+) {
+  const { segment, period } = filters
+  const periodDays = getPeriodDays(period)
+  const stepDays = GRANULARITY_DAYS[granularity] ?? 1
+  const points = Math.ceil(periodDays / stepDays)
+  const multiplier = segmentMultiplier(segment)
+  const now = Date.now()
+  const offsetDays = periodOffset * periodDays
+  const offsetTag = periodOffset > 0 ? `-offset${periodOffset}` : ''
+
+  return Array.from({ length: points }).map((_, i) => {
+    const daysFromNow = (points - i) * stepDays + offsetDays
+    const date = toISODate(now - daysFromNow * ONE_DAY_MS)
+    const seed = getSeed(kpiId, `${period}-${i}${offsetTag}`, segment)
+    const value = parseFloat(
+      (100 + seededRandom(seed) * 50 * multiplier).toFixed(2),
+    )
+    const prevSeed = getSeed(kpiId, `${period}-${i}${offsetTag}-prev`, segment)
+    const previousValue = parseFloat(
+      (100 + seededRandom(prevSeed) * 50 * multiplier).toFixed(2),
+    )
+    const delta = ((value - previousValue) / previousValue) * 100
+
+    return {
+      date,
+      value,
+      previousValue,
+      delta: parseFloat(delta.toFixed(2)),
+      trend: delta >= 0 ? ('up' as const) : ('down' as const),
+    }
+  })
+}
+
+const KPI_DETAILS_TOTAL = 100
+const KPI_DETAILS_SEGMENTS = ['Retail', 'Corporate', 'SME'] as const
+
+export function generateKpiDetailsTable(
+  kpiId: string,
+  filters: DashboardFilters,
+  page: number,
+  pageSize: number,
+) {
+  const { segment: segmentFilter } = filters
+  const now = Date.now()
+
+  const allItems: {
+    id: string
+    date: string
+    segment: (typeof KPI_DETAILS_SEGMENTS)[number]
+    value: number
+    delta: number
+    trend: 'up' | 'down'
+  }[] = []
+
+  for (let i = 0; i < KPI_DETAILS_TOTAL; i++) {
+    const seed = getSeed(kpiId, `detail-${i}`, 'row')
+    const seg =
+      KPI_DETAILS_SEGMENTS[
+        Math.floor(seededRandom(seed * 3) * KPI_DETAILS_SEGMENTS.length)
+      ]
+
+    if (segmentFilter !== 'All' && seg !== segmentFilter) continue
+
+    const value = parseFloat((seededRandom(seed) * 1000).toFixed(2))
+    const prevSeed = getSeed(kpiId, `detail-${i}-prev`, 'row')
+    const prevValue = parseFloat((seededRandom(prevSeed) * 1000).toFixed(2))
+    const delta =
+      prevValue !== 0
+        ? parseFloat((((value - prevValue) / prevValue) * 100).toFixed(2))
+        : 0
+
+    allItems.push({
+      id: `${kpiId.toUpperCase()}-${String(i + 1).padStart(4, '0')}`,
+      date: toISODate(now - i * ONE_DAY_MS),
+      segment: seg,
+      value,
+      delta,
+      trend: delta >= 0 ? 'up' : 'down',
+    })
+  }
+
+  const totalItems = allItems.length
+  const startIndex = (page - 1) * pageSize
+  const items = allItems.slice(startIndex, startIndex + pageSize)
+
+  return {
+    items,
+    totalItems,
+    totalPages: Math.ceil(totalItems / pageSize),
+    currentPage: page,
+  }
+}
