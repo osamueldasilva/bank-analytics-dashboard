@@ -1,7 +1,3 @@
-hooks/ → Lógica de estado (React Query + URL params)
-utils/ → Funções puras (formatação, cálculos, transformação)
-config/ → Configurações estáticas (registry)
-storage/ → Persistência local (localStorage)
 
 # BankOps Analytics Dashboard
 
