@@ -1,40 +1,25 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
+import { QUERY_DEFAULTS, QUERY_DEFAULTS_SLOW } from '@/src/constants'
+import type {
+  KpiComparisonData,
+  KpiNormalizedHistoryPoint,
+  KpiTableData,
+} from '@/src/types/kpi.types'
+
 import { getKpiRegistryItem } from '../config/kpiRegistry'
 import { kpiService } from '../services/kpi.service'
+import { calculateKpiComparison } from '../utils/kpi.comparison'
 import { useDashboardFilters } from './useDashboardFilters'
 import { useKpiDetailsFilters } from './useKpiDetailsFilters'
-
-type NormalizedHistoryPoint = {
-  period: string
-  value: number
-  previousValue: number
-}
-
-type NormalizedComparison = {
-  current: number
-  previous: number
-  variationAbsolute: number
-  variationPercent: number
-  bestPoint: number
-  worstPoint: number
-  behavior: 'stable' | 'growing' | 'deteriorating' | 'volatile'
-}
-
-type NormalizedTable = {
-  rows: Record<string, unknown>[]
-  total: number
-  totalPages: number
-  currentPage: number
-}
 
 export function useKpiDetail(kpiId: string) {
   const meta = getKpiRegistryItem(kpiId)
   const { filters: dashboardFilters } = useDashboardFilters()
   const { filters: detailFilters, updateFilters } = useKpiDetailsFilters()
 
-  const history = useQuery<NormalizedHistoryPoint[]>({
+  const history = useQuery<KpiNormalizedHistoryPoint[]>({
     queryKey: [
       'kpi-detail',
       'history',
@@ -56,14 +41,11 @@ export function useKpiDetail(kpiId: string) {
         previousValue: item.previousValue,
       }))
     },
-    staleTime: 60000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchInterval: 30000,
+    ...QUERY_DEFAULTS,
     placeholderData: keepPreviousData,
   })
 
-  const comparison = useQuery<NormalizedComparison>({
+  const comparison = useQuery<KpiComparisonData>({
     queryKey: [
       'kpi-detail',
       'comparison',
@@ -88,57 +70,16 @@ export function useKpiDetail(kpiId: string) {
         ),
       ])
 
-      const current = currentArr.at(-1)?.value ?? 0
-      const previous = previousArr.at(-1)?.value ?? 0
-      const variationAbsolute = parseFloat((current - previous).toFixed(2))
-      const variationPercent =
-        previous !== 0
-          ? parseFloat((((current - previous) / previous) * 100).toFixed(2))
-          : 0
-
-      const values = currentArr.map((item) => item.value)
-      const bestPoint = values.length ? Math.max(...values) : 0
-      const worstPoint = values.length ? Math.min(...values) : 0
-
-      const mean =
-        values.length > 0
-          ? values.reduce((acc, value) => acc + value, 0) / values.length
-          : 0
-      const variance =
-        values.length > 0
-          ? values.reduce((acc, value) => acc + (value - mean) ** 2, 0) /
-            values.length
-          : 0
-      const stdDev = Math.sqrt(variance)
-      const volatilityRatio = mean !== 0 ? stdDev / mean : 0
-
-      let behavior: NormalizedComparison['behavior'] = 'stable'
-      if (volatilityRatio > 0.25) {
-        behavior = 'volatile'
-      } else if (variationPercent > 1) {
-        behavior = 'growing'
-      } else if (variationPercent < -1) {
-        behavior = 'deteriorating'
-      }
-
-      return {
-        current,
-        previous,
-        variationAbsolute,
-        variationPercent,
-        bestPoint,
-        worstPoint,
-        behavior,
-      }
+      return calculateKpiComparison({
+        currentPoints: currentArr,
+        previousPoints: previousArr,
+      })
     },
-    staleTime: 60000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchInterval: 30000,
+    ...QUERY_DEFAULTS,
     placeholderData: keepPreviousData,
   })
 
-  const table = useQuery<NormalizedTable>({
+  const table = useQuery<KpiTableData>({
     queryKey: [
       'kpi-detail',
       'table',
@@ -171,10 +112,7 @@ export function useKpiDetail(kpiId: string) {
         currentPage: data.currentPage,
       }
     },
-    staleTime: 90000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchInterval: 30000,
+    ...QUERY_DEFAULTS_SLOW,
     placeholderData: keepPreviousData,
   })
 

@@ -9,7 +9,8 @@ import {
   PaginatedRiskEventsSchema,
   PortfolioTrendSchema,
 } from '@/src/modules/dashboard/schemas/dashboard.schemas'
-import { DashboardFilters } from '@/src/modules/dashboard/types/dashboard.filters'
+import type { DashboardFilters } from '@/src/modules/dashboard/types/dashboard.filters'
+import type { KpiCategory, KpiSortField, KpiStatus, SortOrder } from '@/src/types/kpi.types'
 
 import {
   generateAllRiskEvents,
@@ -106,10 +107,10 @@ export const dashboardApi = {
     filters: DashboardFilters,
     page: number,
     pageSize: number,
-    sortBy: 'date' | 'segment' | 'value' | 'normalizedValue' | 'delta' | 'status',
-    sortOrder: 'none' | 'asc' | 'desc',
-    category: 'All' | 'Core' | 'Watchlist' | 'Strategic',
-    status: 'All' | 'Open' | 'Monitoring' | 'Closed',
+    sortBy: KpiSortField,
+    sortOrder: SortOrder,
+    category: KpiCategory,
+    status: KpiStatus,
   ) => {
     await simulateLatency()
     const data = generateKpiDetailsTable(

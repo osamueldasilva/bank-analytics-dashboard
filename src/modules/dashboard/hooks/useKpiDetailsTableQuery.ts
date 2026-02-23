@@ -1,6 +1,8 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
-import { KpiDetailsResponse } from '../schemas/dashboard.schemas'
+import { QUERY_DEFAULTS_SLOW } from '@/src/constants'
+import type { KpiDetailsResponse } from '@/src/types/dashboard.types'
+
 import { kpiService } from '../services/kpi.service'
 import { useDashboardFilters } from './useDashboardFilters'
 import { useKpiDetailsFilters } from './useKpiDetailsFilters'
@@ -33,10 +35,7 @@ export const useKpiDetailsTable = (kpiId: string) => {
         detailFilters.category,
         detailFilters.status,
       ),
-    staleTime: 90000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchInterval: 30000,
+    ...QUERY_DEFAULTS_SLOW,
     placeholderData: keepPreviousData,
   })
 }

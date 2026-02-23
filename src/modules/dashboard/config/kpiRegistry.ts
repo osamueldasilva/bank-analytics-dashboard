@@ -1,48 +1,5 @@
-import { KpiMetric } from '../schemas/dashboard.schemas'
-
-export type KpiUnitType = 'currency' | 'percentage' | 'number' | 'score'
-export type KpiValueType = 'currency' | 'percentage' | 'number' | 'score'
-export type KpiColumnType =
-  | 'date'
-  | 'currency'
-  | 'percentage'
-  | 'number'
-  | 'score'
-  | 'string'
-  | 'status'
-
-export interface KpiTableColumn {
-  key: string
-  label: string
-  type: KpiColumnType
-  sortable?: boolean
-}
-
-export interface KpiAdditionalFilter {
-  key: 'category' | 'status'
-  label: string
-  options: string[]
-}
-
-export interface KpiRegistryItem {
-  id: KpiMetric['label']
-  label: string
-  unit: KpiUnitType
-  type: KpiValueType
-  history: {
-    endpoint: string
-    supportsGranularity: boolean
-    supportedGranularities: Array<'daily' | 'weekly' | 'monthly'>
-  }
-  detail: {
-    endpoint: string
-    columns: KpiTableColumn[]
-  }
-  comparison: {
-    enabled: boolean
-  }
-  additionalFilters: KpiAdditionalFilter[]
-}
+import type { KpiMetric } from '@/src/types/dashboard.types'
+import type { KpiRegistryItem, KpiTableColumn } from '@/src/types/kpi.types'
 
 const baseColumns: KpiTableColumn[] = [
   { key: 'date', label: 'Date', type: 'date', sortable: true },

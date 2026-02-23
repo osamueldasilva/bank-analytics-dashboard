@@ -1,37 +1,37 @@
-import { KpiMetric } from '../schemas/dashboard.schemas'
+import {
+  CURRENCY_CODE,
+  CURRENCY_LOCALE,
+  PERIOD_DAYS_MAP,
+} from '@/src/constants'
+import type { KpiMetric } from '@/src/types/dashboard.types'
 
-export const mapKpiLabelToDisplay = (label: KpiMetric['label']): string => {
-  const mapping: Record<string, string> = {
-    netExposure: 'Net Exposure',
-    liquidityRatio: 'Liquidity Ratio',
-    creditRiskIndex: 'Credit Risk Index',
-    fraudAlerts: 'Fraud Alerts (30d)',
-    portfolioPerformance: 'Portfolio Performance',
-  }
-  return mapping[label] || label
+/** Mapeamento de label de KPI para nome de exibição. */
+const KPI_LABEL_DISPLAY_MAP: Record<KpiMetric['label'], string> = {
+  netExposure: 'Net Exposure',
+  liquidityRatio: 'Liquidity Ratio',
+  creditRiskIndex: 'Credit Risk Index',
+  fraudAlerts: 'Fraud Alerts (30d)',
+  portfolioPerformance: 'Portfolio Performance',
 }
 
-export const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('en-US', {
+export const mapKpiLabelToDisplay = (label: KpiMetric['label']): string =>
+  KPI_LABEL_DISPLAY_MAP[label] ?? label
+
+export const formatCurrency = (value: number): string =>
+  new Intl.NumberFormat(CURRENCY_LOCALE, {
     style: 'currency',
-    currency: 'USD',
+    currency: CURRENCY_CODE,
     notation: 'compact',
   }).format(value)
-}
 
 /**
  * Derives the previous period equivalent to the current one.
  * @param period - string like '7d', '30d', '90d'
  * @param currentStart - Start date of the current period
- * @param currentEnd - End date of the current period
  * @returns { previousStart, previousEnd }
  */
 export function getPreviousPeriod(period: string, currentStart: Date, _: Date) {
-  const periodMap: Record<string, number> = {
-    '7d': 7,
-    '30d': 30,
-    '90d': 90,
-  }
+  const periodMap = PERIOD_DAYS_MAP
   const days = periodMap[period]
   if (!days) throw new Error('Invalid period')
 

@@ -1,8 +1,8 @@
 import { ArrowLeft } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { KpiValueType } from '@/src/modules/dashboard/config/kpiRegistry'
 import { formatKpiValueByType } from '@/src/modules/dashboard/utils/kpi.format'
+import { KpiValueType } from '@/src/types/kpi.types'
 
 interface KpiDetailsHeaderProps {
   label: string

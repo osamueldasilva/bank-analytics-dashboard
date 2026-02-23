@@ -1,8 +1,11 @@
-import {
+import type { KpiDetailsFilters } from '@/src/modules/dashboard/schemas/kpiDetailsFilters.schema'
+import type {
   KpiAdditionalFilter,
+  KpiComparisonData,
+  KpiNormalizedHistoryPoint,
   KpiTableColumn,
-} from '@/src/modules/dashboard/config/kpiRegistry'
-import { KpiDetailsFilters } from '@/src/modules/dashboard/schemas/kpiDetailsFilters.schema'
+  KpiTableData,
+} from '@/src/types/kpi.types'
 
 export type QueryState<T> = {
   data: T | undefined
@@ -12,34 +15,11 @@ export type QueryState<T> = {
   refetch: () => unknown
 }
 
-export type KpiComparisonData = {
-  current: number
-  previous: number
-  variationAbsolute: number
-  variationPercent: number
-  bestPoint: number
-  worstPoint: number
-  behavior: 'stable' | 'growing' | 'deteriorating' | 'volatile'
-}
-
-export type KpiHistoryDataPoint = {
-  period: string
-  value: number
-  previousValue: number
-}
-
-export type KpiTableData = {
-  rows: Record<string, unknown>[]
-  total: number
-  totalPages: number
-  currentPage: number
-}
-
 export type KpiDetailsFiltersUpdater = (
   filters: Partial<KpiDetailsFilters>,
 ) => void
 
-export type KpiHistoryQueryState = QueryState<KpiHistoryDataPoint[]>
+export type KpiHistoryQueryState = QueryState<KpiNormalizedHistoryPoint[]>
 export type KpiComparisonQueryState = QueryState<KpiComparisonData>
 export type KpiDetailsTableQueryState = QueryState<KpiTableData>
 

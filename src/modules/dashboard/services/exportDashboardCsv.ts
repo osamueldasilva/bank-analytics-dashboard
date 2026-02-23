@@ -1,6 +1,5 @@
 import { dashboardApi } from '@/src/core/api/dashboard.api'
-
-import {
+import type {
   CreditExposureSector,
   DashboardExportData,
   FraudOverview,
@@ -8,8 +7,9 @@ import {
   LiquiditySegment,
   PortfolioTrendPoint,
   RiskEvent,
-} from '../schemas/dashboard.schemas'
-import { DashboardFilters } from '../types/dashboard.filters'
+} from '@/src/types/dashboard.types'
+
+import type { DashboardFilters } from '../types/dashboard.filters'
 import { arrayToCsv, buildSectionedCsv, csvToBlob } from '../utils/csv.utils'
 import { mapKpiLabelToDisplay } from '../utils/dashboard.transform'
 

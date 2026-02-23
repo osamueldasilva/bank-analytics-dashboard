@@ -1,36 +1,262 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bank Analytics Dashboard
 
-## Getting Started
+Dashboard analítico bancário construído com **Next.js 16**, **React 19**, **TypeScript**, **Tailwind CSS** e **shadcn/ui**.
 
-First, run the development server:
+---
+
+## Sumário
+
+- [Início Rápido](#início-rápido)
+- [Arquitetura & Estrutura de Pastas](#arquitetura--estrutura-de-pastas)
+- [Padrões do Projeto](#padrões-do-projeto)
+- [Guia de Contribuição](#guia-de-contribuição)
+- [Deploy](#deploy)
+
+---
+
+## Início Rápido
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Instalar dependências
+pnpm install
+
+# Desenvolvimento
 pnpm dev
-# or
-bun dev
+
+# Build de produção
+pnpm build
+
+# Lint
+pnpm lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000) no navegador.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Arquitetura & Estrutura de Pastas
 
-## Learn More
+```
+├── components/              # Componentes de UI reutilizáveis (shadcn/ui + layout)
+│   ├── ui/                  # Componentes primitivos do shadcn/ui
+│   ├── AppSidebar.tsx       # Sidebar principal
+│   ├── Header.tsx           # Header da aplicação
+│   └── UserNav.tsx          # Navegação do usuário
+│
+├── hooks/                   # Hooks utilitários genéricos (use-mobile, etc.)
+│
+├── lib/                     # Utilitários genéricos de infraestrutura
+│   ├── utils.ts             # cn() helper (clsx + twMerge)
+│   └── buildKpiUrl.ts       # Construção de URL para KPIs
+│
+├── src/
+│   ├── app/                 # App Router do Next.js (rotas e layouts)
+│   │   ├── layout.tsx
+│   │   ├── providers.tsx    # QueryClientProvider, ThemeProvider, etc.
+│   │   └── dashboard/
+│   │       ├── page.tsx                  # Página principal do dashboard
+│   │       └── kpi/[kpiId]/page.tsx      # Detalhes de KPI (SSR dinâmico)
+│   │
+│   ├── constants/           # ⭐ Constantes centralizadas
+│   │   ├── index.ts                   # Barrel export
+│   │   ├── dashboard.constants.ts     # Segmentos, períodos, status, etc.
+│   │   ├── kpi.constants.ts           # Labels de KPI, categorias, granularidades
+│   │   └── query.constants.ts         # Defaults do React Query (staleTime, retry, etc.)
+│   │
+│   ├── types/               # ⭐ Tipos globais centralizados
+│   │   ├── index.ts                   # Barrel export
+│   │   ├── dashboard.types.ts         # Re-exports de schemas + tipos puros de domínio
+│   │   └── kpi.types.ts               # Tipos de KPI (registry, columns, comparison, etc.)
+│   │
+│   ├── core/                # Camada de infraestrutura (API, mocks)
+│   │   └── api/
+│   │       ├── dashboard.api.ts       # API client com validação Zod
+│   │       ├── dashboard.mock.ts      # Geração de dados mockados
+│   │       └── simulateLatency.ts     # Simulação de latência de rede
+│   │
+│   ├── modules/
+│   │   └── dashboard/       # Feature module do dashboard
+│   │       ├── components/            # Componentes do módulo
+│   │       │   ├── DashboardFiltersBar.tsx
+│   │       │   ├── KpiCards.tsx
+│   │       │   ├── DashboardPanel/    # Painel com widgets
+│   │       │   │   ├── index.tsx
+│   │       │   │   └── widgets/       # Widgets individuais
+│   │       │   └── KpiPageClient/     # Página de detalhe de KPI
+│   │       │       ├── index.tsx
+│   │       │       └── components/
+│   │       │           └── types.ts   # Tipos locais do componente
+│   │       │
+│   │       ├── config/                # Configurações do módulo
+│   │       │   └── kpiRegistry.ts     # Registry de KPIs (endpoints, colunas, filtros)
+│   │       │
+│   │       ├── hooks/                 # React hooks do módulo
+│   │       │   ├── useDashboardFilters.ts
+│   │       │   ├── useDashboardQueries.ts
+│   │       │   ├── useExportDashboardCsv.ts
+│   │       │   ├── useKpiComparisonQuery.ts
+│   │       │   ├── useKpiDetail.ts
+│   │       │   ├── useKpiDetailsFilters.ts
+│   │       │   ├── useKpiDetailsQuery.ts
+│   │       │   ├── useKpiDetailsTableQuery.ts
+│   │       │   └── useUrlFilters.ts   # Hook genérico para filtros via URL
+│   │       │
+│   │       ├── schemas/               # Zod schemas (source of truth para tipos runtime)
+│   │       │   ├── dashboard.schemas.ts
+│   │       │   └── kpiDetailsFilters.schema.ts
+│   │       │
+│   │       ├── services/              # Camada de serviço (facade para API)
+│   │       │   ├── dashboard.service.ts
+│   │       │   ├── kpi.service.ts
+│   │       │   └── exportDashboardCsv.ts
+│   │       │
+│   │       ├── storage/               # Persistência local (localStorage)
+│   │       │   └── dashboardPreferences.ts
+│   │       │
+│   │       ├── types/                 # Tipos locais do módulo
+│   │       │   ├── dashboard.types.ts       # Re-export (compat) → src/types/
+│   │       │   ├── dashboard.filters.ts     # DashboardFilters type
+│   │       │   └── userPreferences.ts       # UserPreferences type
+│   │       │
+│   │       └── utils/                 # Utilitários do módulo
+│   │           ├── csv.utils.ts             # Geração de CSV
+│   │           ├── dashboard.transform.ts   # Formatação e transformação de dados
+│   │           ├── kpi.comparison.ts        # ⭐ Lógica de comparação de KPI (extraída)
+│   │           └── kpi.format.ts            # Formatação de valores por tipo
+│   │
+│   └── shared/              # Componentes compartilhados entre módulos
+│       └── components/
+│           └── QueryBoundary.tsx
+│
+└── public/                  # Assets estáticos
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Padrões do Projeto
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 1. Single Source of Truth para Tipos
 
-## Deploy on Vercel
+| Camada                    | Responsabilidade                                                    |
+| ------------------------- | ------------------------------------------------------------------- |
+| `src/modules/**/schemas/` | **Zod schemas** — fonte de verdade para tipos com validação runtime |
+| `src/types/`              | **Re-exports + tipos puros** — centralização para consumo externo   |
+| `src/modules/**/types/`   | **Tipos locais** do módulo (filtros, preferências)                  |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+> **Regra:** Nunca duplique uma interface que já existe em um schema Zod.
+> Use `z.infer<typeof Schema>` para derivar o tipo e re-exporte de `src/types/`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 2. Constantes Centralizadas
+
+Valores fixos ficam em `src/constants/`:
+
+```ts
+// ✅ Correto — usar constante centralizada
+import { QUERY_DEFAULTS } from '@/src/constants'
+
+useQuery({ ...QUERY_DEFAULTS, queryKey: [...], queryFn: ... })
+
+// ❌ Errado — valores hardcoded repetidos
+useQuery({ staleTime: 60000, retry: 1, refetchOnWindowFocus: false, ... })
+```
+
+### 3. Imports com Alias `@/`
+
+Sempre usar o alias `@/` para imports absolutos:
+
+```ts
+// ✅ Correto
+import type { KpiMetric } from '@/src/types/dashboard.types'
+import { QUERY_DEFAULTS } from '@/src/constants'
+
+// ❌ Errado — caminhos relativos longos
+import { KpiMetric } from '../../../types/dashboard.types'
+```
+
+### 4. Separação de Responsabilidades
+
+```
+schemas/   → Validação de dados (Zod)
+services/  → Façade para API (orquestra chamadas)
+hooks/     → Lógica de estado (React Query + URL params)
+utils/     → Funções puras (formatação, cálculos, transformação)
+config/    → Configurações estáticas (registry)
+storage/   → Persistência local (localStorage)
+```
+
+### 5. Estrutura de Hooks
+
+- **Um hook = uma responsabilidade**
+- Lógica de cálculo complexa deve ser **extraída para `utils/`**
+- Configurações de `useQuery` reutilizar constantes de `src/constants/query.constants.ts`
+
+```ts
+// ✅ Lógica extraída para utils
+import { calculateKpiComparison } from '../utils/kpi.comparison'
+
+const comparison = useQuery({
+  queryFn: async () => {
+    const [current, previous] = await Promise.all([...])
+    return calculateKpiComparison({ currentPoints: current, previousPoints: previous })
+  },
+  ...QUERY_DEFAULTS,
+})
+```
+
+### 6. Nomenclatura de Arquivos
+
+| Tipo             | Padrão                    | Exemplo                  |
+| ---------------- | ------------------------- | ------------------------ |
+| Componente React | `PascalCase.tsx`          | `KpiCards.tsx`           |
+| Hook             | `camelCase.ts`            | `useDashboardFilters.ts` |
+| Tipo/Interface   | `kebab-case.types.ts`     | `dashboard.types.ts`     |
+| Schema Zod       | `kebab-case.schema(s).ts` | `dashboard.schemas.ts`   |
+| Utilitário       | `kebab-case.utils.ts`     | `csv.utils.ts`           |
+| Constante        | `kebab-case.constants.ts` | `query.constants.ts`     |
+| Serviço          | `kebab-case.service.ts`   | `kpi.service.ts`         |
+| Config           | `camelCase.ts`            | `kpiRegistry.ts`         |
+
+### 7. Organização de Tipos Union/Literal
+
+Sempre centralizar string unions como tipos nomeados em `src/types/`:
+
+```ts
+// ✅ Tipo nomeado reutilizável
+export type KpiGranularity = 'daily' | 'weekly' | 'monthly'
+export type KpiSortField = 'date' | 'segment' | 'value' | ...
+
+// ❌ String literals inline
+(sortBy: 'date' | 'segment' | 'value' | ...)
+```
+
+---
+
+## Guia de Contribuição
+
+1. **Novos tipos?** → Defina em `src/types/` (ou schema Zod + re-export).
+2. **Nova constante?** → Adicione em `src/constants/`.
+3. **Lógica reutilizável?** → Extraia para `utils/` como função pura.
+4. **Novo hook?** → Um hook, uma responsabilidade. Use `QUERY_DEFAULTS`.
+5. **Imports** → Sempre `@/` alias para paths absolutos.
+
+---
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router + Turbopack)
+- **UI:** Tailwind CSS v4 + shadcn/ui
+- **State:** React Query (TanStack Query v5)
+- **Validação:** Zod
+- **Lint:** ESLint + simple-import-sort
+
+---
+
+## Deploy
+
+Deploy recomendado via [Vercel](https://vercel.com):
+
+```bash
+pnpm build
+```
+
+Veja [Next.js deployment docs](https://nextjs.org/docs/app/building-your-application/deploying) para mais detalhes.

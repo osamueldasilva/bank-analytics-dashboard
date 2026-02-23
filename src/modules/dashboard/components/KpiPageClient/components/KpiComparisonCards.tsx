@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import type { KpiValueType } from '@/src/modules/dashboard/config/kpiRegistry'
 import { formatKpiValueByType } from '@/src/modules/dashboard/utils/kpi.format'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
+import type { KpiValueType } from '@/src/types/kpi.types'
 
 import { KpiComparisonQueryState } from './types'
 

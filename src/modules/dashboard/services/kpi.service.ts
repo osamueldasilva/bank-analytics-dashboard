@@ -1,12 +1,19 @@
 import { dashboardApi } from '@/src/core/api/dashboard.api'
+import type {
+  KpiCategory,
+  KpiGranularity,
+  KpiSortField,
+  KpiStatus,
+  SortOrder,
+} from '@/src/types/kpi.types'
 
-import { DashboardFilters } from '../types/dashboard.filters'
+import type { DashboardFilters } from '../types/dashboard.filters'
 
 export const kpiService = {
   getDetailsHistory: (
     kpiId: string,
     filters: DashboardFilters,
-    granularity: 'daily' | 'weekly' | 'monthly',
+    granularity: KpiGranularity,
     periodOffset: number = 0,
   ) => dashboardApi.fetchKpiHistory(kpiId, filters, granularity, periodOffset),
 
@@ -15,16 +22,10 @@ export const kpiService = {
     filters: DashboardFilters,
     page: number,
     pageSize: number,
-    sortBy:
-      | 'date'
-      | 'segment'
-      | 'value'
-      | 'normalizedValue'
-      | 'delta'
-      | 'status',
-    sortOrder: 'none' | 'asc' | 'desc',
-    category: 'All' | 'Core' | 'Watchlist' | 'Strategic',
-    status: 'All' | 'Open' | 'Monitoring' | 'Closed',
+    sortBy: KpiSortField,
+    sortOrder: SortOrder,
+    category: KpiCategory,
+    status: KpiStatus,
   ) =>
     dashboardApi.fetchKpiDetailsTable(
       kpiId,

@@ -1,13 +1,15 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
-import {
+import { QUERY_DEFAULTS, QUERY_DEFAULTS_SLOW } from '@/src/constants'
+import type {
   CreditExposureSector,
   FraudOverview,
   KpiMetric,
   LiquiditySegment,
   PortfolioTrendPoint,
   RiskEventsResponse,
-} from '../schemas/dashboard.schemas'
+} from '@/src/types/dashboard.types'
+
 import { dashboardService } from '../services/dashboard.service'
 import { useDashboardFilters } from './useDashboardFilters'
 
@@ -16,10 +18,7 @@ export const useKpis = () => {
   return useQuery<KpiMetric[]>({
     queryKey: ['dashboard', 'kpis', filters],
     queryFn: () => dashboardService.getKpis(filters),
-    staleTime: 60000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchInterval: 30000,
+    ...QUERY_DEFAULTS,
     placeholderData: keepPreviousData,
   })
 }
@@ -29,10 +28,8 @@ export const usePortfolioTrend = () => {
   return useQuery<PortfolioTrendPoint[]>({
     queryKey: ['dashboard', 'trend', filters],
     queryFn: () => dashboardService.getPortfolioTrend(filters),
-    staleTime: 120000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchInterval: 30000,
+    ...QUERY_DEFAULTS,
+    staleTime: 120_000,
     placeholderData: keepPreviousData,
   })
 }
@@ -42,10 +39,7 @@ export const useLiquidity = () => {
   return useQuery<LiquiditySegment[]>({
     queryKey: ['dashboard', 'liquidity', filters],
     queryFn: () => dashboardService.getLiquidity(filters),
-    staleTime: 90000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchInterval: 30000,
+    ...QUERY_DEFAULTS_SLOW,
     placeholderData: keepPreviousData,
   })
 }
@@ -55,10 +49,7 @@ export const useCreditExposure = () => {
   return useQuery<CreditExposureSector[]>({
     queryKey: ['dashboard', 'credit-exposure', filters],
     queryFn: () => dashboardService.getCreditExposure(filters),
-    staleTime: 90000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchInterval: 30000,
+    ...QUERY_DEFAULTS_SLOW,
     placeholderData: keepPreviousData,
   })
 }
@@ -68,10 +59,7 @@ export const useFraudOverview = () => {
   return useQuery<FraudOverview>({
     queryKey: ['dashboard', 'fraud', filters],
     queryFn: () => dashboardService.getFraudOverview(filters),
-    staleTime: 90000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchInterval: 30000,
+    ...QUERY_DEFAULTS_SLOW,
     placeholderData: keepPreviousData,
   })
 }
@@ -81,10 +69,7 @@ export const useRiskEvents = (page: number = 1) => {
   return useQuery<RiskEventsResponse>({
     queryKey: ['dashboard', 'risk-events', filters, page],
     queryFn: () => dashboardService.getRiskEvents(page, filters),
-    staleTime: 90000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchInterval: 30000,
+    ...QUERY_DEFAULTS_SLOW,
     placeholderData: keepPreviousData,
   })
 }

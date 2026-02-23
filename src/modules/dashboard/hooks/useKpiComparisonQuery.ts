@@ -1,20 +1,19 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
-import { KpiHistoryPoint } from '../schemas/dashboard.schemas'
+import { QUERY_DEFAULTS } from '@/src/constants'
+import type { KpiHistoryPoint } from '@/src/types/dashboard.types'
+import type { KpiComparisonData } from '@/src/types/kpi.types'
+
 import { kpiService } from '../services/kpi.service'
+import { calculateKpiComparison } from '../utils/kpi.comparison'
 import { useDashboardFilters } from './useDashboardFilters'
 import { useKpiDetailsFilters } from './useKpiDetailsFilters'
 
-interface KpiComparisonResult {
-  current: KpiHistoryPoint | null
-  previous: KpiHistoryPoint | null
-  currentValue: number | null
-  previousValue: number | null
-  variationAbsolute: number | null
-  variationPercentage: number | null
-  bestPoint: KpiHistoryPoint | null
-  worstPoint: KpiHistoryPoint | null
-  behavior: 'stable' | 'growing' | 'deteriorating' | 'volatile'
+export interface KpiComparisonResult extends KpiComparisonData {
+  currentPoint: KpiHistoryPoint | null
+  previousPoint: KpiHistoryPoint | null
+  bestHistoryPoint: KpiHistoryPoint | null
+  worstHistoryPoint: KpiHistoryPoint | null
 }
 
 export const useKpiComparison = (kpiId: string) => {
@@ -25,73 +24,36 @@ export const useKpiComparison = (kpiId: string) => {
     queryKey: ['kpi', 'comparison', kpiId, filters, detailFilters.granularity],
     queryFn: async () => {
       const [currentArr, previousArr] = await Promise.all([
-        kpiService.getDetailsHistory(kpiId, filters, detailFilters.granularity, 0),
-        kpiService.getDetailsHistory(kpiId, filters, detailFilters.granularity, 1),
+        kpiService.getDetailsHistory(
+          kpiId,
+          filters,
+          detailFilters.granularity,
+          0,
+        ),
+        kpiService.getDetailsHistory(
+          kpiId,
+          filters,
+          detailFilters.granularity,
+          1,
+        ),
       ])
 
-      const current = currentArr?.at(-1) ?? null
-      const previous = previousArr?.at(-1) ?? null
-
-      const currentValue = current?.value ?? null
-      const previousValue = previous?.value ?? null
-
-      let variationAbsolute: number | null = null
-      let variationPercentage: number | null = null
-      if (
-        currentValue !== null &&
-        previousValue !== null &&
-        previousValue !== 0
-      ) {
-        variationAbsolute = parseFloat((currentValue - previousValue).toFixed(2))
-        variationPercentage = parseFloat(
-          (((currentValue - previousValue) / previousValue) * 100).toFixed(
-            2,
-          ),
-        )
-      }
+      const base = calculateKpiComparison({
+        currentPoints: currentArr,
+        previousPoints: previousArr,
+      })
 
       const sortedByValue = [...currentArr].sort((a, b) => a.value - b.value)
-      const worstPoint = sortedByValue.at(0) ?? null
-      const bestPoint = sortedByValue.at(-1) ?? null
-
-      const values = currentArr.map((point) => point.value)
-      const mean =
-        values.length > 0
-          ? values.reduce((acc, value) => acc + value, 0) / values.length
-          : 0
-      const variance =
-        values.length > 0
-          ? values.reduce((acc, value) => acc + (value - mean) ** 2, 0) /
-            values.length
-          : 0
-      const stdDev = Math.sqrt(variance)
-      const volatilityRatio = mean !== 0 ? stdDev / mean : 0
-
-      let behavior: KpiComparisonResult['behavior'] = 'stable'
-      if (volatilityRatio > 0.25) {
-        behavior = 'volatile'
-      } else if ((variationPercentage ?? 0) > 1) {
-        behavior = 'growing'
-      } else if ((variationPercentage ?? 0) < -1) {
-        behavior = 'deteriorating'
-      }
 
       return {
-        current,
-        previous,
-        currentValue,
-        previousValue,
-        variationAbsolute,
-        variationPercentage,
-        bestPoint,
-        worstPoint,
-        behavior,
+        ...base,
+        currentPoint: currentArr.at(-1) ?? null,
+        previousPoint: previousArr.at(-1) ?? null,
+        bestHistoryPoint: sortedByValue.at(-1) ?? null,
+        worstHistoryPoint: sortedByValue.at(0) ?? null,
       }
     },
-    staleTime: 60000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchInterval: 30000,
+    ...QUERY_DEFAULTS,
     placeholderData: keepPreviousData,
   })
 }

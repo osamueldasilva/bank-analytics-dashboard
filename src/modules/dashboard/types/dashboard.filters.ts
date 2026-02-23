@@ -1,5 +1,7 @@
+import type { BusinessSegment, RiskType } from '@/src/types/dashboard.types'
+
 export type DashboardFilters = {
-  segment: 'Retail' | 'Corporate' | 'SME' | 'All'
+  segment: BusinessSegment | 'All'
   period: '7d' | '30d' | '90d'
-  riskType: 'All' | 'Credit' | 'Fraud' | 'Liquidity'
+  riskType: RiskType | 'All'
 }

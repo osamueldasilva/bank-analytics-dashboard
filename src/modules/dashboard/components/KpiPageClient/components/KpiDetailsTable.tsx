@@ -25,13 +25,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  KpiAdditionalFilter,
-  KpiTableColumn,
-} from '@/src/modules/dashboard/config/kpiRegistry'
 import { KpiDetailsFilters } from '@/src/modules/dashboard/schemas/kpiDetailsFilters.schema'
 import { formatCurrency } from '@/src/modules/dashboard/utils/dashboard.transform'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
+import { KpiAdditionalFilter, KpiTableColumn } from '@/src/types/kpi.types'
 
 import { KpiDetailsFiltersUpdater, KpiDetailsTableQueryState } from './types'
 

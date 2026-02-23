@@ -1,4 +1,5 @@
-import { KpiValueType } from '../config/kpiRegistry'
+import type { KpiValueType } from '@/src/types'
+
 import { formatCurrency } from './dashboard.transform'
 
 export function formatKpiValueByType(

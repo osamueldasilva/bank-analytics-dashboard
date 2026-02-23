@@ -1,6 +1,8 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
-import { KpiHistoryPoint } from '../schemas/dashboard.schemas'
+import { QUERY_DEFAULTS } from '@/src/constants'
+import type { KpiHistoryPoint } from '@/src/types/dashboard.types'
+
 import { kpiService } from '../services/kpi.service'
 import { useDashboardFilters } from './useDashboardFilters'
 import { useKpiDetailsFilters } from './useKpiDetailsFilters'
@@ -18,10 +20,7 @@ export const useKpiDetailsQuery = (kpiId: string) => {
         detailFilters.granularity,
         0,
       ),
-    staleTime: 60000,
-    retry: 1,
-    refetchOnWindowFocus: false,
-    refetchInterval: 30000,
+    ...QUERY_DEFAULTS,
     placeholderData: keepPreviousData,
   })
 }
