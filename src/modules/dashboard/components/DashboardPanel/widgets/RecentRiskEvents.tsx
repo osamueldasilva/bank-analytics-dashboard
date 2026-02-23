@@ -82,16 +82,16 @@ export function RecentRiskEvents({ className }: { className?: string }) {
     data: riskEvents,
     isError,
     isLoading,
-    refetch,
     isFetching,
+    refetch,
   } = useRiskEvents(page)
 
   return (
     <QueryBoundary
       data={riskEvents}
-      isFetching={isFetching}
       isLoading={isLoading}
       isError={isError}
+      isFetching={isFetching}
       onRetry={() => refetch()}
       skeleton={{
         wrapperClassName: cn('col-span-12', className),

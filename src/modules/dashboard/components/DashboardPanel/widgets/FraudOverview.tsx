@@ -16,8 +16,8 @@ export function FraudOverview({ className }: FraudOverviewProps) {
     data: fraudOverview,
     isError,
     isLoading,
-    refetch,
     isFetching,
+    refetch,
   } = useFraudOverview()
 
   return (

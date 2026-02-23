@@ -1,6 +1,11 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
-import { QUERY_DEFAULTS, QUERY_DEFAULTS_SLOW } from '@/src/constants'
+import {
+  DASHBOARD_STALE_TIME,
+  QUERY_DEFAULTS,
+  QUERY_DEFAULTS_FAST,
+  QUERY_DEFAULTS_SLOW,
+} from '@/src/constants'
 import type {
   CreditExposureSector,
   FraudOverview,
@@ -18,7 +23,7 @@ export const useKpis = () => {
   return useQuery<KpiMetric[]>({
     queryKey: ['dashboard', 'kpis', filters],
     queryFn: () => dashboardService.getKpis(filters),
-    ...QUERY_DEFAULTS,
+    ...QUERY_DEFAULTS_FAST,
     placeholderData: keepPreviousData,
   })
 }
@@ -29,7 +34,7 @@ export const usePortfolioTrend = () => {
     queryKey: ['dashboard', 'trend', filters],
     queryFn: () => dashboardService.getPortfolioTrend(filters),
     ...QUERY_DEFAULTS,
-    staleTime: 120_000,
+    staleTime: DASHBOARD_STALE_TIME.metrics,
     placeholderData: keepPreviousData,
   })
 }
@@ -70,6 +75,7 @@ export const useRiskEvents = (page: number = 1) => {
     queryKey: ['dashboard', 'risk-events', filters, page],
     queryFn: () => dashboardService.getRiskEvents(page, filters),
     ...QUERY_DEFAULTS_SLOW,
+    staleTime: DASHBOARD_STALE_TIME.historicalEvents,
     placeholderData: keepPreviousData,
   })
 }

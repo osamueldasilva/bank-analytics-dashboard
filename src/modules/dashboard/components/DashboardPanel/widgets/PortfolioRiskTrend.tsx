@@ -36,8 +36,8 @@ export function PortfolioRiskTrend({ className }: PortfolioRiskTrendProps) {
     data: portfolioTrend,
     isError,
     isLoading,
-    refetch,
     isFetching,
+    refetch,
   } = usePortfolioTrend()
 
   return (

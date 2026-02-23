@@ -5,12 +5,18 @@ export const QUERY_DEFAULTS = {
   refetchInterval: 30_000,
 } as const
 
+export const DASHBOARD_STALE_TIME = {
+  kpis: 30_000,
+  metrics: 90_000,
+  historicalEvents: 300_000,
+} as const
+
 export const QUERY_DEFAULTS_SLOW = {
   ...QUERY_DEFAULTS,
-  staleTime: 90_000,
+  staleTime: DASHBOARD_STALE_TIME.metrics,
 } as const
 
 export const QUERY_DEFAULTS_FAST = {
   ...QUERY_DEFAULTS,
-  staleTime: 30_000,
+  staleTime: DASHBOARD_STALE_TIME.kpis,
 } as const

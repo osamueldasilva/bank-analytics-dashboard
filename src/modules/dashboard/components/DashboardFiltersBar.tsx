@@ -22,6 +22,7 @@ import { PERMISSIONS } from '@/src/constants'
 import { useAuth } from '@/src/core/auth'
 
 import { useDashboardFilters } from '../hooks/useDashboardFilters'
+import { useDashboardRefresh } from '../hooks/useDashboardRefresh'
 import { useExportDashboardCsv } from '../hooks/useExportDashboardCsv'
 import { clearPreferences } from '../storage/dashboardPreferences'
 import { DashboardFilters } from '../types/dashboard.filters'
@@ -29,6 +30,7 @@ import { DashboardFilters } from '../types/dashboard.filters'
 export function DashboardFiltersBar() {
   const { filters, updateFilters } = useDashboardFilters()
   const { exportCsv, isExporting } = useExportDashboardCsv()
+  const { refreshDashboard, isRefreshing } = useDashboardRefresh()
   const { can } = useAuth()
   const canExportCsv = can(PERMISSIONS.dashboardExportCsv)
 
@@ -50,6 +52,17 @@ export function DashboardFiltersBar() {
   return (
     <div className="bg-background flex flex-wrap items-center gap-3">
       <div className="flex items-center gap-3">
+        <Button
+          size="sm"
+          variant="outline"
+          title="Refresh dashboard"
+          disabled={isRefreshing}
+          onClick={() => refreshDashboard()}
+        >
+          <RotateCcw className={isRefreshing ? 'animate-spin' : ''} />
+          {isRefreshing ? 'Refreshing...' : 'Refresh Dashboard'}
+        </Button>
+
         <Button
           size="icon"
           variant="outline"

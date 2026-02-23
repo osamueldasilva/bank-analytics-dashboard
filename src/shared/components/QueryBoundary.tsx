@@ -10,7 +10,7 @@ interface QueryBoundaryProps<T> {
   data: T | undefined | null
   isLoading: boolean
   isError: boolean
-  isFetching?: boolean
+  isFetching: boolean
   onRetry: () => void
   children: (data: T) => ReactNode
   skeleton?: {
@@ -74,14 +74,16 @@ export function QueryBoundary<T>({
       >
         <AlertCircle className="h-8 w-8 text-red-500" />
         <p className="text-sm font-medium text-red-500">System Unavailable</p>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onRetry}
-          className="border-red-500/50"
-        >
-          Retry Connection
-        </Button>
+        {onRetry && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onRetry}
+            className="border-red-500/50"
+          >
+            Retry Connection
+          </Button>
+        )}
       </Card>
     )
   }

@@ -42,8 +42,8 @@ export function LiquidityDistribution({
     data: liquidity,
     isError,
     isLoading,
-    refetch,
     isFetching,
+    refetch,
   } = useLiquidity()
 
   return (
