@@ -19,18 +19,4 @@ export const dashboardService = {
 
   getRiskEvents: (page: number = 1, filters: DashboardFilters) =>
     dashboardApi.fetchRiskEvents(page, filters),
-
-  getKpiHistory: (
-    kpiId: string,
-    filters: DashboardFilters,
-    granularity: string,
-    periodOffset: number = 0,
-  ) => dashboardApi.fetchKpiHistory(kpiId, filters, granularity, periodOffset),
-
-  getKpiDetailsTable: (
-    kpiId: string,
-    filters: DashboardFilters,
-    page: number,
-    pageSize: number,
-  ) => dashboardApi.fetchKpiDetailsTable(kpiId, filters, page, pageSize),
 }

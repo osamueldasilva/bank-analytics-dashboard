@@ -47,10 +47,10 @@ export function KpiDetailsTable({
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     <TableHead className="w-40">ID</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Segment</TableHead>
-                    <TableHead>Value</TableHead>
-                    <TableHead className="text-right">Delta</TableHead>
+                    <TableHead className="text-left">Date</TableHead>
+                    <TableHead className="text-left">Segment</TableHead>
+                    <TableHead className="text-left">Value</TableHead>
+                    <TableHead className="text-center">Delta</TableHead>
                   </TableRow>
                 </TableHeader>
 
@@ -71,13 +71,13 @@ export function KpiDetailsTable({
                         {formatCurrency(row.value)}
                       </TableCell>
 
-                      <TableCell className="text-right">
+                      <TableCell className="text-center">
                         <Badge
                           variant="outline"
                           className={`font-medium ${
                             row.trend === 'up'
                               ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
-                              : 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400'
+                              : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                           }`}
                         >
                           {row.trend === 'up' ? '↑' : '↓'}

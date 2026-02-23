@@ -56,7 +56,7 @@ export function KpiCards() {
                         : ''}
                     </span>
                     <span
-                      className={`text-md flex items-center gap-1 font-semibold ${item.trend === 'up' ? 'text-emerald-500' : 'text-rose-500'}`}
+                      className={`text-md flex items-center gap-1 font-semibold ${item.trend === 'up' ? 'text-emerald-500' : 'text-red-500'}`}
                     >
                       {item.trend === 'up' ? '↑' : '↓'}
                       {Math.abs(item.delta).toFixed(2)}%

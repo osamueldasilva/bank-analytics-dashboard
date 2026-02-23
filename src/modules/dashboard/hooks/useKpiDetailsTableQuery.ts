@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
 import { KpiDetailsResponse } from '../schemas/dashboard.schemas'
-import { dashboardService } from '../services/dashboard.service'
+import { kpiService } from '../services/kpi.service'
 import { useDashboardFilters } from './useDashboardFilters'
 import { useKpiDetailsFilters } from './useKpiDetailsFilters'
 
@@ -19,7 +19,7 @@ export const useKpiDetailsTable = (kpiId: string) => {
       detailFilters.pageSize,
     ],
     queryFn: () =>
-      dashboardService.getKpiDetailsTable(
+      kpiService.getDetailsTable(
         kpiId,
         filters,
         detailFilters.page,

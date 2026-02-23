@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
 import { KpiHistoryPoint } from '../schemas/dashboard.schemas'
-import { dashboardService } from '../services/dashboard.service'
+import { kpiService } from '../services/kpi.service'
 import { useDashboardFilters } from './useDashboardFilters'
 
 interface KpiComparisonResult {
@@ -17,8 +17,8 @@ export const useKpiComparison = (kpiId: string) => {
     queryKey: ['kpi', 'comparison', kpiId, filters],
     queryFn: async () => {
       const [currentArr, previousArr] = await Promise.all([
-        dashboardService.getKpiHistory(kpiId, filters, 'daily', 0),
-        dashboardService.getKpiHistory(kpiId, filters, 'daily', 1),
+        kpiService.getDetailsHistory(kpiId, filters, 'daily', 0),
+        kpiService.getDetailsHistory(kpiId, filters, 'daily', 1),
       ])
 
       const current = currentArr?.at(-1) ?? null

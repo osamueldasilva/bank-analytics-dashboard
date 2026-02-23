@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation'
 
 import { useKpiComparison } from '../../hooks/useKpiComparisonQuery'
 import { useKpiDetailsFilters } from '../../hooks/useKpiDetailsFilters'
+import { useKpiDetailsQuery } from '../../hooks/useKpiDetailsQuery'
 import { useKpiDetailsTable } from '../../hooks/useKpiDetailsTableQuery'
-import { useKpiHistory } from '../../hooks/useKpiHistoryQuery'
 import { KpiComparisonCards } from './components/KpiComparisonCards'
 import { KpiDetailsHeader } from './components/KpiDetailsHeader'
 import { KpiDetailsTable } from './components/KpiDetailsTable'
@@ -17,7 +17,7 @@ export function KpiPageClient({ kpiId }: { kpiId: string }) {
 
   const { filters: detailFilters, updateFilters } = useKpiDetailsFilters()
 
-  const history = useKpiHistory(kpiId)
+  const history = useKpiDetailsQuery(kpiId)
   const comparison = useKpiComparison(kpiId)
   const detailsTable = useKpiDetailsTable(kpiId)
 

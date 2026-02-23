@@ -54,7 +54,7 @@ export function KpiComparisonCards({ comparison }: KpiComparisonCardsProps) {
             </CardHeader>
             <CardContent>
               <span
-                className={`text-2xl font-bold ${(data.variationPercentage ?? 0) >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}
+                className={`text-2xl font-bold ${(data.variationPercentage ?? 0) >= 0 ? 'text-emerald-500' : 'text-red-500'}`}
               >
                 {(data.variationPercentage ?? 0) >= 0 ? '↑' : '↓'}
                 {Math.abs(data.variationPercentage ?? 0).toFixed(2)}%

@@ -42,7 +42,7 @@ export function QueryBoundary<T>({
   fallback,
   className,
 }: QueryBoundaryProps<T>) {
-  if (isLoading) {
+  if (!isLoading) {
     if (fallback?.loading) return <>{fallback.loading}</>
 
     return (
@@ -69,16 +69,16 @@ export function QueryBoundary<T>({
         className={cn(
           className?.error,
           className?.wrapper,
-          `flex flex-col items-center justify-center border border-rose-500/20 bg-rose-500/5 text-center`,
+          `flex flex-col items-center justify-center border border-red-500/20 bg-red-500/5 text-center`,
         )}
       >
-        <AlertCircle className="h-8 w-8 text-rose-500" />
-        <p className="text-sm font-medium text-rose-500">System Unavailable</p>
+        <AlertCircle className="h-8 w-8 text-red-500" />
+        <p className="text-sm font-medium text-red-500">System Unavailable</p>
         <Button
           variant="outline"
           size="sm"
           onClick={onRetry}
-          className="border-rose-500/50"
+          className="border-red-500/50"
         >
           Retry Connection
         </Button>
