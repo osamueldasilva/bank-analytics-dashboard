@@ -16,6 +16,10 @@ const PAGE_META: Record<string, { title: string; description: string }> = {
     title: 'Risk Events',
     description: 'Monitor and manage risk events across the organization.',
   },
+  '/settings': {
+    title: 'Settings',
+    description: 'Manage dashboard configuration and preferences.',
+  },
 }
 
 const DEFAULT_META = PAGE_META['/dashboard']

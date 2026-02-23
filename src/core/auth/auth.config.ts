@@ -2,9 +2,19 @@ import { PERMISSIONS } from '@/src/constants'
 import type { Permission, RoleMeta, UserRole } from '@/src/types'
 
 const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
-  Admin: [PERMISSIONS.dashboardView, PERMISSIONS.dashboardExportCsv],
-  Analyst: [PERMISSIONS.dashboardView],
-  Viewer: [PERMISSIONS.dashboardView],
+  Admin: [
+    PERMISSIONS.dashboardAccess,
+    PERMISSIONS.riskEventsAccess,
+    PERMISSIONS.settingsAccess,
+    PERMISSIONS.dashboardView,
+    PERMISSIONS.dashboardExportCsv,
+  ],
+  Analyst: [
+    PERMISSIONS.dashboardAccess,
+    PERMISSIONS.riskEventsAccess,
+    PERMISSIONS.dashboardView,
+  ],
+  Viewer: [PERMISSIONS.dashboardAccess, PERMISSIONS.dashboardView],
 }
 
 export function hasPermission(role: UserRole, permission: Permission): boolean {

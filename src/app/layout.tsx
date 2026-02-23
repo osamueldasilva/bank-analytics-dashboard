@@ -5,6 +5,7 @@ import { IBM_Plex_Mono, Inter } from 'next/font/google'
 
 import { AppSidebar } from '@/components/AppSidebar'
 import { Header } from '@/components/Header'
+import { RoutePermissionGuard } from '@/src/shared/components/RoutePermissionGuard'
 
 import { Providers } from './providers'
 
@@ -37,15 +38,17 @@ export default function RootLayout({
         className={`${inter.variable} ${interMono.variable} font-sans antialiased`}
       >
         <Providers>
-          <div className="flex min-h-screen w-full">
-            <AppSidebar />
-            <div className="flex flex-1 flex-col">
-              <Header />
-              <main className="flex-1 overflow-y-auto px-12 py-6">
-                {children}
-              </main>
+          <RoutePermissionGuard>
+            <div className="flex min-h-screen w-full">
+              <AppSidebar />
+              <div className="flex flex-1 flex-col">
+                <Header />
+                <main className="flex-1 overflow-y-auto px-12 py-6">
+                  {children}
+                </main>
+              </div>
             </div>
-          </div>
+          </RoutePermissionGuard>
         </Providers>
       </body>
     </html>

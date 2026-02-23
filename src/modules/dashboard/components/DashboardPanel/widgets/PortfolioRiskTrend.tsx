@@ -16,9 +16,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
+import { cn } from '@/lib/utils'
+import { usePortfolioTrend } from '@/src/modules/dashboard/hooks/useDashboardQueries'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
-
-import { usePortfolioTrend } from '../../../hooks/useDashboardQueries'
 
 const chartConfig = {
   riskIndex: {
@@ -27,7 +27,11 @@ const chartConfig = {
   },
 } as ChartConfig
 
-export function PortfolioRiskTrend() {
+interface PortfolioRiskTrendProps {
+  className?: string
+}
+
+export function PortfolioRiskTrend({ className }: PortfolioRiskTrendProps) {
   const {
     data: portfolioTrend,
     isError,
@@ -45,16 +49,16 @@ export function PortfolioRiskTrend() {
       onRetry={() => refetch()}
       skeleton={{
         count: 1,
-        wrapperClassName: 'col-span-8',
+        wrapperClassName: cn('col-span-8', className),
       }}
       className={{
-        error: 'col-span-8 h-74',
-        empty: 'col-span-8 h-74',
-        loading: 'col-span-8 h-74',
+        error: cn('col-span-8 h-74', className),
+        empty: cn('col-span-8 h-74', className),
+        loading: cn('col-span-8 h-74', className),
       }}
     >
       {(data) => (
-        <Card className="col-span-8">
+        <Card className={cn('col-span-8', className)}>
           <CardHeader>
             <div className="flex flex-col gap-1">
               <CardTitle>Portfolio Risk Trend</CardTitle>

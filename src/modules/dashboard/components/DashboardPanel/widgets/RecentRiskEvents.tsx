@@ -4,15 +4,15 @@ import { format } from 'date-fns'
 import { useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
+import { useRiskEvents } from '@/src/modules/dashboard/hooks/useDashboardQueries'
 import type { RiskEvent } from '@/src/modules/dashboard/schemas/dashboard.schemas'
+import { formatCurrency } from '@/src/modules/dashboard/utils/dashboard.transform'
 import {
   DataTable,
   type DataTableColumn,
 } from '@/src/shared/components/DataTable'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
-
-import { useRiskEvents } from '../../../hooks/useDashboardQueries'
-import { formatCurrency } from '../../../utils/dashboard.transform'
 
 function getStatusBadgeStyle(status: string) {
   switch (status) {
@@ -75,7 +75,7 @@ const columns: DataTableColumn<RiskEvent>[] = [
   },
 ]
 
-export function RecentRiskEvents() {
+export function RecentRiskEvents({ className }: { className?: string }) {
   const [page, setPage] = useState(1)
 
   const {
@@ -94,12 +94,12 @@ export function RecentRiskEvents() {
       isError={isError}
       onRetry={() => refetch()}
       skeleton={{
-        wrapperClassName: 'col-span-12',
+        wrapperClassName: cn('col-span-12', className),
         className: 'h-100',
       }}
       className={{
-        empty: 'col-span-12',
-        error: 'col-span-12',
+        empty: cn('col-span-12', className),
+        error: cn('col-span-12', className),
       }}
     >
       {(data) => (
@@ -108,7 +108,7 @@ export function RecentRiskEvents() {
           columns={columns}
           data={data.items}
           rowKey={(row) => row.id}
-          className="col-span-12 min-h-100"
+          className={cn('col-span-12 min-h-100', className)}
           pagination={{
             page,
             pageSize: data.items.length,

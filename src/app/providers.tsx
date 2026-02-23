@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { AuthProvider } from '@/src/core/auth'
+import { ConfigProvider } from '@/src/core/config'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -34,7 +35,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
             defaultTheme="system"
             enableSystem
           >
-            <AuthProvider>{children}</AuthProvider>
+            <ConfigProvider>
+              <AuthProvider>{children}</AuthProvider>
+            </ConfigProvider>
           </NextThemesProvider>
         </TooltipProvider>
       </SidebarProvider>

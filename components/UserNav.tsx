@@ -23,13 +23,14 @@ import { ROLE_META, useAuth } from '@/src/core/auth'
 
 export function UserNav() {
   const { theme, setTheme } = useTheme()
+
   const { role, setRole } = useAuth()
   const roleMeta = ROLE_META[role]
 
   const themeOptions = [
-    { key: 'light', label: 'Claro', icon: Sun },
-    { key: 'dark', label: 'Escuro', icon: Moon },
-    { key: 'system', label: 'Sistema', icon: Monitor },
+    { key: 'light', label: 'Light', icon: Sun },
+    { key: 'dark', label: 'Dark', icon: Moon },
+    { key: 'system', label: 'System', icon: Monitor },
   ] as const
 
   const renderThemeItems = () =>
@@ -80,7 +81,7 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src="https://github.com/shadcn.png" alt="@usuario" />
+            <AvatarImage src="https://github.com/shadcn.png" alt="@user" />
             <AvatarFallback>SC</AvatarFallback>
           </Avatar>
         </Button>
@@ -104,16 +105,15 @@ export function UserNav() {
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          <DropdownMenuItem>Perfil</DropdownMenuItem>
-          <DropdownMenuItem>Configurações</DropdownMenuItem>
+          <DropdownMenuItem>Profile</DropdownMenuItem>
 
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Perfil de Acesso</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger>Access Role</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>{renderRoleItems()}</DropdownMenuSubContent>
           </DropdownMenuSub>
 
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Tema</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger>Theme</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
               {renderThemeItems()}
             </DropdownMenuSubContent>
@@ -123,7 +123,7 @@ export function UserNav() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem className="text-red-600 focus:text-red-600">
-          Sair
+          Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

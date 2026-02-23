@@ -9,9 +9,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
+import { cn } from '@/lib/utils'
+import { useCreditExposure } from '@/src/modules/dashboard/hooks/useDashboardQueries'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
-
-import { useCreditExposure } from '../../../hooks/useDashboardQueries'
 
 const sectorConfig = {
   exposure: { label: 'Exposure ($)', color: 'hsl(var(--foreground))' },
@@ -21,7 +21,11 @@ const sectorConfig = {
   healthcare: { label: 'Healthcare', color: 'var(--chart-4)' },
 } as ChartConfig
 
-export function CreditExposure() {
+interface CreditExposureProps {
+  className?: string
+}
+
+export function CreditExposure({ className }: CreditExposureProps) {
   const {
     data: creditExposure,
     isError,
@@ -37,11 +41,14 @@ export function CreditExposure() {
       isFetching={isFetching}
       isError={isError}
       onRetry={() => refetch()}
-      skeleton={{ count: 1, wrapperClassName: 'col-span-6' }}
+      skeleton={{
+        count: 1,
+        wrapperClassName: cn('col-span-6', className),
+      }}
       className={{
-        error: 'col-span-6 h-48',
-        empty: 'col-span-6 h-48',
-        loading: 'col-span-6 h-48',
+        error: cn('col-span-6 h-48', className),
+        empty: cn('col-span-6 h-48', className),
+        loading: cn('col-span-6 h-48', className),
       }}
     >
       {(data) => {
@@ -56,7 +63,7 @@ export function CreditExposure() {
         })
 
         return (
-          <Card className="col-span-6 h-48">
+          <Card className={cn('col-span-6 h-48', className)}>
             <CardHeader>
               <CardTitle>Credit Exposure by Sector</CardTitle>
             </CardHeader>

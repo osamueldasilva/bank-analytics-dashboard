@@ -1,7 +1,13 @@
 'use client'
 
-import { AlertTriangle, LayoutDashboard, LucideShieldHalf } from 'lucide-react'
+import {
+  AlertTriangle,
+  LayoutDashboard,
+  LucideShieldHalf,
+  Settings,
+} from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
+import type { ComponentType } from 'react'
 
 import {
   Sidebar,
@@ -14,27 +20,49 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import { PERMISSIONS } from '@/src/constants'
+import { useAuth } from '@/src/core/auth'
+import type { Permission } from '@/src/types'
 
 import { UserNav } from './UserNav'
 
-const items = [
+type SidebarItem = {
+  title: string
+  icon: ComponentType<{ className?: string }>
+  disabled: boolean
+  url: string
+  permission: Permission
+}
+
+const items: SidebarItem[] = [
   {
     title: 'Dashboard',
     icon: LayoutDashboard,
     disabled: false,
     url: '/dashboard',
+    permission: PERMISSIONS.dashboardAccess,
   },
   {
     title: 'Risk Events',
     icon: AlertTriangle,
     disabled: false,
     url: '/risk-events',
+    permission: PERMISSIONS.riskEventsAccess,
+  },
+  {
+    title: 'Settings',
+    icon: Settings,
+    disabled: false,
+    url: '/settings',
+    permission: PERMISSIONS.settingsAccess,
   },
 ]
 
 export function AppSidebar() {
   const pathname = usePathname()
   const router = useRouter()
+
+  const { can } = useAuth()
 
   return (
     <Sidebar collapsible="icon" className="flex flex-col border-r">
@@ -55,11 +83,20 @@ export function AppSidebar() {
                 const isActive =
                   pathname === item.url || pathname.startsWith(item.url + '/')
 
+                const canDisplayMenu = can(item.permission)
+
                 return (
-                  <SidebarMenuItem key={item.title}>
+                  <SidebarMenuItem
+                    title={
+                      canDisplayMenu
+                        ? ''
+                        : `Access Denied: You don't have permission for ${item.title}`
+                    }
+                    key={item.title}
+                  >
                     <SidebarMenuButton
                       tooltip={item.title}
-                      disabled={item.disabled}
+                      disabled={Boolean(item.disabled || !canDisplayMenu)}
                       className="hover:text-primary data-[active=true]:text-primary mx-auto cursor-pointer"
                       isActive={isActive}
                       onClick={() => router.push(item.url)}

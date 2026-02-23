@@ -3,11 +3,15 @@
 import { AlertCircle, CheckCircle2, Search } from 'lucide-react'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
+import { useFraudOverview } from '@/src/modules/dashboard/hooks/useDashboardQueries'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 
-import { useFraudOverview } from '../../../hooks/useDashboardQueries'
+interface FraudOverviewProps {
+  className?: string
+}
 
-export function FraudOverview() {
+export function FraudOverview({ className }: FraudOverviewProps) {
   const {
     data: fraudOverview,
     isError,
@@ -24,12 +28,12 @@ export function FraudOverview() {
       isFetching={isFetching}
       onRetry={() => refetch()}
       skeleton={{
-        wrapperClassName: 'col-span-6 h-48',
+        wrapperClassName: cn('col-span-6 h-48', className),
         className: 'h-48',
       }}
       className={{
-        empty: 'col-span-6',
-        error: 'col-span-6 h-48',
+        empty: cn('col-span-6', className),
+        error: cn('col-span-6 h-48', className),
       }}
     >
       {(data) => {
@@ -55,7 +59,7 @@ export function FraudOverview() {
         ]
 
         return (
-          <Card className="col-span-6 h-48">
+          <Card className={cn('col-span-6 h-48', className)}>
             <CardHeader>
               <CardTitle>Fraud Detection Overview</CardTitle>
             </CardHeader>

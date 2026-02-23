@@ -9,9 +9,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
+import { cn } from '@/lib/utils'
+import { useLiquidity } from '@/src/modules/dashboard/hooks/useDashboardQueries'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
-
-import { useLiquidity } from '../../../hooks/useDashboardQueries'
 
 const chartConfig = {
   value: {
@@ -31,7 +31,13 @@ const chartConfig = {
   },
 } as ChartConfig
 
-export function LiquidityDistribution() {
+interface LiquidityDistributionProps {
+  className?: string
+}
+
+export function LiquidityDistribution({
+  className,
+}: LiquidityDistributionProps) {
   const {
     data: liquidity,
     isError,
@@ -48,11 +54,11 @@ export function LiquidityDistribution() {
       isFetching={isFetching}
       onRetry={() => refetch()}
       skeleton={{
-        wrapperClassName: 'col-span-4',
+        wrapperClassName: cn('col-span-4', className),
       }}
       className={{
-        error: 'col-span-4',
-        empty: 'col-span-4',
+        error: cn('col-span-4', className),
+        empty: cn('col-span-4', className),
       }}
     >
       {(data) => {
@@ -67,7 +73,7 @@ export function LiquidityDistribution() {
         })
 
         return (
-          <Card className="col-span-4 flex flex-col">
+          <Card className={cn('col-span-4 flex flex-col', className)}>
             <CardHeader>
               <CardTitle>Liquidity Distribution</CardTitle>
             </CardHeader>
