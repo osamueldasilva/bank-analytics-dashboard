@@ -26,6 +26,8 @@ O foco não é apenas exibir dados, mas demonstrar uma arquitetura organizada, e
 
 ---
 
+> **Nota:** Este projeto não é responsivo. O objetivo era demonstrar arquitetura, padrões e análise, não otimização para mobile ou telas pequenas.
+
 ## Principais Decisões Técnicas
 
 ### 1. Arquitetura por Módulos (Feature-Based)
