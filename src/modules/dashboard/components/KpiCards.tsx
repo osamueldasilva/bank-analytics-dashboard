@@ -34,10 +34,11 @@ export function KpiCards() {
               {data.map((item) => (
                 <Card
                   key={item.id}
-                  className="col-span-2 flex h-32 cursor-pointer flex-col justify-center"
+                  className="hover:bg-accent col-span-2 flex h-32 cursor-pointer flex-col justify-center transition-all hover:-translate-y-1 hover:shadow-lg"
                   onClick={() => {
                     router.push(buildKpiUrl(item.label, searchParams))
                   }}
+                  title="Click to view details"
                 >
                   <CardHeader>
                     <CardTitle className="text-muted-foreground text-sm font-medium uppercase">
