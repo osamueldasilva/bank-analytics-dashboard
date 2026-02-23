@@ -159,33 +159,37 @@ export function DashboardFiltersBar() {
       </div>
 
       <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto sm:gap-3">
-        <Button
-          size="icon"
-          variant="outline"
-          title="Refresh dashboard"
-          disabled={isRefreshing}
-          onClick={() => refreshDashboard()}
-        >
-          <RotateCcw className={isRefreshing ? 'animate-spin' : ''} />
-        </Button>
-
-        {canExportCsv && (
-          <div className="flex w-full items-center gap-2 sm:w-auto">
+        {!(pathname && pathname.includes('/dashboard/kpi/')) && (
+          <>
             <Button
-              variant="default"
-              size="sm"
-              disabled={isExporting}
-              className="w-full sm:w-auto"
-              onClick={() => exportCsv()}
+              size="icon"
+              variant="outline"
+              title="Refresh dashboard"
+              disabled={isRefreshing}
+              onClick={() => refreshDashboard()}
             >
-              {isExporting ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Download className="h-3.5 w-3.5" />
-              )}
-              {isExporting ? 'Exporting...' : 'Export CSV'}
+              <RotateCcw className={isRefreshing ? 'animate-spin' : ''} />
             </Button>
-          </div>
+
+            {canExportCsv && (
+              <div className="flex w-full items-center gap-2 sm:w-auto">
+                <Button
+                  variant="default"
+                  size="sm"
+                  disabled={isExporting}
+                  className="w-full sm:w-auto"
+                  onClick={() => exportCsv()}
+                >
+                  {isExporting ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Download className="h-3.5 w-3.5" />
+                  )}
+                  {isExporting ? 'Exporting...' : 'Export CSV'}
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
