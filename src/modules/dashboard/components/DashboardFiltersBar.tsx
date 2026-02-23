@@ -18,6 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { PERMISSIONS } from '@/src/constants'
+import { useAuth } from '@/src/core/auth'
 
 import { useDashboardFilters } from '../hooks/useDashboardFilters'
 import { useExportDashboardCsv } from '../hooks/useExportDashboardCsv'
@@ -27,6 +29,8 @@ import { DashboardFilters } from '../types/dashboard.filters'
 export function DashboardFiltersBar() {
   const { filters, updateFilters } = useDashboardFilters()
   const { exportCsv, isExporting } = useExportDashboardCsv()
+  const { can } = useAuth()
+  const canExportCsv = can(PERMISSIONS.dashboardExportCsv)
 
   const router = useRouter()
   const pathname = usePathname()
@@ -147,21 +151,23 @@ export function DashboardFiltersBar() {
         </Select>
       </div>
 
-      <div className="flex items-center gap-2">
-        <Button
-          variant="default"
-          size="sm"
-          disabled={isExporting}
-          onClick={() => exportCsv()}
-        >
-          {isExporting ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          ) : (
-            <Download className="h-3.5 w-3.5" />
-          )}
-          {isExporting ? 'Exporting...' : 'Export CSV'}
-        </Button>
-      </div>
+      {canExportCsv && (
+        <div className="flex items-center gap-2">
+          <Button
+            variant="default"
+            size="sm"
+            disabled={isExporting}
+            onClick={() => exportCsv()}
+          >
+            {isExporting ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Download className="h-3.5 w-3.5" />
+            )}
+            {isExporting ? 'Exporting...' : 'Export CSV'}
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

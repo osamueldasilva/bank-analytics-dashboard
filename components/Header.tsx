@@ -16,22 +16,6 @@ const PAGE_META: Record<string, { title: string; description: string }> = {
     title: 'Risk Events',
     description: 'Monitor and manage risk events across the organization.',
   },
-  '/market': {
-    title: 'Market',
-    description: 'Market data and trends analysis.',
-  },
-  '/exposure': {
-    title: 'Exposure',
-    description: 'Credit and market exposure overview.',
-  },
-  '/global': {
-    title: 'Global',
-    description: 'Global operations monitoring.',
-  },
-  '/security': {
-    title: 'Security',
-    description: 'Security alerts and compliance status.',
-  },
 }
 
 const DEFAULT_META = PAGE_META['/dashboard']

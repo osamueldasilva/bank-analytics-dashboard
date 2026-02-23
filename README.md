@@ -61,16 +61,24 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 │   │
 │   ├── constants/           # ⭐ Constantes centralizadas
 │   │   ├── index.ts                   # Barrel export
+│   │   ├── auth.constants.ts          # Roles e permissions (RBAC)
 │   │   ├── dashboard.constants.ts     # Segmentos, períodos, status, etc.
 │   │   ├── kpi.constants.ts           # Labels de KPI, categorias, granularidades
 │   │   └── query.constants.ts         # Defaults do React Query (staleTime, retry, etc.)
 │   │
 │   ├── types/               # ⭐ Tipos globais centralizados
 │   │   ├── index.ts                   # Barrel export
+│   │   ├── auth.types.ts              # Tipos de auth (UserRole, Permission, RoleMeta)
 │   │   ├── dashboard.types.ts         # Re-exports de schemas + tipos puros de domínio
 │   │   └── kpi.types.ts               # Tipos de KPI (registry, columns, comparison, etc.)
 │   │
-│   ├── core/                # Camada de infraestrutura (API, mocks)
+│   ├── core/                # Infraestrutura compartilhada (API + auth)
+│   │   ├── auth/
+│   │   │   ├── index.ts               # Barrel de auth (import único)
+│   │   │   ├── auth.context.tsx       # AuthProvider + hook useAuth
+│   │   │   ├── auth.storage.ts        # Persistência local de role
+│   │   │   ├── auth.schema.ts         # Schema Zod para role
+│   │   │   └── auth.config.ts         # ROLE_META + matriz de permissões
 │   │   └── api/
 │   │       ├── dashboard.api.ts       # API client com validação Zod
 │   │       ├── dashboard.mock.ts      # Geração de dados mockados
@@ -189,6 +197,7 @@ Sempre usar o alias `@/` para imports absolutos:
 // ✅ Correto
 import type { KpiMetric } from '@/src/types/dashboard.types'
 import { QUERY_DEFAULTS } from '@/src/constants'
+import { useAuth } from '@/src/core/auth'
 
 // ❌ Errado — caminhos relativos longos
 import { KpiMetric } from '../../../types/dashboard.types'
@@ -259,6 +268,7 @@ export type KpiSortField = 'date' | 'segment' | 'value' | ...
 3. **Lógica reutilizável?** → Extraia para `utils/` como função pura.
 4. **Novo hook?** → Um hook, uma responsabilidade. Use `QUERY_DEFAULTS`.
 5. **Imports** → Sempre `@/` alias para paths absolutos.
+6. **Auth/RBAC** → Constantes em `src/constants/auth.constants.ts`, tipos em `src/types/auth.types.ts` e consumo via `@/src/core/auth`.
 
 ---
 

@@ -18,9 +18,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
+import { USER_ROLES } from '@/src/constants'
+import { ROLE_META, useAuth } from '@/src/core/auth'
 
 export function UserNav() {
   const { theme, setTheme } = useTheme()
+  const { role, setRole } = useAuth()
+  const roleMeta = ROLE_META[role]
 
   const themeOptions = [
     { key: 'light', label: 'Claro', icon: Sun },
@@ -53,6 +57,24 @@ export function UserNav() {
       )
     })
 
+  const renderRoleItems = () =>
+    USER_ROLES.map((roleOption) => {
+      const isActive = role === roleOption
+      return (
+        <DropdownMenuItem
+          key={roleOption}
+          onClick={() => setRole(roleOption)}
+          className={
+            isActive
+              ? 'bg-primary focus:bg-primary/90 font-bold text-white focus:text-white'
+              : ''
+          }
+        >
+          {roleOption}
+        </DropdownMenuItem>
+      )
+    })
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -72,9 +94,9 @@ export function UserNav() {
       >
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm leading-none font-medium">Admin BankOps</p>
+            <p className="text-sm leading-none font-medium">{roleMeta.name}</p>
             <p className="text-muted-foreground text-sm leading-none">
-              admin@bankops.com.br
+              {roleMeta.email}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -84,6 +106,11 @@ export function UserNav() {
         <DropdownMenuGroup>
           <DropdownMenuItem>Perfil</DropdownMenuItem>
           <DropdownMenuItem>Configurações</DropdownMenuItem>
+
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>Perfil de Acesso</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>{renderRoleItems()}</DropdownMenuSubContent>
+          </DropdownMenuSub>
 
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>Tema</DropdownMenuSubTrigger>
