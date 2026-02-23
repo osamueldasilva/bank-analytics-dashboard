@@ -2,6 +2,11 @@ import { Suspense } from 'react'
 
 import { RiskEventsPageClient } from '@/src/modules/risk-events/components/RiskEventsPageClient'
 
+export const metadata = {
+  title: 'Risk Events | BankOps Analytics',
+  description: 'Risk events page with filters, sorting, and analysis.',
+}
+
 export default async function RiskEventsPage() {
   return (
     <Suspense fallback={null}>

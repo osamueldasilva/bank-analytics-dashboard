@@ -7,6 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { useConfig, WIDGET_IDS, WidgetId } from '@/src/core/config'
 
+export const metadata = {
+  title: 'Settings | BankOps Analytics',
+  description: 'Dashboard settings and widget preferences.',
+}
+
 const WIDGET_LABELS: Record<WidgetId, string> = {
   recentRiskEvents: 'Recent Risk Events',
   liquidityDistribution: 'Liquidity Distribution',
