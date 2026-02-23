@@ -1,51 +1,42 @@
 'use client'
 
 import { format } from 'date-fns'
-import {
-  ArrowDown,
-  ArrowUp,
-  ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import { formatCurrency } from '@/src/modules/dashboard/utils/dashboard.transform'
+import {
+  DataTable,
+  type DataTableColumn,
+} from '@/src/shared/components/DataTable'
 
 import type {
   RiskEvent,
   RiskEventsPageResponse,
   SortDirection,
+  SortExpression,
   SortField,
 } from '../types/riskEvents.types'
 
 type RiskEventsTableProps = {
   data: RiskEventsPageResponse
-  sort: string
+  sort: SortExpression
   onPageChange: (nextPage: number) => void
   onSortChange: (field: SortField, direction: SortDirection) => void
 }
 
-const SORTABLE_FIELDS: SortField[] = [
-  'occurredAt',
-  'title',
-  'severity',
-  'impactValue',
-]
-
-function parseCurrentSort(sort: string) {
+function parseCurrentSort(sort: SortExpression) {
   const [field, direction] = sort.split(':')
   return { field: field as SortField, direction: direction as SortDirection }
+}
+
+function formatLocalIsoDate(dateValue: string): string {
+  const [year, month, day] = dateValue.split('-').map(Number)
+
+  if (!year || !month || !day) {
+    return dateValue
+  }
+
+  return format(new Date(year, month - 1, day), 'dd/MM/yyyy')
 }
 
 function getSeverityBadgeStyle(severity: RiskEvent['severity']) {
@@ -74,6 +65,65 @@ function getStatusBadgeStyle(status: RiskEvent['status']) {
   }
 }
 
+const columns: DataTableColumn<RiskEvent>[] = [
+  {
+    key: 'title',
+    label: 'Title',
+    sortable: true,
+    render: (row) => <span className="font-medium">{row.title}</span>,
+  },
+  {
+    key: 'occurredAt',
+    label: 'Occurred At',
+    sortable: true,
+    render: (row) => (
+      <span className="text-muted-foreground">
+        {formatLocalIsoDate(row.occurredAt)}
+      </span>
+    ),
+  },
+  {
+    key: 'severity',
+    label: 'Severity',
+    sortable: true,
+    render: (row) => (
+      <Badge
+        variant="outline"
+        className={`font-medium ${getSeverityBadgeStyle(row.severity)}`}
+      >
+        {row.severity}
+      </Badge>
+    ),
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (row) => (
+      <Badge
+        variant="outline"
+        className={`font-medium ${getStatusBadgeStyle(row.status)}`}
+      >
+        {row.status}
+      </Badge>
+    ),
+  },
+  {
+    key: 'source',
+    label: 'Source',
+  },
+  {
+    key: 'impactValue',
+    label: 'Impact Value',
+    sortable: true,
+    className: 'text-right',
+    render: (row) => (
+      <span className="font-semibold">
+        {row.impactValue != null ? formatCurrency(row.impactValue) : '—'}
+      </span>
+    ),
+  },
+]
+
 export function RiskEventsTable({
   data,
   sort,
@@ -81,160 +131,23 @@ export function RiskEventsTable({
   onSortChange,
 }: RiskEventsTableProps) {
   const currentSort = parseCurrentSort(sort)
-  const totalPages = Math.max(1, Math.ceil(data.total / data.pageSize))
-
-  const handleSort = (field: SortField) => {
-    const isCurrent = currentSort.field === field
-    const nextDirection: SortDirection = !isCurrent
-      ? 'asc'
-      : currentSort.direction === 'asc'
-        ? 'desc'
-        : 'asc'
-
-    onSortChange(field, nextDirection)
-  }
-
-  const renderSortIcon = (field: SortField) => {
-    const isActive = currentSort.field === field
-
-    if (!isActive) {
-      return <ArrowUpDown className="text-muted-foreground h-3.5 w-3.5" />
-    }
-
-    return currentSort.direction === 'asc' ? (
-      <ArrowUp className="h-3.5 w-3.5" />
-    ) : (
-      <ArrowDown className="h-3.5 w-3.5" />
-    )
-  }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Risk Events</CardTitle>
-      </CardHeader>
-
-      <CardContent className="flex flex-col">
-        <div className="relative max-h-96 overflow-auto">
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead>
-                  {SORTABLE_FIELDS.includes('title') ? (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="-ml-3 h-8 gap-1"
-                      onClick={() => handleSort('title')}
-                    >
-                      Title
-                      {renderSortIcon('title')}
-                    </Button>
-                  ) : (
-                    'Title'
-                  )}
-                </TableHead>
-                <TableHead>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="-ml-3 h-8 gap-1"
-                    onClick={() => handleSort('occurredAt')}
-                  >
-                    Occurred At
-                    {renderSortIcon('occurredAt')}
-                  </Button>
-                </TableHead>
-                <TableHead>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="-ml-3 h-8 gap-1"
-                    onClick={() => handleSort('severity')}
-                  >
-                    Severity
-                    {renderSortIcon('severity')}
-                  </Button>
-                </TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Source</TableHead>
-                <TableHead className="text-right">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="-mr-3 ml-auto h-8 gap-1"
-                    onClick={() => handleSort('impactValue')}
-                  >
-                    Impact Value
-                    {renderSortIcon('impactValue')}
-                  </Button>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {data.data.map((event) => (
-                <TableRow key={event.id}>
-                  <TableCell className="font-medium">{event.title}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {format(new Date(event.occurredAt), 'dd/MM/yyyy')}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={`font-medium ${getSeverityBadgeStyle(event.severity)}`}
-                    >
-                      {event.severity}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={`font-medium ${getStatusBadgeStyle(event.status)}`}
-                    >
-                      {event.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{event.source}</TableCell>
-                  <TableCell className="text-right font-semibold">
-                    {event.impactValue != null
-                      ? formatCurrency(event.impactValue)
-                      : '—'}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-
-        <div className="mt-4 flex items-center justify-between border-t pt-4">
-          <div className="text-muted-foreground text-sm">
-            Page <strong>{data.page}</strong> of <strong>{totalPages}</strong>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPageChange(Math.max(data.page - 1, 1))}
-              disabled={data.page === 1}
-            >
-              <ChevronLeft className="mr-1 h-4 w-4" />
-              Previous
-            </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPageChange(Math.min(data.page + 1, totalPages))}
-              disabled={data.page >= totalPages}
-            >
-              Next
-              <ChevronRight className="ml-1 h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <DataTable<RiskEvent>
+      title="Risk Events"
+      columns={columns}
+      data={data.data}
+      rowKey={(row) => row.id}
+      sort={currentSort}
+      onSortChange={(field, direction) =>
+        onSortChange(field as SortField, direction as SortDirection)
+      }
+      pagination={{
+        page: data.page,
+        pageSize: data.pageSize,
+        total: data.total,
+      }}
+      onPageChange={onPageChange}
+    />
   )
 }

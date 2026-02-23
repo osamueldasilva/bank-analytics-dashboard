@@ -1,20 +1,14 @@
 'use client'
 
 import { format } from 'date-fns'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type { RiskEvent } from '@/src/modules/dashboard/schemas/dashboard.schemas'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+  DataTable,
+  type DataTableColumn,
+} from '@/src/shared/components/DataTable'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 
 import { useRiskEvents } from '../../../hooks/useDashboardQueries'
@@ -32,6 +26,54 @@ function getStatusBadgeStyle(status: string) {
       return 'bg-muted text-muted-foreground'
   }
 }
+
+const columns: DataTableColumn<RiskEvent>[] = [
+  {
+    key: 'id',
+    label: 'Event ID',
+    className: 'w-30',
+    render: (row) => (
+      <span className="font-mono text-sm font-medium">{row.id}</span>
+    ),
+  },
+  {
+    key: 'type',
+    label: 'Type',
+  },
+  {
+    key: 'segment',
+    label: 'Segment',
+  },
+  {
+    key: 'exposure',
+    label: 'Exposure',
+    render: (row) => (
+      <span className="font-semibold">{formatCurrency(row.exposure)}</span>
+    ),
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (row) => (
+      <Badge
+        variant="outline"
+        className={`font-medium ${getStatusBadgeStyle(row.status)}`}
+      >
+        {row.status}
+      </Badge>
+    ),
+  },
+  {
+    key: 'date',
+    label: 'Date',
+    className: 'text-right',
+    render: (row) => (
+      <span className="text-muted-foreground">
+        {format(new Date(row.date), 'dd/MM/yyyy')}
+      </span>
+    ),
+  },
+]
 
 export function RecentRiskEvents() {
   const [page, setPage] = useState(1)
@@ -61,92 +103,19 @@ export function RecentRiskEvents() {
       }}
     >
       {(data) => (
-        <Card className="col-span-12 min-h-100">
-          <CardHeader>
-            <CardTitle>Recent Risk Events</CardTitle>
-          </CardHeader>
-
-          <CardContent className="flex flex-col">
-            <div className="relative max-h-96 overflow-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead className="w-30">Event ID</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Segment</TableHead>
-                    <TableHead>Exposure</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-
-                <TableBody>
-                  {data.items.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell className="font-mono text-sm font-medium">
-                        {item.id}
-                      </TableCell>
-
-                      <TableCell>{item.type}</TableCell>
-
-                      <TableCell>{item.segment}</TableCell>
-
-                      <TableCell className="font-semibold">
-                        {formatCurrency(item.exposure)}
-                      </TableCell>
-
-                      <TableCell>
-                        <Badge
-                          variant="outline"
-                          className={`${getStatusBadgeStyle(
-                            item.status,
-                          )} font-medium`}
-                        >
-                          {item.status}
-                        </Badge>
-                      </TableCell>
-
-                      <TableCell className="text-muted-foreground text-right">
-                        {format(new Date(item.date), 'dd/MM/yyyy')}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-
-            <div className="mt-4 flex items-center justify-between border-t pt-4">
-              <div className="text-muted-foreground text-sm">
-                Page <strong>{page}</strong> of{' '}
-                <strong>{data.totalPages}</strong>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={page === 1}
-                >
-                  <ChevronLeft className="mr-1 h-4 w-4" />
-                  Previous
-                </Button>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setPage((prev) => Math.min(prev + 1, data.totalPages))
-                  }
-                  disabled={page >= data.totalPages}
-                >
-                  Next
-                  <ChevronRight className="ml-1 h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <DataTable<RiskEvent>
+          title="Recent Risk Events"
+          columns={columns}
+          data={data.items}
+          rowKey={(row) => row.id}
+          className="col-span-12 min-h-100"
+          pagination={{
+            page,
+            pageSize: data.items.length,
+            total: data.totalItems,
+          }}
+          onPageChange={setPage}
+        />
       )}
     </QueryBoundary>
   )

@@ -5,7 +5,7 @@ import { RiskEventsPageClient } from '@/src/modules/risk-events/components/RiskE
 export default async function RiskEventsPage() {
   return (
     <Suspense fallback={null}>
-      <div className="mx-auto flex w-full flex-col gap-4">
+      <div className="mx-auto flex w-full flex-col">
         <RiskEventsPageClient />
       </div>
     </Suspense>

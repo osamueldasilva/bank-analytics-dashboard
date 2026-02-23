@@ -38,9 +38,12 @@ function seededRandom(seed: number): number {
 }
 
 function dayIso(daysAgo: number): string {
-  const now = new Date()
-  now.setDate(now.getDate() - daysAgo)
-  return now.toISOString().split('T')[0]
+  const date = new Date()
+  date.setDate(date.getDate() - daysAgo)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 function buildEvent(index: number): RiskEvent {

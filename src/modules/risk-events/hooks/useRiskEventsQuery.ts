@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
 import { QUERY_DEFAULTS } from '@/src/constants'
 
@@ -10,5 +10,6 @@ export function useRiskEventsQuery(filters: RiskEventsFilters) {
     queryKey: ['risk-events', filters],
     queryFn: () => riskEventsService.getRiskEvents(filters),
     ...QUERY_DEFAULTS,
+    placeholderData: keepPreviousData,
   })
 }

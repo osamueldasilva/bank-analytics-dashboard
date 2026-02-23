@@ -132,8 +132,7 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 │   │       ├── components/
 │   │       │   ├── RiskEventsPageClient.tsx  # Orquestrador da página (client)
 │   │       │   ├── RiskEventsFilters.tsx     # Filtros (URL-driven)
-│   │       │   ├── RiskEventsTable.tsx       # Tabela com sort + pagination
-│   │       │   └── RiskEventsStatusBadge.tsx # Badge de status/severity
+│   │       │   └── RiskEventsTable.tsx       # Tabela com sort + pagination
 │   │       ├── hooks/
 │   │       │   ├── useRiskEventsFilters.ts   # Filtros via URL (Zod-validated)
 │   │       │   └── useRiskEventsQuery.ts     # React Query hook
@@ -146,6 +145,8 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 │   │
 │   └── shared/              # Componentes compartilhados entre módulos
 │       └── components/
+│           ├── DataTable.tsx       # ⭐ Tabela genérica (sort + paginação + Card)
+│           ├── FilterSelect.tsx   # ⭐ Select de filtro reutilizável
 │           └── QueryBoundary.tsx
 │
 └── public/                  # Assets estáticos

@@ -40,7 +40,11 @@ export function useRiskEventsFilters() {
   const filters = useMemo(() => parseFilters(searchParams), [searchParams])
 
   const updateFilters = (next: Partial<RiskEventsFilters>) => {
-    const merged: RiskEventsFilters = { ...filters, ...next }
+    const merged = Object.fromEntries(
+      Object.entries({ ...filters, ...next }).filter(
+        ([, v]) => v !== undefined,
+      ),
+    )
     const validated = RiskEventsFiltersSchema.safeParse(merged)
 
     const safe = validated.success
@@ -69,8 +73,7 @@ export function useRiskEventsFilters() {
   }
 
   const resetFilters = () => {
-    const defaults = RiskEventsFiltersSchema.parse({})
-    updateFilters(defaults)
+    router.replace(pathname, { scroll: false })
   }
 
   return {
