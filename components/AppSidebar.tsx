@@ -1,14 +1,6 @@
 'use client'
 
-import {
-  AlertTriangle,
-  BarChart3,
-  Globe,
-  LayoutDashboard,
-  LucideShieldHalf,
-  ShieldAlert,
-  TrendingUp,
-} from 'lucide-react'
+import { AlertTriangle, LayoutDashboard, LucideShieldHalf } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 
 import {
@@ -38,10 +30,6 @@ const items = [
     disabled: false,
     url: '/risk-events',
   },
-  { title: 'Market', icon: TrendingUp, disabled: true, url: '/market' },
-  { title: 'Exposure', icon: BarChart3, disabled: true, url: '/exposure' },
-  { title: 'Global', icon: Globe, disabled: true, url: '/global' },
-  { title: 'Security', icon: ShieldAlert, disabled: true, url: '/security' },
 ]
 
 export function AppSidebar() {
