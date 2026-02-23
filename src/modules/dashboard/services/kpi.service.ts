@@ -13,15 +13,27 @@ export const kpiService = {
   getDetailsTable: (
     kpiId: string,
     filters: DashboardFilters,
-    granularity: 'daily' | 'weekly' | 'monthly',
     page: number,
     pageSize: number,
+    sortBy:
+      | 'date'
+      | 'segment'
+      | 'value'
+      | 'normalizedValue'
+      | 'delta'
+      | 'status',
+    sortOrder: 'none' | 'asc' | 'desc',
+    category: 'All' | 'Core' | 'Watchlist' | 'Strategic',
+    status: 'All' | 'Open' | 'Monitoring' | 'Closed',
   ) =>
     dashboardApi.fetchKpiDetailsTable(
       kpiId,
       filters,
-      granularity,
       page,
       pageSize,
+      sortBy,
+      sortOrder,
+      category,
+      status,
     ),
 }

@@ -409,39 +409,57 @@ export function generateKpiHistory(
 
 const KPI_DETAILS_TOTAL = 100
 const KPI_DETAILS_SEGMENTS = ['Retail', 'Corporate', 'SME'] as const
+const KPI_DETAIL_CATEGORIES = ['Core', 'Watchlist', 'Strategic'] as const
+const KPI_DETAIL_STATUSES = ['Open', 'Monitoring', 'Closed'] as const
 
 export function generateKpiDetailsTable(
   kpiId: string,
   filters: DashboardFilters,
-  granularity: 'daily' | 'weekly' | 'monthly',
   page: number,
   pageSize: number,
+  sortBy: 'date' | 'segment' | 'value' | 'normalizedValue' | 'delta' | 'status',
+  sortOrder: 'none' | 'asc' | 'desc',
+  category: 'All' | 'Core' | 'Watchlist' | 'Strategic',
+  status: 'All' | 'Open' | 'Monitoring' | 'Closed',
 ) {
   const { segment: segmentFilter } = filters
   const now = Date.now()
-  const stepDays = GRANULARITY_DAYS[granularity] ?? 1
-  const totalRows = Math.ceil(KPI_DETAILS_TOTAL / stepDays)
+  const totalRows = KPI_DETAILS_TOTAL
 
   const allItems: {
     id: string
     date: string
     segment: (typeof KPI_DETAILS_SEGMENTS)[number]
+    category: (typeof KPI_DETAIL_CATEGORIES)[number]
     value: number
+    normalizedValue: number
     delta: number
     trend: 'up' | 'down'
+    status: (typeof KPI_DETAIL_STATUSES)[number]
   }[] = []
 
   for (let i = 0; i < totalRows; i++) {
-    const seed = getSeed(kpiId, `detail-${granularity}-${i}`, 'row')
+    const seed = getSeed(kpiId, `detail-${i}`, 'row')
     const seg =
       KPI_DETAILS_SEGMENTS[
         Math.floor(seededRandom(seed * 3) * KPI_DETAILS_SEGMENTS.length)
       ]
+    const rowCategory =
+      KPI_DETAIL_CATEGORIES[
+        Math.floor(seededRandom(seed * 5) * KPI_DETAIL_CATEGORIES.length)
+      ]
+    const rowStatus =
+      KPI_DETAIL_STATUSES[
+        Math.floor(seededRandom(seed * 7) * KPI_DETAIL_STATUSES.length)
+      ]
 
     if (segmentFilter !== 'All' && seg !== segmentFilter) continue
+    if (category !== 'All' && rowCategory !== category) continue
+    if (status !== 'All' && rowStatus !== status) continue
 
     const value = parseFloat((seededRandom(seed) * 1000).toFixed(2))
-    const prevSeed = getSeed(kpiId, `detail-${granularity}-${i}-prev`, 'row')
+    const normalizedValue = parseFloat((value / 10).toFixed(2))
+    const prevSeed = getSeed(kpiId, `detail-${i}-prev`, 'row')
     const prevValue = parseFloat((seededRandom(prevSeed) * 1000).toFixed(2))
     const delta =
       prevValue !== 0
@@ -450,17 +468,44 @@ export function generateKpiDetailsTable(
 
     allItems.push({
       id: `${kpiId.toUpperCase()}-${String(i + 1).padStart(4, '0')}`,
-      date: toISODate(now - i * stepDays * ONE_DAY_MS),
+      date: toISODate(now - i * ONE_DAY_MS),
       segment: seg,
+      category: rowCategory,
       value,
+      normalizedValue,
       delta,
       trend: delta >= 0 ? 'up' : 'down',
+      status: rowStatus,
     })
   }
 
-  const totalItems = allItems.length
+  const sortedItems =
+    sortOrder === 'none'
+      ? allItems
+      : [...allItems].sort((a, b) => {
+          const left = a[sortBy]
+          const right = b[sortBy]
+          if (left === right) return 0
+
+          if (sortBy === 'date') {
+            const leftDate = new Date(a.date).getTime()
+            const rightDate = new Date(b.date).getTime()
+            return sortOrder === 'asc'
+              ? leftDate - rightDate
+              : rightDate - leftDate
+          }
+
+          if (typeof left === 'number' && typeof right === 'number') {
+            return sortOrder === 'asc' ? left - right : right - left
+          }
+
+          const comparison = String(left).localeCompare(String(right))
+          return sortOrder === 'asc' ? comparison : -comparison
+        })
+
+  const totalItems = sortedItems.length
   const startIndex = (page - 1) * pageSize
-  const items = allItems.slice(startIndex, startIndex + pageSize)
+  const items = sortedItems.slice(startIndex, startIndex + pageSize)
 
   return {
     items,

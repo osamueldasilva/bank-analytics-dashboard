@@ -50,7 +50,8 @@ export function useUrlFilters<
       params.set(key, String(value))
     }
 
-    router.replace(`${pathname}?${params.toString()}`)
+    const nextUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname
+    router.replace(nextUrl, { scroll: false })
   }
 
   return {

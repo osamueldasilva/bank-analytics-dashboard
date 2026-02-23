@@ -96,9 +96,12 @@ export const KpiDetailRowSchema = z.object({
   id: z.string(),
   date: z.string(),
   segment: z.enum(['Retail', 'Corporate', 'SME']),
+  category: z.enum(['Core', 'Watchlist', 'Strategic']),
   value: z.number(),
+  normalizedValue: z.number(),
   delta: z.number(),
   trend: z.enum(['up', 'down']),
+  status: z.enum(['Open', 'Monitoring', 'Closed']),
 })
 export type KpiDetailRow = z.infer<typeof KpiDetailRowSchema>
 

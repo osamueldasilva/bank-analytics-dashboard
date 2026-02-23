@@ -2,10 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 
-import { useKpiComparison } from '../../hooks/useKpiComparisonQuery'
-import { useKpiDetailsFilters } from '../../hooks/useKpiDetailsFilters'
-import { useKpiDetailsQuery } from '../../hooks/useKpiDetailsQuery'
-import { useKpiDetailsTable } from '../../hooks/useKpiDetailsTableQuery'
+import { useKpiDetail } from '../../hooks/useKpiDetail'
 import { KpiComparisonCards } from './components/KpiComparisonCards'
 import { KpiDetailsHeader } from './components/KpiDetailsHeader'
 import { KpiDetailsTable } from './components/KpiDetailsTable'
@@ -14,33 +11,55 @@ import { KpiHistoryChart } from './components/KpiHistoryChart'
 
 export function KpiPageClient({ kpiId }: { kpiId: string }) {
   const router = useRouter()
+  const kpiDetail = useKpiDetail(kpiId)
 
-  const { filters: detailFilters, updateFilters } = useKpiDetailsFilters()
+  if (!kpiDetail.meta) {
+    return null
+  }
 
-  const history = useKpiDetailsQuery(kpiId)
-  const comparison = useKpiComparison(kpiId)
-  const detailsTable = useKpiDetailsTable(kpiId)
+  console.log('KPI Detail:', {
+    meta: kpiDetail.meta,
+    filters: kpiDetail.filters,
+    history: kpiDetail.history,
+    comparison: kpiDetail.comparison,
+    table: kpiDetail.table,
+  })
 
   return (
     <div className="mx-auto flex w-full flex-col gap-4">
       <div className="flex justify-between">
-        <KpiDetailsHeader kpiId={kpiId} onBack={() => router.back()} />
+        <KpiDetailsHeader
+          label={kpiDetail.meta.label}
+          onBack={() => router.back()}
+          currentValue={kpiDetail.comparison.data?.current}
+          variationPercent={kpiDetail.comparison.data?.variationPercent}
+          valueType={kpiDetail.meta.type}
+        />
 
         <KpiGranularityFilter
-          granularity={detailFilters.granularity}
-          onChange={(value) => updateFilters({ granularity: value, page: 1 })}
+          granularity={kpiDetail.filters.granularity}
+          options={kpiDetail.meta.history.supportedGranularities}
+          onChange={(value) =>
+            kpiDetail.updateFilters({ granularity: value, page: 1 })
+          }
         />
       </div>
-      <KpiComparisonCards comparison={comparison} />
+      <KpiComparisonCards
+        comparison={kpiDetail.comparison}
+        valueType={kpiDetail.meta.type}
+      />
 
       <KpiHistoryChart
-        history={history}
-        granularity={detailFilters.granularity}
+        history={kpiDetail.history}
+        granularity={kpiDetail.filters.granularity}
       />
 
       <KpiDetailsTable
-        detailsTable={detailsTable}
-        updateFilters={updateFilters}
+        detailsTable={kpiDetail.table}
+        updateFilters={kpiDetail.updateFilters}
+        tableFilters={kpiDetail.filters}
+        columns={kpiDetail.meta.detail.columns}
+        additionalFilters={kpiDetail.meta.additionalFilters}
       />
     </div>
   )

@@ -1,5 +1,12 @@
 import { format } from 'date-fns'
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ReferenceDot,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
 import {
   Card,
@@ -21,8 +28,12 @@ import { KpiHistoryQueryState } from './types'
 
 const historyChartConfig = {
   value: {
-    label: 'Value',
+    label: 'Current',
     color: 'var(--chart-1)',
+  },
+  previousValue: {
+    label: 'Previous',
+    color: 'var(--chart-2)',
   },
 } as ChartConfig
 
@@ -35,6 +46,14 @@ export function KpiHistoryChart({
   history,
   granularity,
 }: KpiHistoryChartProps) {
+  const peak = history.data?.reduce((max, point) =>
+    point.value > max.value ? point : max,
+  )
+
+  const trough = history.data?.reduce((min, point) =>
+    point.value < min.value ? point : min,
+  )
+
   return (
     <QueryBoundary
       data={history.data}
@@ -83,7 +102,7 @@ export function KpiHistoryChart({
                 </defs>
                 <CartesianGrid vertical={false} strokeDasharray="3 3" />
                 <XAxis
-                  dataKey="date"
+                  dataKey="period"
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
@@ -119,6 +138,34 @@ export function KpiHistoryChart({
                   stroke="var(--chart-1)"
                   strokeWidth={2}
                 />
+                <Area
+                  dataKey="previousValue"
+                  type="natural"
+                  fill="none"
+                  stroke="var(--chart-2)"
+                  strokeWidth={2}
+                  strokeDasharray="6 4"
+                />
+                {peak && (
+                  <ReferenceDot
+                    x={peak.period}
+                    y={peak.value}
+                    r={4}
+                    fill="var(--chart-1)"
+                    stroke="hsl(var(--background))"
+                    strokeWidth={2}
+                  />
+                )}
+                {trough && (
+                  <ReferenceDot
+                    x={trough.period}
+                    y={trough.value}
+                    r={4}
+                    fill="var(--chart-2)"
+                    stroke="hsl(var(--background))"
+                    strokeWidth={2}
+                  />
+                )}
               </AreaChart>
             </ChartContainer>
           </CardContent>

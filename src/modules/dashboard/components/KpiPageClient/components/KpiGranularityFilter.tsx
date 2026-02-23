@@ -12,11 +12,13 @@ import { KpiDetailsFilters } from '@/src/modules/dashboard/schemas/kpiDetailsFil
 interface KpiGranularityFilterProps {
   granularity: KpiDetailsFilters['granularity']
   onChange: (value: KpiDetailsFilters['granularity']) => void
+  options: Array<KpiDetailsFilters['granularity']>
 }
 
 export function KpiGranularityFilter({
   granularity,
   onChange,
+  options,
 }: KpiGranularityFilterProps) {
   return (
     <Select
@@ -36,15 +38,11 @@ export function KpiGranularityFilter({
       </SelectTrigger>
 
       <SelectContent position="popper">
-        <SelectItem value="daily" className="text-xs">
-          Daily
-        </SelectItem>
-        <SelectItem value="weekly" className="text-xs">
-          Weekly
-        </SelectItem>
-        <SelectItem value="monthly" className="text-xs">
-          Monthly
-        </SelectItem>
+        {options.map((option) => (
+          <SelectItem key={option} value={option} className="text-xs">
+            {option.charAt(0).toUpperCase() + option.slice(1)}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   )

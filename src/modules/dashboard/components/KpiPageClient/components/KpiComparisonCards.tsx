@@ -1,13 +1,26 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type { KpiValueType } from '@/src/modules/dashboard/config/kpiRegistry'
+import { formatKpiValueByType } from '@/src/modules/dashboard/utils/kpi.format'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 
 import { KpiComparisonQueryState } from './types'
 
 interface KpiComparisonCardsProps {
   comparison: KpiComparisonQueryState
+  valueType: KpiValueType
 }
 
-export function KpiComparisonCards({ comparison }: KpiComparisonCardsProps) {
+export function KpiComparisonCards({
+  comparison,
+  valueType,
+}: KpiComparisonCardsProps) {
+  const behaviorLabelMap = {
+    stable: 'Stable',
+    growing: 'Growing',
+    deteriorating: 'Deteriorating',
+    volatile: 'Volatile',
+  } as const
+
   return (
     <QueryBoundary
       data={comparison.data}
@@ -15,20 +28,20 @@ export function KpiComparisonCards({ comparison }: KpiComparisonCardsProps) {
       isError={comparison.isError}
       isFetching={comparison.isFetching}
       onRetry={() => comparison.refetch()}
-      skeleton={{ count: 3 }}
-      className={{ loading: 'grid h-24 grid-cols-3 gap-4' }}
+      skeleton={{ count: 5 }}
+      className={{ loading: 'grid h-24 grid-cols-5 gap-4' }}
     >
       {(data) => (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-5 gap-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-muted-foreground text-sm font-medium uppercase">
-                Current Period
+                Current Value
               </CardTitle>
             </CardHeader>
             <CardContent>
               <span className="text-2xl font-bold">
-                {data.current?.value?.toFixed(2) ?? '—'}
+                {formatKpiValueByType(data.current, valueType)}
               </span>
             </CardContent>
           </Card>
@@ -36,12 +49,18 @@ export function KpiComparisonCards({ comparison }: KpiComparisonCardsProps) {
           <Card>
             <CardHeader>
               <CardTitle className="text-muted-foreground text-sm font-medium uppercase">
-                Previous Period
+                Variation (Abs)
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <span className="text-2xl font-bold">
-                {data.previous?.value?.toFixed(2) ?? '—'}
+              <span
+                className={`text-2xl font-bold ${data.variationAbsolute >= 0 ? 'text-emerald-500' : 'text-red-500'}`}
+              >
+                {data.variationAbsolute >= 0 ? '+' : ''}
+                {formatKpiValueByType(
+                  Math.abs(data.variationAbsolute),
+                  valueType,
+                )}
               </span>
             </CardContent>
           </Card>
@@ -54,10 +73,41 @@ export function KpiComparisonCards({ comparison }: KpiComparisonCardsProps) {
             </CardHeader>
             <CardContent>
               <span
-                className={`text-2xl font-bold ${(data.variationPercentage ?? 0) >= 0 ? 'text-emerald-500' : 'text-red-500'}`}
+                className={`text-2xl font-bold ${data.variationPercent >= 0 ? 'text-emerald-500' : 'text-red-500'}`}
               >
-                {(data.variationPercentage ?? 0) >= 0 ? '↑' : '↓'}
-                {Math.abs(data.variationPercentage ?? 0).toFixed(2)}%
+                {data.variationPercent >= 0 ? '↑' : '↓'}
+                {Math.abs(data.variationPercent).toFixed(2)}%
+              </span>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-muted-foreground text-sm font-medium uppercase">
+                Best / Worst
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-1 text-sm">
+                <span className="font-semibold text-emerald-500">
+                  Best: {formatKpiValueByType(data.bestPoint, valueType)}
+                </span>
+                <span className="font-semibold text-red-500">
+                  Worst: {formatKpiValueByType(data.worstPoint, valueType)}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-muted-foreground text-sm font-medium uppercase">
+                Behavior
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <span className="text-2xl font-bold">
+                {behaviorLabelMap[data.behavior]}
               </span>
             </CardContent>
           </Card>

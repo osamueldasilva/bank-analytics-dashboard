@@ -1,23 +1,46 @@
 import { ArrowLeft } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { KpiMetric } from '@/src/modules/dashboard/schemas/dashboard.schemas'
-import { mapKpiLabelToDisplay } from '@/src/modules/dashboard/utils/dashboard.transform'
+import { KpiValueType } from '@/src/modules/dashboard/config/kpiRegistry'
+import { formatKpiValueByType } from '@/src/modules/dashboard/utils/kpi.format'
 
 interface KpiDetailsHeaderProps {
-  kpiId: string
+  label: string
   onBack: () => void
+  currentValue?: number | null
+  variationPercent?: number | null
+  valueType: KpiValueType
 }
 
-export function KpiDetailsHeader({ kpiId, onBack }: KpiDetailsHeaderProps) {
+export function KpiDetailsHeader({
+  label,
+  onBack,
+  currentValue,
+  variationPercent,
+  valueType,
+}: KpiDetailsHeaderProps) {
+  const variation = variationPercent ?? 0
+
   return (
     <div className="flex items-center gap-3">
       <Button variant="outline" size="sm" onClick={onBack}>
         <ArrowLeft className="h-4 w-4" />
       </Button>
-      <h1 className="text-2xl font-bold">
-        {mapKpiLabelToDisplay(kpiId as KpiMetric['label'])}
-      </h1>
+      <div className="flex flex-col">
+        <h1 className="text-2xl font-bold">{label}</h1>
+        <div className="text-muted-foreground flex items-center gap-2 text-sm">
+          <span className="font-semibold">
+            {currentValue !== undefined && currentValue !== null
+              ? formatKpiValueByType(currentValue, valueType)
+              : '—'}
+          </span>
+          <span
+            className={variation >= 0 ? 'text-emerald-500' : 'text-red-500'}
+          >
+            {variation >= 0 ? '↑' : '↓'} {Math.abs(variation).toFixed(2)}%
+          </span>
+        </div>
+      </div>
     </div>
   )
 }
