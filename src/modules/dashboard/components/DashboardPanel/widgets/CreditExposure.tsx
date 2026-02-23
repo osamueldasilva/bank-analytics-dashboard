@@ -61,12 +61,12 @@ export function CreditExposure() {
               <CardTitle>Credit Exposure by Sector</CardTitle>
             </CardHeader>
             <CardContent>
-              <ChartContainer config={sectorConfig} className="h-24 w-full">
+              <ChartContainer config={sectorConfig} className="h-28 w-full">
                 <BarChart
                   accessibilityLayer
                   data={chartData}
                   layout="vertical"
-                  margin={{ left: 10, right: 20 }}
+                  margin={{ left: 20, right: 20 }}
                 >
                   <XAxis type="number" hide />
                   <YAxis
@@ -74,10 +74,10 @@ export function CreditExposure() {
                     type="category"
                     tickLine={false}
                     axisLine={false}
-                    className="text-xs font-medium"
-                    width={60}
+                    className="text-sm font-medium"
+                    width={65}
                   />
-                  <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
                   <Bar
                     dataKey="exposure"
                     layout="vertical"

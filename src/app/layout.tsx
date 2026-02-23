@@ -1,44 +1,46 @@
 import '../styles/globals.css'
 
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { IBM_Plex_Mono, Inter } from 'next/font/google'
 
 import { AppSidebar } from '@/components/AppSidebar'
 import { Header } from '@/components/Header'
 
 import { Providers } from './providers'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const inter = Inter({
+  variable: '--font-sans',
   subsets: ['latin'],
+  display: 'swap',
 })
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const interMono = IBM_Plex_Mono({
   subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-mono',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
   title: 'BankOps Analytics Dashboard',
-  description: 'Dashboard de análise de dados para operações bancárias',
+  description: 'Data analytics dashboard for banking operations',
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${interMono.variable} font-sans antialiased`}
       >
         <Providers>
           <div className="flex min-h-screen w-full">
             <AppSidebar />
             <div className="flex flex-1 flex-col">
               <Header />
-
               <main className="flex-1 overflow-y-auto px-12 py-6">
                 {children}
               </main>

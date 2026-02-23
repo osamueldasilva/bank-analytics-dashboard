@@ -83,7 +83,7 @@ export function RecentRiskEvents() {
                 <TableBody>
                   {data.items.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell className="font-mono text-xs font-medium">
+                      <TableCell className="font-mono text-sm font-medium">
                         {item.id}
                       </TableCell>
 

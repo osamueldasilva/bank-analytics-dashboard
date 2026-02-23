@@ -100,7 +100,7 @@ export function LiquidityDistribution() {
                         className="h-2 w-2 rounded-full"
                         style={{ backgroundColor: item.fill }}
                       />
-                      <span className="text-muted-foreground text-xs font-medium capitalize">
+                      <span className="text-muted-foreground text-sm font-medium capitalize">
                         {item.segment}
                       </span>
                     </div>

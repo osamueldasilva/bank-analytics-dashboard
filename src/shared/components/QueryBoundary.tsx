@@ -110,7 +110,7 @@ export function QueryBoundary<T>({
         <div className="animate-in fade-in slide-in-from-bottom-2 fixed right-4 bottom-4 z-9999">
           <div className="bg-background flex items-center gap-2 rounded-full border px-4 py-2 shadow-2xl">
             <Loader2 className="text-primary h-4 w-4 animate-spin" />
-            <span className="text-xs font-semibold">Updating data...</span>
+            <span className="text-sm font-semibold">Updating data...</span>
           </div>
         </div>
       )}

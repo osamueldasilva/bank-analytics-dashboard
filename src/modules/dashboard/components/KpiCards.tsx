@@ -60,7 +60,7 @@ export function KpiCards() {
                     >
                       {item.trend === 'up' ? '↑' : '↓'}
                       {Math.abs(item.delta).toFixed(2)}%
-                      <span className="text-muted-foreground ml-1 text-xs">
+                      <span className="text-muted-foreground ml-1 text-sm">
                         vs previous period
                       </span>
                     </span>
