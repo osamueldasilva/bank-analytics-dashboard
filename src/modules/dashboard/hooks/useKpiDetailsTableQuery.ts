@@ -15,6 +15,7 @@ export const useKpiDetailsTable = (kpiId: string) => {
       'details-table',
       kpiId,
       filters,
+      detailFilters.granularity,
       detailFilters.page,
       detailFilters.pageSize,
     ],
@@ -22,6 +23,7 @@ export const useKpiDetailsTable = (kpiId: string) => {
       kpiService.getDetailsTable(
         kpiId,
         filters,
+        detailFilters.granularity,
         detailFilters.page,
         detailFilters.pageSize,
       ),

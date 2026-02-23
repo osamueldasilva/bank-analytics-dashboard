@@ -13,7 +13,15 @@ export const kpiService = {
   getDetailsTable: (
     kpiId: string,
     filters: DashboardFilters,
+    granularity: 'daily' | 'weekly' | 'monthly',
     page: number,
     pageSize: number,
-  ) => dashboardApi.fetchKpiDetailsTable(kpiId, filters, page, pageSize),
+  ) =>
+    dashboardApi.fetchKpiDetailsTable(
+      kpiId,
+      filters,
+      granularity,
+      page,
+      pageSize,
+    ),
 }

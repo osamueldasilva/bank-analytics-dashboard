@@ -104,11 +104,18 @@ export const dashboardApi = {
   fetchKpiDetailsTable: async (
     kpiId: string,
     filters: DashboardFilters,
+    granularity: 'daily' | 'weekly' | 'monthly',
     page: number,
     pageSize: number,
   ) => {
     await simulateLatency()
-    const data = generateKpiDetailsTable(kpiId, filters, page, pageSize)
+    const data = generateKpiDetailsTable(
+      kpiId,
+      filters,
+      granularity,
+      page,
+      pageSize,
+    )
     const parsed = PaginatedKpiDetailsSchema.safeParse(data)
     if (!parsed.success) throw new Error('Contrato inválido: KpiDetailsTable')
     return parsed.data

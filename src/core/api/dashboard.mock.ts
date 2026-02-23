@@ -413,11 +413,14 @@ const KPI_DETAILS_SEGMENTS = ['Retail', 'Corporate', 'SME'] as const
 export function generateKpiDetailsTable(
   kpiId: string,
   filters: DashboardFilters,
+  granularity: 'daily' | 'weekly' | 'monthly',
   page: number,
   pageSize: number,
 ) {
   const { segment: segmentFilter } = filters
   const now = Date.now()
+  const stepDays = GRANULARITY_DAYS[granularity] ?? 1
+  const totalRows = Math.ceil(KPI_DETAILS_TOTAL / stepDays)
 
   const allItems: {
     id: string
@@ -428,8 +431,8 @@ export function generateKpiDetailsTable(
     trend: 'up' | 'down'
   }[] = []
 
-  for (let i = 0; i < KPI_DETAILS_TOTAL; i++) {
-    const seed = getSeed(kpiId, `detail-${i}`, 'row')
+  for (let i = 0; i < totalRows; i++) {
+    const seed = getSeed(kpiId, `detail-${granularity}-${i}`, 'row')
     const seg =
       KPI_DETAILS_SEGMENTS[
         Math.floor(seededRandom(seed * 3) * KPI_DETAILS_SEGMENTS.length)
@@ -438,7 +441,7 @@ export function generateKpiDetailsTable(
     if (segmentFilter !== 'All' && seg !== segmentFilter) continue
 
     const value = parseFloat((seededRandom(seed) * 1000).toFixed(2))
-    const prevSeed = getSeed(kpiId, `detail-${i}-prev`, 'row')
+    const prevSeed = getSeed(kpiId, `detail-${granularity}-${i}-prev`, 'row')
     const prevValue = parseFloat((seededRandom(prevSeed) * 1000).toFixed(2))
     const delta =
       prevValue !== 0
@@ -447,7 +450,7 @@ export function generateKpiDetailsTable(
 
     allItems.push({
       id: `${kpiId.toUpperCase()}-${String(i + 1).padStart(4, '0')}`,
-      date: toISODate(now - i * ONE_DAY_MS),
+      date: toISODate(now - i * stepDays * ONE_DAY_MS),
       segment: seg,
       value,
       delta,
