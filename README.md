@@ -1,15 +1,125 @@
-# Bank Analytics Dashboard
+# BankOps Analytics Dashboard
+
+> **Sistema de visualização e análise operacional para bancos**
+
+O **BankOps Analytics Dashboard** é um sistema moderno para monitoramento de métricas estratégicas, eventos de risco e indicadores de performance no contexto bancário.
+
+---
+
+## 🚀 Visão Geral
+
+O foco do sistema é fornecer uma visão consolidada da operação bancária, permitindo:
+
+- Análise comparativa
+- Segmentação por período
+- Estrutura de autorização baseada em roles (RBAC) implementada de forma simulada, preparada para futura integração com autenticação real
+
+---
+
+## 🎯 Propósito do Sistema
+
+O BankOps Analytics Dashboard simula um ambiente real de análise operacional bancária, atendendo diferentes perfis de usuários que precisam:
+
+- 📊 Monitorar KPIs financeiros e operacionais
+- 📈 Comparar desempenho entre períodos
+- 🔎 Filtrar dados por segmento e granularidade
+- ⚠️ Analisar eventos de risco com paginação e ordenação
+- 📤 Exportar dados estruturados
+- 🔒 Estruturar controle de acesso por permissões (RBAC) como evolução do projeto
+
+---
+
+> O objetivo principal não é apenas exibir métricas, mas demonstrar uma arquitetura **escalável** e **organizada** para sistemas analíticos.
 
 Dashboard analítico bancário construído com **Next.js 16**, **React 19**, **TypeScript**, **Tailwind CSS** e **shadcn/ui**.
 
 ---
 
+## 🧠 Decisões Arquiteturais
+
+### Organização por Módulo (Feature-Based Architecture)
+
+O projeto foi estruturado por domínio (`dashboard`, `risk-events`) ao invés de separação puramente técnica.
+
+**Motivação:**
+
+- Redução de acoplamento entre features
+- Escalabilidade horizontal
+- Facilidade para expansão do sistema e atuação paralela de times
+
+**Trade-offs:**
+
+- Estrutura inicial mais detalhada
+- Maior disciplina para manter fronteiras de módulo
+
+### Uso de TanStack Query
+
+Optou-se por TanStack Query para estado assíncrono por oferecer:
+
+- Cache inteligente por chave
+- Invalidação controlada
+- Sincronização automática de dados
+- Controle estratégico de `staleTime`, `retry` e refetch
+
+Isso reduz complexidade de gerenciamento manual e evita boilerplate de estado remoto.
+
+### Validação Runtime com Zod
+
+Mesmo com TypeScript, contratos externos podem quebrar em runtime. O uso de Zod garante:
+
+- Segurança estrutural na borda da aplicação
+- Tipagem derivada (`z.infer`) a partir do schema
+- Single Source of Truth entre validação e tipos
+
+---
+
+## 🔄 Fluxo de Dados
+
+```text
+UI
+ → Hook (React Query + URL state)
+   → Service (orquestração)
+     → API client
+       → Validação Zod
+         → Transformação (utils)
+           → Renderização
+```
+
+---
+
+## 🏆 Diferenciais Técnicos
+
+- Estado sincronizado com URL (query param driven)
+- Controle de permissão centralizado (RBAC) com role persistida localmente e matriz declarativa de permissões
+- Separação clara entre domínio e infraestrutura
+- Tipagem derivada de schema com validação runtime
+- Arquitetura preparada para evolução incremental
+
+---
+
+## 🔐 Autorização (RBAC)
+
+O controle de acesso é baseado em uma matriz declarativa de permissões por role (`Admin`, `Analyst`, `Viewer`), definida em `auth.config.ts`. Cada role possui um conjunto explícito de permissões (ex.: `dashboardAccess`, `riskEventsAccess`, `dashboardExportCsv`).
+
+A role ativa é persistida em `localStorage` e exposta via `AuthProvider` + hook `useAuth()`, que disponibiliza o método `can(permission)` para verificação condicional em qualquer ponto da UI.
+
+A autenticação real (login, token, sessão) ainda não está implementada — a role é resolvida localmente. A arquitetura já separa **autenticação** (quem é o usuário) de **autorização** (o que ele pode fazer), permitindo integração futura com provedores de identidade sem alterar a lógica de permissões.
+
+---
+
 ## Sumário
 
+- [Decisões Arquiteturais](#-decisões-arquiteturais)
+- [Fluxo de Dados](#-fluxo-de-dados)
+- [Diferenciais Técnicos](#-diferenciais-técnicos)
+- [Autorização (RBAC)](#-autorização-rbac)
 - [Início Rápido](#início-rápido)
 - [Arquitetura & Estrutura de Pastas](#arquitetura--estrutura-de-pastas)
 - [Padrões do Projeto](#padrões-do-projeto)
+- [Escalabilidade](#-escalabilidade)
+- [Testabilidade](#-testabilidade)
 - [Guia de Contribuição](#guia-de-contribuição)
+- [Tech Stack](#-tech-stack)
 - [Deploy](#deploy)
 
 ---
@@ -36,7 +146,7 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 
 ## Arquitetura & Estrutura de Pastas
 
-```
+```text
 ├── components/              # Componentes de UI reutilizáveis (shadcn/ui + layout)
 │   ├── ui/                  # Componentes primitivos do shadcn/ui
 │   ├── AppSidebar.tsx       # Sidebar principal
@@ -88,54 +198,54 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 │   │
 │   ├── modules/
 │   │   ├── dashboard/       # Feature module do dashboard
-│   │       ├── components/            # Componentes do módulo
-│   │       │   ├── DashboardFiltersBar.tsx
-│   │       │   ├── KpiCards.tsx
-│   │       │   ├── DashboardPanel/    # Painel com widgets
-│   │       │   │   ├── index.tsx
-│   │       │   │   └── widgets/       # Widgets individuais
-│   │       │   └── KpiPageClient/     # Página de detalhe de KPI
-│   │       │       ├── index.tsx
-│   │       │       └── components/
-│   │       │           └── types.ts   # Tipos locais do componente
-│   │       │
-│   │       ├── config/                # Configurações do módulo
-│   │       │   └── kpiRegistry.ts     # Registry de KPIs (endpoints, colunas, filtros)
-│   │       │
-│   │       ├── hooks/                 # React hooks do módulo
-│   │       │   ├── useDashboardFilters.ts
-│   │       │   ├── useDashboardQueries.ts
-│   │       │   ├── useExportDashboardCsv.ts
-│   │       │   ├── useKpiComparisonQuery.ts
-│   │       │   ├── useKpiDetail.ts
-│   │       │   ├── useKpiDetailsFilters.ts
-│   │       │   ├── useKpiDetailsQuery.ts
-│   │       │   ├── useKpiDetailsTableQuery.ts
-│   │       │   └── useUrlFilters.ts   # Hook genérico para filtros via URL
-│   │       │
-│   │       ├── schemas/               # Zod schemas (source of truth para tipos runtime)
-│   │       │   ├── dashboard.schemas.ts
-│   │       │   └── kpiDetailsFilters.schema.ts
-│   │       │
-│   │       ├── services/              # Camada de serviço (facade para API)
-│   │       │   ├── dashboard.service.ts
-│   │       │   ├── kpi.service.ts
-│   │       │   └── exportDashboardCsv.ts
-│   │       │
-│   │       ├── storage/               # Persistência local (localStorage)
-│   │       │   └── dashboardPreferences.ts
-│   │       │
-│   │       ├── types/                 # Tipos locais do módulo
-│   │       │   ├── dashboard.types.ts       # Re-export (compat) → src/types/
-│   │       │   ├── dashboard.filters.ts     # DashboardFilters type
-│   │       │   └── userPreferences.ts       # UserPreferences type
-│   │       │
-│   │       └── utils/                 # Utilitários do módulo
-│   │           ├── csv.utils.ts             # Geração de CSV
-│   │           ├── dashboard.transform.ts   # Formatação e transformação de dados
-│   │           ├── kpi.comparison.ts        # ⭐ Lógica de comparação de KPI (extraída)
-│   │           └── kpi.format.ts            # Formatação de valores por tipo
-│   │
+│   │   │   ├── components/            # Componentes do módulo
+│   │   │   │   ├── DashboardFiltersBar.tsx
+│   │   │   │   ├── KpiCards.tsx
+│   │   │   │   ├── DashboardPanel/    # Painel com widgets
+│   │   │   │   │   ├── index.tsx
+│   │   │   │   │   └── widgets/       # Widgets individuais
+│   │   │   │   └── KpiPageClient/     # Página de detalhe de KPI
+│   │   │   │       ├── index.tsx
+│   │   │   │       └── components/
+│   │   │   │           └── types.ts   # Tipos locais do componente
+│   │   │   │
+│   │   │   ├── config/                # Configurações do módulo
+│   │   │   │   └── kpiRegistry.ts     # Registry de KPIs (endpoints, colunas, filtros)
+│   │   │   │
+│   │   │   ├── hooks/                 # React hooks do módulo
+│   │   │   │   ├── useDashboardFilters.ts
+│   │   │   │   ├── useDashboardQueries.ts
+│   │   │   │   ├── useExportDashboardCsv.ts
+│   │   │   │   ├── useKpiComparisonQuery.ts
+│   │   │   │   ├── useKpiDetail.ts
+│   │   │   │   ├── useKpiDetailsFilters.ts
+│   │   │   │   ├── useKpiDetailsQuery.ts
+│   │   │   │   ├── useKpiDetailsTableQuery.ts
+│   │   │   │   └── useUrlFilters.ts   # Hook genérico para filtros via URL
+│   │   │   │
+│   │   │   ├── schemas/               # Zod schemas (source of truth para tipos runtime)
+│   │   │   │   ├── dashboard.schemas.ts
+│   │   │   │   └── kpiDetailsFilters.schema.ts
+│   │   │   │
+│   │   │   ├── services/              # Camada de serviço (facade para API)
+│   │   │   │   ├── dashboard.service.ts
+│   │   │   │   ├── kpi.service.ts
+│   │   │   │   └── exportDashboardCsv.ts
+│   │   │   │
+│   │   │   ├── storage/               # Persistência local (localStorage)
+│   │   │   │   └── dashboardPreferences.ts
+│   │   │   │
+│   │   │   ├── types/                 # Tipos locais do módulo
+│   │   │   │   ├── dashboard.types.ts       # Re-export (compat) → src/types/
+│   │   │   │   ├── dashboard.filters.ts     # DashboardFilters type
+│   │   │   │   └── userPreferences.ts       # UserPreferences type
+│   │   │   │
+│   │   │   └── utils/                 # Utilitários do módulo
+│   │   │       ├── csv.utils.ts             # Geração de CSV
+│   │   │       ├── dashboard.transform.ts   # Formatação e transformação de dados
+│   │   │       ├── kpi.comparison.ts        # ⭐ Lógica de comparação de KPI (extraída)
+│   │   │       └── kpi.format.ts            # Formatação de valores por tipo
+│   │   │
 │   │   └── risk-events/     # Feature module de risk events (independente)
 │   │       ├── components/
 │   │       │   ├── RiskEventsPageClient.tsx  # Orquestrador da página (client)
@@ -154,7 +264,7 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 │   └── shared/              # Componentes compartilhados entre módulos
 │       └── components/
 │           ├── DataTable.tsx       # ⭐ Tabela genérica (sort + paginação + Card)
-│           ├── FilterSelect.tsx   # ⭐ Select de filtro reutilizável
+│           ├── FilterSelect.tsx    # ⭐ Select de filtro reutilizável
 │           └── QueryBoundary.tsx
 │
 └── public/                  # Assets estáticos
@@ -261,6 +371,33 @@ export type KpiSortField = 'date' | 'segment' | 'value' | ...
 
 ---
 
+## 📈 Escalabilidade
+
+O projeto foi desenhado para crescer sem reestruturação:
+
+- **Novos módulos** → Criar diretório em `src/modules/` seguindo a mesma convenção (`components/`, `hooks/`, `schemas/`, `services/`, `types/`, `utils/`)
+- **Novos KPIs** → Estender o registry em `kpiRegistry.ts` (endpoints, colunas e filtros declarativos)
+- **Novos endpoints** → Adicionar em `services/` com validação Zod na borda
+- **Backend real** → Substituir mocks em `core/api/` sem alterar hooks ou componentes
+- **Novos filtros** → Compor via `useUrlFilters` com schema Zod para validação automática dos query params
+
+---
+
+## 🧪 Testabilidade
+
+A arquitetura facilita testes em múltiplas camadas, mesmo que a suíte de testes ainda esteja em construção:
+
+| Camada      | Estratégia                                                 |
+| ----------- | ---------------------------------------------------------- |
+| `utils/`    | Funções puras — testáveis com testes unitários sem mock    |
+| `services/` | Facade desacoplada — facilita mocking da camada de API     |
+| `hooks/`    | Isolados por responsabilidade — testáveis com `renderHook` |
+| `schemas/`  | Validação determinística — testável com `.safeParse()`     |
+
+> A separação entre lógica pura (`utils`), orquestração (`services`) e estado (`hooks`) foi projetada para tornar cada camada independentemente testável.
+
+---
+
 ## Guia de Contribuição
 
 1. **Novos tipos?** → Defina em `src/types/` (ou schema Zod + re-export).
@@ -268,17 +405,20 @@ export type KpiSortField = 'date' | 'segment' | 'value' | ...
 3. **Lógica reutilizável?** → Extraia para `utils/` como função pura.
 4. **Novo hook?** → Um hook, uma responsabilidade. Use `QUERY_DEFAULTS`.
 5. **Imports** → Sempre `@/` alias para paths absolutos.
-6. **Auth/RBAC** → Constantes em `src/constants/auth.constants.ts`, tipos em `src/types/auth.types.ts` e consumo via `@/src/core/auth`.
+6. **Auth/RBAC** → Base estrutural em `src/constants/auth.constants.ts` e `src/types/auth.types.ts`, consumo via `@/src/core/auth`. A autenticação real ainda não está ativa — atualmente a role é resolvida localmente para demonstrar separação entre autenticação e autorização.
 
 ---
 
-## Tech Stack
+## 🧱 Tech Stack
 
-- **Framework:** Next.js 16 (App Router + Turbopack)
-- **UI:** Tailwind CSS v4 + shadcn/ui
-- **State:** React Query (TanStack Query v5)
-- **Validação:** Zod
-- **Lint:** ESLint + simple-import-sort
+| Categoria         | Ferramenta/Lib                                            |
+| ----------------- | --------------------------------------------------------- |
+| Framework         | Next.js 16 (App Router, SSR/CSR híbrido, streaming ready) |
+| Linguagem         | TypeScript                                                |
+| Estado assíncrono | TanStack Query v5                                         |
+| Validação runtime | Zod                                                       |
+| UI                | Tailwind CSS v4 + shadcn/ui                               |
+| Lint              | ESLint + simple-import-sort                               |
 
 ---
 
