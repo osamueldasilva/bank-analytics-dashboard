@@ -1,6 +1,6 @@
 'use client'
 
-import { RotateCcw } from 'lucide-react'
+import { Eraser } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -46,8 +46,13 @@ export default function SettingsPage() {
           </div>
 
           <div className="mt-6 flex justify-end">
-            <Button onClick={resetConfig} disabled={allChecked}>
-              <RotateCcw className="mr-1" />
+            <Button
+              onClick={resetConfig}
+              variant="outline"
+              disabled={allChecked}
+              className="text-destructive border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+            >
+              <Eraser className="mr-1" />
               Reset to Defaults
             </Button>
           </div>

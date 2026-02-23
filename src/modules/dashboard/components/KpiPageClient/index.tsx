@@ -17,14 +17,6 @@ export function KpiPageClient({ kpiId }: { kpiId: string }) {
     return null
   }
 
-  console.log('KPI Detail:', {
-    meta: kpiDetail.meta,
-    filters: kpiDetail.filters,
-    history: kpiDetail.history,
-    comparison: kpiDetail.comparison,
-    table: kpiDetail.table,
-  })
-
   return (
     <div className="mx-auto flex w-full flex-col gap-4">
       <div className="flex justify-between">

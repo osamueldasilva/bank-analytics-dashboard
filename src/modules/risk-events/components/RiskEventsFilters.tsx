@@ -1,6 +1,6 @@
 'use client'
 
-import { RotateCcw } from 'lucide-react'
+import { Eraser } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -84,12 +84,12 @@ export function RiskEventsFilters() {
       </div>
 
       <Button
-        variant="outline"
+        variant="destructive"
         disabled={!hasActiveFilters}
         onClick={resetFilters}
         title="Reset Filters"
       >
-        <RotateCcw className="h-4 w-4" />
+        <Eraser className="h-4 w-4" />
       </Button>
     </div>
   )
