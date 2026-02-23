@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  AlertTriangle,
   BarChart3,
   Globe,
   LayoutDashboard,
@@ -31,6 +32,12 @@ const items = [
     disabled: false,
     url: '/dashboard',
   },
+  {
+    title: 'Risk Events',
+    icon: AlertTriangle,
+    disabled: false,
+    url: '/risk-events',
+  },
   { title: 'Market', icon: TrendingUp, disabled: true, url: '/market' },
   { title: 'Exposure', icon: BarChart3, disabled: true, url: '/exposure' },
   { title: 'Global', icon: Globe, disabled: true, url: '/global' },
@@ -43,7 +50,10 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="flex flex-col border-r">
-      <SidebarHeader className="mt-2 flex items-center justify-center">
+      <SidebarHeader
+        className="mt-2 flex items-center justify-center"
+        title="BankOps Analytics"
+      >
         <div className="bg-primary flex items-center justify-center rounded-sm p-2 text-white">
           <LucideShieldHalf className="size-8" />
         </div>
@@ -62,7 +72,7 @@ export function AppSidebar() {
                     <SidebarMenuButton
                       tooltip={item.title}
                       disabled={item.disabled}
-                      className="hover:text-primary data-[active=true]:text-primary mx-auto"
+                      className="hover:text-primary data-[active=true]:text-primary mx-auto cursor-pointer"
                       isActive={isActive}
                       onClick={() => router.push(item.url)}
                     >

@@ -53,9 +53,11 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 │   ├── app/                 # App Router do Next.js (rotas e layouts)
 │   │   ├── layout.tsx
 │   │   ├── providers.tsx    # QueryClientProvider, ThemeProvider, etc.
-│   │   └── dashboard/
-│   │       ├── page.tsx                  # Página principal do dashboard
-│   │       └── kpi/[kpiId]/page.tsx      # Detalhes de KPI (SSR dinâmico)
+│   │   ├── dashboard/
+│   │   │   ├── page.tsx                  # Página principal do dashboard
+│   │   │   └── kpi/[kpiId]/page.tsx      # Detalhes de KPI (SSR dinâmico)
+│   │   └── risk-events/
+│   │       └── page.tsx                  # Página de risk events
 │   │
 │   ├── constants/           # ⭐ Constantes centralizadas
 │   │   ├── index.ts                   # Barrel export
@@ -72,10 +74,12 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 │   │   └── api/
 │   │       ├── dashboard.api.ts       # API client com validação Zod
 │   │       ├── dashboard.mock.ts      # Geração de dados mockados
+│   │       ├── riskEvents.api.ts      # API client de risk events
+│   │       ├── riskEvents.mock.ts     # Mock de risk events (240 eventos)
 │   │       └── simulateLatency.ts     # Simulação de latência de rede
 │   │
 │   ├── modules/
-│   │   └── dashboard/       # Feature module do dashboard
+│   │   ├── dashboard/       # Feature module do dashboard
 │   │       ├── components/            # Componentes do módulo
 │   │       │   ├── DashboardFiltersBar.tsx
 │   │       │   ├── KpiCards.tsx
@@ -123,6 +127,22 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 │   │           ├── dashboard.transform.ts   # Formatação e transformação de dados
 │   │           ├── kpi.comparison.ts        # ⭐ Lógica de comparação de KPI (extraída)
 │   │           └── kpi.format.ts            # Formatação de valores por tipo
+│   │
+│   │   └── risk-events/     # Feature module de risk events (independente)
+│   │       ├── components/
+│   │       │   ├── RiskEventsPageClient.tsx  # Orquestrador da página (client)
+│   │       │   ├── RiskEventsFilters.tsx     # Filtros (URL-driven)
+│   │       │   ├── RiskEventsTable.tsx       # Tabela com sort + pagination
+│   │       │   └── RiskEventsStatusBadge.tsx # Badge de status/severity
+│   │       ├── hooks/
+│   │       │   ├── useRiskEventsFilters.ts   # Filtros via URL (Zod-validated)
+│   │       │   └── useRiskEventsQuery.ts     # React Query hook
+│   │       ├── schemas/
+│   │       │   └── riskEvents.schema.ts      # Zod schemas (source of truth)
+│   │       ├── services/
+│   │       │   └── riskEvents.service.ts     # Facade para API
+│   │       └── types/
+│   │           └── riskEvents.types.ts       # z.infer types
 │   │
 │   └── shared/              # Componentes compartilhados entre módulos
 │       └── components/
