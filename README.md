@@ -118,7 +118,6 @@ A autenticação real (login, token, sessão) ainda não está implementada — 
 - [Padrões do Projeto](#padrões-do-projeto)
 - [Escalabilidade](#-escalabilidade)
 - [Testabilidade](#-testabilidade)
-- [Guia de Contribuição](#guia-de-contribuição)
 - [Tech Stack](#-tech-stack)
 - [Deploy](#deploy)
 
@@ -395,17 +394,6 @@ A arquitetura facilita testes em múltiplas camadas, mesmo que a suíte de teste
 | `schemas/`  | Validação determinística — testável com `.safeParse()`     |
 
 > A separação entre lógica pura (`utils`), orquestração (`services`) e estado (`hooks`) foi projetada para tornar cada camada independentemente testável.
-
----
-
-## Guia de Contribuição
-
-1. **Novos tipos?** → Defina em `src/types/` (ou schema Zod + re-export).
-2. **Nova constante?** → Adicione em `src/constants/`.
-3. **Lógica reutilizável?** → Extraia para `utils/` como função pura.
-4. **Novo hook?** → Um hook, uma responsabilidade. Use `QUERY_DEFAULTS`.
-5. **Imports** → Sempre `@/` alias para paths absolutos.
-6. **Auth/RBAC** → Base estrutural em `src/constants/auth.constants.ts` e `src/types/auth.types.ts`, consumo via `@/src/core/auth`. A autenticação real ainda não está ativa — atualmente a role é resolvida localmente para demonstrar separação entre autenticação e autorização.
 
 ---
 
