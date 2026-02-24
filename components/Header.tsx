@@ -6,6 +6,7 @@ import { Suspense } from 'react'
 import { DashboardFiltersBar } from '@/src/modules/dashboard/components/DashboardFiltersBar'
 
 import { Badge } from './ui/badge'
+import { SidebarTrigger } from './ui/sidebar'
 
 const PAGE_META: Record<string, { title: string; description: string }> = {
   '/dashboard': {
@@ -38,28 +39,32 @@ export function Header() {
     pathname === '/dashboard' || pathname.startsWith('/dashboard/')
 
   return (
-    <header className="border-border/40 bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 w-full border-b px-12 backdrop-blur">
-      <div className="flex h-16 items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="flex flex-col">
-            <div className="flex items-center gap-3">
-              <h1 className="text-foreground text-3xl font-bold tracking-tight">
+    <header className="border-border/40 bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-50 w-full border-b px-4 backdrop-blur">
+      <div className="flex h-14 items-center justify-between gap-4 sm:h-16">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+          <SidebarTrigger className="shrink-0 md:hidden" />
+
+          <div className="flex min-w-0 flex-col">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <h1 className="text-foreground truncate text-lg font-bold tracking-tight sm:text-2xl lg:text-3xl">
                 {title}
               </h1>
 
               <Badge
                 variant="outline"
-                className="rounded-sm border-emerald-500 bg-emerald-500/20 px-2 text-[10px] font-bold tracking-wider text-emerald-500"
+                className="hidden rounded-sm border-emerald-500 bg-emerald-500/20 px-2 text-[10px] font-bold tracking-wider text-emerald-500 sm:inline-flex"
               >
                 LIVE SYSTEM
               </Badge>
             </div>
-            <p className="text-muted-foreground text-sm">{description}</p>
+            <p className="text-muted-foreground hidden truncate text-sm sm:block">
+              {description}
+            </p>
           </div>
         </div>
 
         {isDashboard && (
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-4">
             <Suspense fallback={null}>
               <DashboardFiltersBar />
             </Suspense>

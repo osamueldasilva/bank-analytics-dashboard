@@ -41,9 +41,9 @@ export default function RootLayout({
           <RoutePermissionGuard>
             <div className="flex min-h-screen w-full">
               <AppSidebar />
-              <div className="flex flex-1 flex-col">
+              <div className="flex min-w-0 flex-1 flex-col">
                 <Header />
-                <main className="flex-1 overflow-y-auto px-12 py-6">
+                <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto px-4 py-4 sm:px-6 sm:py-6 lg:px-6">
                   {children}
                 </main>
               </div>

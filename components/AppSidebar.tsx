@@ -15,6 +15,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -66,17 +67,18 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="flex flex-col border-r">
-      <SidebarHeader
-        className="mt-2 flex items-center justify-center"
-        title="BankOps Analytics"
-      >
+      <SidebarHeader className="mt-2 flex items-center justify-center">
         <div className="bg-primary flex items-center justify-center rounded-sm p-2 text-white">
           <LucideShieldHalf className="size-8" />
         </div>
+        <span className="text-base font-bold tracking-tight lg:hidden">
+          BankOps Analytics
+        </span>
       </SidebarHeader>
 
-      <SidebarContent className="mt-4 flex flex-1 flex-col">
+      <SidebarContent className="flex flex-1 flex-col">
         <SidebarGroup className="flex flex-1 flex-col">
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-1 flex-col">
             <SidebarMenu className="gap-1">
               {items.map((item) => {
@@ -89,7 +91,7 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       tooltip={item.title}
-                      className="hover:text-primary data-[active=true]:text-primary mx-auto cursor-pointer"
+                      className="hover:text-primary data-[active=true]:text-primary cursor-pointer"
                       isActive={isActive}
                       onClick={() => router.push(item.url)}
                     >
@@ -100,13 +102,13 @@ export function AppSidebar() {
                 )
               })}
             </SidebarMenu>
-
-            <SidebarFooter className="mt-auto">
-              <UserNav />
-            </SidebarFooter>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter>
+        <UserNav />
+      </SidebarFooter>
     </Sidebar>
   )
 }

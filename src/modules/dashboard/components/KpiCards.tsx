@@ -26,15 +26,17 @@ export function KpiCards() {
         isFetching={isFetching}
         onRetry={() => refetch()}
         skeleton={{ count: 5 }}
-        className={{ loading: 'grid h-24 grid-cols-5 gap-4' }}
+        className={{
+          loading: 'grid h-24 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5',
+        }}
       >
         {(data) => (
           <CardContent className="p-0">
-            <div className="grid grid-cols-10 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
               {data.map((item) => (
                 <Card
                   key={item.id}
-                  className="hover:bg-accent col-span-2 flex h-32 cursor-pointer flex-col justify-center transition-all hover:-translate-y-1 hover:shadow-lg"
+                  className="hover:bg-accent flex h-32 cursor-pointer flex-col justify-center transition-all hover:-translate-y-1 hover:shadow-lg"
                   onClick={() => {
                     router.push(buildKpiUrl(item.label, searchParams))
                   }}
@@ -46,7 +48,7 @@ export function KpiCards() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex flex-col items-start gap-1">
-                    <span className="text-2xl leading-tight font-bold">
+                    <span className="text-lg leading-tight font-bold sm:text-2xl">
                       {item.label === 'netExposure'
                         ? formatCurrency(item.value)
                         : item.value}

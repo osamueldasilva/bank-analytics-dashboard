@@ -19,7 +19,7 @@ export function KpiPageClient({ kpiId }: { kpiId: string }) {
 
   return (
     <div className="mx-auto flex w-full flex-col gap-4">
-      <div className="flex justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <KpiDetailsHeader
           label={kpiDetail.meta.label}
           onBack={() => router.back()}

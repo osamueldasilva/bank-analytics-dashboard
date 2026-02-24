@@ -1,10 +1,9 @@
 'use client'
 
-import { Monitor, Moon, Sun } from 'lucide-react'
+import { ChevronsUpDown, Monitor, Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,12 +16,14 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { SidebarMenuButton, useSidebar } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
 import { USER_ROLES } from '@/src/constants'
 import { ROLE_META, useAuth } from '@/src/core/auth'
 
 export function UserNav() {
   const { theme, setTheme } = useTheme()
+  const { isMobile } = useSidebar()
 
   const { role, setRole } = useAuth()
   const roleMeta = ROLE_META[role]
@@ -79,18 +80,32 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+        <SidebarMenuButton
+          size="lg"
+          className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground bg-accent"
+          tooltip={roleMeta.name}
+        >
+          <Avatar className="h-full rounded-lg sm:w-full">
             <AvatarImage src="https://github.com/shadcn.png" alt="@user" />
-            <AvatarFallback>SC</AvatarFallback>
+            <AvatarFallback className="rounded-lg">
+              {roleMeta.name.slice(0, 2).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
-        </Button>
+          <div className="grid flex-1 text-left text-sm leading-tight">
+            <span className="truncate font-medium">{roleMeta.name}</span>
+            <span className="text-muted-foreground truncate text-xs">
+              {roleMeta.email}
+            </span>
+          </div>
+          <ChevronsUpDown className="ml-auto size-4" />
+        </SidebarMenuButton>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
         className="w-56"
-        align="start"
-        side="right"
+        align="end"
+        side={isMobile ? 'bottom' : 'left'}
+        sideOffset={4}
         forceMount
       >
         <DropdownMenuLabel className="font-normal">

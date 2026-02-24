@@ -111,9 +111,9 @@ export function DataTable<T>({
         </div>
       </CardHeader>
 
-      <CardContent className="flex flex-col">
-        <div className="relative max-h-[320px] overflow-auto">
-          <Table>
+      <CardContent className="flex flex-col overflow-hidden">
+        <div className="relative max-h-80 overflow-auto">
+          <Table className="min-w-full">
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 {columns.map((col) => (

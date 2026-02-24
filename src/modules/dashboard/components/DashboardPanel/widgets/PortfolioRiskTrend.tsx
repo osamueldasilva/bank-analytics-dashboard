@@ -49,16 +49,16 @@ export function PortfolioRiskTrend({ className }: PortfolioRiskTrendProps) {
       onRetry={() => refetch()}
       skeleton={{
         count: 1,
-        wrapperClassName: cn('col-span-8', className),
+        wrapperClassName: cn(className),
       }}
       className={{
-        error: cn('col-span-8 h-74', className),
-        empty: cn('col-span-8 h-74', className),
-        loading: cn('col-span-8 h-74', className),
+        error: cn('h-74', className),
+        empty: cn('h-74', className),
+        loading: cn('h-74', className),
       }}
     >
       {(data) => (
-        <Card className={cn('col-span-8', className)}>
+        <Card className={cn(className)}>
           <CardHeader>
             <div className="flex flex-col gap-1">
               <CardTitle>Portfolio Risk Trend</CardTitle>

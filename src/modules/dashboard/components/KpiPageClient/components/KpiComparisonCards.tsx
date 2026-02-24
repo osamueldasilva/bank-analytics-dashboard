@@ -29,10 +29,12 @@ export function KpiComparisonCards({
       isFetching={comparison.isFetching}
       onRetry={() => comparison.refetch()}
       skeleton={{ count: 5 }}
-      className={{ loading: 'grid h-24 grid-cols-5 gap-4' }}
+      className={{
+        loading: 'grid h-24 grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5',
+      }}
     >
       {(data) => (
-        <div className="grid grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           <Card>
             <CardHeader>
               <CardTitle className="text-muted-foreground text-sm font-medium uppercase">
@@ -40,7 +42,7 @@ export function KpiComparisonCards({
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <span className="text-2xl font-bold">
+              <span className="text-lg font-bold sm:text-2xl">
                 {formatKpiValueByType(data.current, valueType)}
               </span>
             </CardContent>
@@ -54,7 +56,7 @@ export function KpiComparisonCards({
             </CardHeader>
             <CardContent>
               <span
-                className={`text-2xl font-bold ${data.variationAbsolute >= 0 ? 'text-emerald-500' : 'text-red-500'}`}
+                className={`text-lg font-bold sm:text-2xl ${data.variationAbsolute >= 0 ? 'text-emerald-500' : 'text-red-500'}`}
               >
                 {data.variationAbsolute >= 0 ? '+' : ''}
                 {formatKpiValueByType(
@@ -73,7 +75,7 @@ export function KpiComparisonCards({
             </CardHeader>
             <CardContent>
               <span
-                className={`text-2xl font-bold ${data.variationPercent >= 0 ? 'text-emerald-500' : 'text-red-500'}`}
+                className={`text-lg font-bold sm:text-2xl ${data.variationPercent >= 0 ? 'text-emerald-500' : 'text-red-500'}`}
               >
                 {data.variationPercent >= 0 ? '↑' : '↓'}
                 {Math.abs(data.variationPercent).toFixed(2)}%
@@ -99,14 +101,14 @@ export function KpiComparisonCards({
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="col-span-2 sm:col-span-1">
             <CardHeader>
               <CardTitle className="text-muted-foreground text-sm font-medium uppercase">
                 Behavior
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <span className="text-2xl font-bold">
+              <span className="text-lg font-bold sm:text-2xl">
                 {behaviorLabelMap[data.behavior]}
               </span>
             </CardContent>

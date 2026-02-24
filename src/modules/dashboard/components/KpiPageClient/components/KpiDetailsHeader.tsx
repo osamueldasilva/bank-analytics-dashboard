@@ -22,13 +22,13 @@ export function KpiDetailsHeader({
   const variation = variationPercent ?? 0
 
   return (
-    <div className="flex items-center gap-3">
-      <Button variant="outline" size="sm" onClick={onBack}>
+    <div className="flex min-w-0 items-center gap-3">
+      <Button variant="outline" size="sm" onClick={onBack} className="shrink-0">
         <ArrowLeft className="h-4 w-4" />
       </Button>
-      <div className="flex flex-col">
-        <h1 className="text-2xl font-bold">{label}</h1>
-        <div className="text-muted-foreground flex items-center gap-2 text-sm">
+      <div className="flex min-w-0 flex-col">
+        <h1 className="truncate text-lg font-bold sm:text-2xl">{label}</h1>
+        <div className="text-muted-foreground flex items-center gap-2 text-xs sm:text-sm">
           <span className="font-semibold">
             {currentValue !== undefined && currentValue !== null
               ? formatKpiValueByType(currentValue, valueType)

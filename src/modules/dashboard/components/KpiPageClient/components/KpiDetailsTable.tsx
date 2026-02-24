@@ -147,10 +147,10 @@ export function KpiDetailsTable({
       {(data) => (
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <CardTitle>Detail Records</CardTitle>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {additionalFilters.map((filter) => (
                   <Select
                     key={filter.key}
@@ -178,9 +178,9 @@ export function KpiDetailsTable({
             </div>
           </CardHeader>
 
-          <CardContent className="flex flex-col">
+          <CardContent className="flex flex-col overflow-hidden">
             <div className="relative max-h-96 overflow-auto">
-              <Table>
+              <Table className="min-w-full">
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     {columns.map((column) => (
@@ -228,7 +228,7 @@ export function KpiDetailsTable({
               </Table>
             </div>
 
-            <div className="mt-4 flex items-center justify-between border-t pt-4">
+            <div className="mt-4 flex flex-col items-center gap-3 border-t pt-4 sm:flex-row sm:justify-between">
               <div className="text-muted-foreground text-sm">
                 Page <strong>{data.currentPage}</strong> of{' '}
                 <strong>{data.totalPages}</strong>

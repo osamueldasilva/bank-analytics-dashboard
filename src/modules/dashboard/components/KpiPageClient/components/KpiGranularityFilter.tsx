@@ -27,7 +27,7 @@ export function KpiGranularityFilter({
         onChange(value as KpiDetailsFilters['granularity'])
       }
     >
-      <SelectTrigger className="h-8 w-56 text-sm">
+      <SelectTrigger className="h-8 w-full text-sm sm:w-56">
         <div className="flex items-center gap-2">
           <CalendarDays className="text-muted-foreground h-3.5 w-3.5" />
           <span className="text-muted-foreground font-normal">
