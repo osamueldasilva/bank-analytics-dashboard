@@ -27,7 +27,8 @@ export function KpiCards() {
         onRetry={() => refetch()}
         skeleton={{ count: 5 }}
         className={{
-          loading: 'grid h-24 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5',
+          loading:
+            'grid h-96 grid-cols-1 gap-4 sm:grid-cols-2 lg:h-24 lg:grid-cols-5',
         }}
       >
         {(data) => (

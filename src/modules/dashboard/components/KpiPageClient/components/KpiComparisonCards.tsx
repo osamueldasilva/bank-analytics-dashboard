@@ -30,7 +30,8 @@ export function KpiComparisonCards({
       onRetry={() => comparison.refetch()}
       skeleton={{ count: 5 }}
       className={{
-        loading: 'grid h-24 grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5',
+        loading:
+          'grid h-80 grid-cols-2 gap-4 sm:grid-cols-3 lg:h-24 lg:grid-cols-5',
       }}
     >
       {(data) => (

@@ -1,15 +1,7 @@
 import { format } from 'date-fns'
-import {
-  ArrowDown,
-  ArrowUp,
-  ArrowUpDown,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react'
+import { useMemo } from 'react'
 
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Select,
   SelectContent,
@@ -17,16 +9,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import { KpiDetailsFilters } from '@/src/modules/dashboard/schemas/kpiDetailsFilters.schema'
 import { formatCurrency } from '@/src/modules/dashboard/utils/dashboard.transform'
+import {
+  DataTable,
+  DataTableColumn,
+  SortDirection,
+} from '@/src/shared/components/DataTable'
 import { QueryBoundary } from '@/src/shared/components/QueryBoundary'
 import { KpiAdditionalFilter, KpiTableColumn } from '@/src/types/kpi.types'
 
@@ -38,22 +27,6 @@ interface KpiDetailsTableProps {
   tableFilters: KpiDetailsFilters
   columns: KpiTableColumn[]
   additionalFilters: KpiAdditionalFilter[]
-}
-
-type SortBy = KpiDetailsFilters['sortBy']
-type SortOrder = KpiDetailsFilters['sortOrder']
-
-const SORTABLE_KEYS: SortBy[] = [
-  'date',
-  'segment',
-  'value',
-  'normalizedValue',
-  'delta',
-  'status',
-]
-
-function isSortableKey(key: string): key is SortBy {
-  return SORTABLE_KEYS.includes(key as SortBy)
 }
 
 function getStatusBadgeClass(status: string) {
@@ -69,33 +42,55 @@ function getStatusBadgeClass(status: string) {
   }
 }
 
-function renderCellValue(row: Record<string, unknown>, column: KpiTableColumn) {
-  const value = row[column.key]
+function buildCellRenderer(column: KpiTableColumn) {
+  return function CellRenderer(row: Record<string, unknown>) {
+    const value = row[column.key]
 
-  if (value === undefined || value === null) return '—'
+    if (value === undefined || value === null) return '—'
 
-  switch (column.type) {
-    case 'date':
-      return format(new Date(String(value)), 'dd/MM/yyyy')
-    case 'currency':
-      return formatCurrency(Number(value))
-    case 'percentage': {
-      const numericValue = Number(value)
-      return (
-        <span
-          className={`font-semibold ${numericValue >= 0 ? 'text-emerald-500' : 'text-red-500'}`}
-        >
-          {numericValue >= 0 ? '+' : ''}
-          {numericValue.toFixed(2)}%
-        </span>
-      )
+    switch (column.type) {
+      case 'date':
+        return format(new Date(String(value)), 'dd/MM/yyyy')
+      case 'currency':
+        return formatCurrency(Number(value))
+      case 'percentage': {
+        const numericValue = Number(value)
+        return (
+          <span
+            className={`font-semibold ${numericValue >= 0 ? 'text-emerald-500' : 'text-red-500'}`}
+          >
+            {numericValue >= 0 ? '+' : ''}
+            {numericValue.toFixed(2)}%
+          </span>
+        )
+      }
+      case 'status':
+        return (
+          <Badge
+            variant="outline"
+            className={`font-medium ${getStatusBadgeClass(String(value))}`}
+          >
+            {String(value)}
+          </Badge>
+        )
+      case 'number':
+      case 'score':
+        return Number(value).toFixed(2)
+      default:
+        return String(value)
     }
-    case 'number':
-    case 'score':
-      return Number(value).toFixed(2)
-    default:
-      return String(value)
   }
+}
+
+function toDataTableColumns(
+  columns: KpiTableColumn[],
+): DataTableColumn<Record<string, unknown>>[] {
+  return columns.map((col) => ({
+    key: col.key,
+    label: col.label,
+    sortable: col.sortable,
+    render: buildCellRenderer(col),
+  }))
 }
 
 export function KpiDetailsTable({
@@ -105,36 +100,26 @@ export function KpiDetailsTable({
   columns,
   additionalFilters,
 }: KpiDetailsTableProps) {
-  const handleSort = (sortBy: SortBy) => {
-    const isCurrentColumn = tableFilters.sortBy === sortBy
-    const nextSortOrder: SortOrder = !isCurrentColumn
-      ? 'asc'
-      : tableFilters.sortOrder === 'asc'
-        ? 'desc'
-        : tableFilters.sortOrder === 'desc'
-          ? 'none'
-          : 'asc'
+  const dataTableColumns = useMemo(() => toDataTableColumns(columns), [columns])
 
-    updateFilters({ sortBy, sortOrder: nextSortOrder, page: 1 })
+  const sort = useMemo(
+    () => ({
+      field: tableFilters.sortBy,
+      direction: (tableFilters.sortOrder === 'none'
+        ? 'asc'
+        : tableFilters.sortOrder) as SortDirection,
+    }),
+    [tableFilters.sortBy, tableFilters.sortOrder],
+  )
+
+  const handleSortChange = (field: string, direction: SortDirection) => {
+    updateFilters({
+      sortBy: field as KpiDetailsFilters['sortBy'],
+      sortOrder: direction,
+      page: 1,
+    })
   }
 
-  const renderSortIcon = (sortBy: SortBy) => {
-    const isActive = tableFilters.sortBy === sortBy
-
-    if (!isActive || tableFilters.sortOrder === 'none') {
-      return <ArrowUpDown className="text-muted-foreground h-3.5 w-3.5" />
-    }
-
-    if (tableFilters.sortOrder === 'asc') {
-      return <ArrowUp className="h-3.5 w-3.5" />
-    }
-
-    if (tableFilters.sortOrder === 'desc') {
-      return <ArrowDown className="h-3.5 w-3.5" />
-    }
-
-    return <ArrowUpDown className="text-muted-foreground h-3.5 w-3.5" />
-  }
   return (
     <QueryBoundary
       data={detailsTable.data}
@@ -145,21 +130,28 @@ export function KpiDetailsTable({
       skeleton={{ count: 1, className: 'h-100' }}
     >
       {(data) => (
-        <Card>
-          <CardHeader>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <CardTitle>Detail Records</CardTitle>
-
-              <div className="flex flex-wrap items-center gap-2">
-                {additionalFilters.map((filter) => (
+        <DataTable
+          title="Detail Records"
+          columns={dataTableColumns}
+          data={data.rows}
+          rowKey={(row, index) => String(row.id ?? index)}
+          sort={sort}
+          onSortChange={handleSortChange}
+          pagination={{
+            page: data.currentPage,
+            pageSize: tableFilters.pageSize,
+            total: data.total,
+          }}
+          onPageChange={(page) => updateFilters({ page })}
+          headerExtra={
+            <>
+              {additionalFilters.map((filter) => (
+                <div key={filter.key} className="flex flex-col gap-1">
+                  <label className="text-sm">{filter.label}</label>
                   <Select
-                    key={filter.key}
                     value={String(tableFilters[filter.key])}
                     onValueChange={(value) =>
-                      updateFilters({
-                        [filter.key]: value,
-                        page: 1,
-                      })
+                      updateFilters({ [filter.key]: value, page: 1 })
                     }
                   >
                     <SelectTrigger className="h-8 w-34">
@@ -173,99 +165,11 @@ export function KpiDetailsTable({
                       ))}
                     </SelectContent>
                   </Select>
-                ))}
-              </div>
-            </div>
-          </CardHeader>
-
-          <CardContent className="flex flex-col overflow-hidden">
-            <div className="relative max-h-96 overflow-auto">
-              <Table className="min-w-full">
-                <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    {columns.map((column) => (
-                      <TableHead key={column.key} className="text-left">
-                        {column.sortable && isSortableKey(column.key) ? (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="-ml-3 h-8 gap-1"
-                            onClick={() => handleSort(column.key as SortBy)}
-                          >
-                            {column.label}
-                            {renderSortIcon(column.key)}
-                          </Button>
-                        ) : (
-                          column.label
-                        )}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-
-                <TableBody>
-                  {data.rows.map((row, index) => (
-                    <TableRow key={String(row.id ?? `${index}`)}>
-                      {columns.map((column) => (
-                        <TableCell
-                          key={`${String(row.id ?? index)}-${column.key}`}
-                        >
-                          {column.type === 'status' ? (
-                            <Badge
-                              variant="outline"
-                              className={`font-medium ${getStatusBadgeClass(String(row[column.key] ?? ''))}`}
-                            >
-                              {String(row[column.key] ?? '—')}
-                            </Badge>
-                          ) : (
-                            renderCellValue(row, column)
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-
-            <div className="mt-4 flex flex-col items-center gap-3 border-t pt-4 sm:flex-row sm:justify-between">
-              <div className="text-muted-foreground text-sm">
-                Page <strong>{data.currentPage}</strong> of{' '}
-                <strong>{data.totalPages}</strong>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    updateFilters({
-                      page: Math.max(data.currentPage - 1, 1),
-                    })
-                  }
-                  disabled={data.currentPage === 1}
-                >
-                  <ChevronLeft className="mr-1 h-4 w-4" />
-                  Previous
-                </Button>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    updateFilters({
-                      page: Math.min(data.currentPage + 1, data.totalPages),
-                    })
-                  }
-                  disabled={data.currentPage >= data.totalPages}
-                >
-                  Next
-                  <ChevronRight className="ml-1 h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+                </div>
+              ))}
+            </>
+          }
+        />
       )}
     </QueryBoundary>
   )

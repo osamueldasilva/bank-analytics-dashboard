@@ -57,8 +57,9 @@ export function LiquidityDistribution({
         wrapperClassName: cn('col-span-4', className),
       }}
       className={{
-        error: cn('col-span-4', className),
-        empty: cn('col-span-4', className),
+        loading: cn('col-span-4 h-74', className),
+        error: cn('col-span-4 h-74', className),
+        empty: cn('col-span-4 h-74', className),
       }}
     >
       {(data) => {
