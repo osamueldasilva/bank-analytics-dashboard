@@ -212,7 +212,7 @@ export function DashboardFiltersBar() {
             updateFilters({ segment: value as DashboardFilters['segment'] })
           }
         >
-          <SelectTrigger className="h-8 w-44 text-sm">
+          <SelectTrigger className="h-8 w-52 text-sm">
             <div className="flex items-center gap-1.5">
               <Globe className="text-muted-foreground h-3.5 w-3.5 shrink-0" />
               <span className="text-muted-foreground font-normal">
@@ -255,7 +255,7 @@ export function DashboardFiltersBar() {
             updateFilters({ riskType: value as DashboardFilters['riskType'] })
           }
         >
-          <SelectTrigger className="h-8 w-44 text-sm">
+          <SelectTrigger className="h-8 w-52 text-sm">
             <div className="flex items-center gap-1.5">
               <ShieldAlert className="text-muted-foreground h-3.5 w-3.5 shrink-0" />
               <span className="text-muted-foreground font-normal">Risk:</span>
